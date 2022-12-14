@@ -1,0 +1,133 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+body {
+    font-family: "Open Sans",Arial,sans-serif;
+    margin: 0;
+    position: relative;
+}
+
+input[type='text'],
+input[type='number'],
+select,
+textarea {
+  font-size: 16px;
+}
+
+.affix {
+  top: 20px;
+  padding: 0;
+  z-index: 9999 !important;
+}
+
+/* all links */
+.bs-docs-sidebar .nav>li>a {
+    /*add trasnparent border */
+    border-left: 2px solid transparent;
+    font-size: larger;
+    padding-left: 0;
+    padding-right: 0;
+}
+/* active & hover links */
+.bs-docs-sidebar .nav>.active>a, 
+.bs-docs-sidebar .nav>li>a:hover, 
+.bs-docs-sidebar .nav>li>a:focus {
+    color: #563d7c;                 
+    text-decoration: none;          
+    background-color: transparent;  
+    /* border-left: 2px solid #563d7c; */
+}
+
+/* all active links */
+.bs-docs-sidebar .nav>.active>a, 
+.bs-docs-sidebar .nav>.active:hover>a,
+.bs-docs-sidebar .nav>.active:focus>a {
+    font-weight: 700;
+}
+/* nested active links */
+.bs-docs-sidebar .nav .nav>.active>a, 
+.bs-docs-sidebar .nav .nav>.active:hover>a,
+.bs-docs-sidebar .nav .nav>.active:focus>a {
+    font-weight: 500;
+}
+
+.title-link:hover, .title-link:visited, .title-link:link, .title-link:active {
+    text-decoration: none;
+    color: black;
+}
+
+.indent {
+    text-indent: -40px;
+    margin-left: 40px;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 450px){
+    .oyd-link {
+        position: absolute;
+        bottom: 0px;
+        right: 25px;
+    }
+}
+
+@media screen and (min-width: 451px){
+    .oyd-link {
+        position: absolute;
+        bottom: 15px;
+        right: 25px;
+    }
+}
+
+
+
+
+.center {
+  text-align: center;
+}
+/* footer */
+
+footer {
+  margin-top: 10px;
+  padding-top: 5px;
+  border-top: 1px solid #eaeaea;
+  color: #666666;
+  width: 100%;
+}
+
+footer a {
+  color: #666666;
+}
+
+footer a:hover {
+  color: #666666;
+}
+
+footer small {
+  float: left;
+}
+
+footer ul {
+  /* float: right; */
+  margin-left: -50px;
+  list-style: none;
+}
+
+footer ul li {
+  float: left;
+  margin-left: 15px;
+}
+
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+  display: none;
+}
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+  display: none;
+}
+
+.nopadding {
+    padding: 0 !important;
+}
+
+.content {
+    padding: 20px;
+}

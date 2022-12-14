@@ -1,0 +1,56 @@
+<% provide(:title, 'DID Lint') %>
+
+<div class="container" style="margin-top: 20px; margin-bottom: 20px;">
+    <div class="row">
+        <div class="col-md-12">
+            <%= form_with url: resolve_path, class: "text-nowrap" do |form| %>
+                <div style="display: flex;">
+                    <div class="input-group" style="width: 100%;">
+                        <%= form.text_field :did, class: "form-control", value: @did.to_s, placeholder: "DID" %>
+                        <span class="input-group-btn">
+                            <%= form.button "Resolve", class: "btn btn-default" %>
+                        </span>
+                    </div>
+                    <a style="margin: 7px 2px 2px 7px; border: 0; color: darkgray; outline: none; cursor: pointer;" tabindex="0" data-toggle="popover" data-trigger="focus" data-placement="bottom" title="DID Resolution" data-content="<span class='text-nowrap'>This website uses <a href='https://uniresolver.io' target='_blank'>uniresolver.io</a></span> to resolve DID Documents. <a href='/?did=did%3Aoyd%3AzQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh'>Click here</a> to try an example."><i class="fa fa-question-circle" style="font-size: 1.3em;" aria-hidden="true"></i></a>
+                </div>
+            <% end %>
+        </div>
+    </div>   
+
+    <div class="row" style="margin-top: 10px;">
+        <%= form_with url: validate_path do |form| %>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <%= form.hidden_field :did, value: @did.to_s %>
+                    <%= form.label :did_document, "DID Document" %>
+                    <%= form.text_area :did_document, class: "form-control rounded-0", id: "did_document", rows: 10, 
+                            value: @did_document.to_s,
+                            style: "font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;" %>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <%= form.submit "Validate", class: "btn btn-success" %>
+                <%= form.submit "Reset", class: "btn btn-default" %>
+            </div>
+        <% end %>
+    </div>
+
+    <% if @result %>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-12">
+                <h3>Result</h3>
+                <% flash.each do |message_type, message| %>
+                    <div class="alert alert-<%= message_type %>"><%= message.html_safe %></div>
+                <% end %>
+            </div>
+        </div>
+    <% end %>
+</div>
+
+<%= render 'info' %>
+
+<script type="text/javascript">
+$(function () {
+  $('[data-toggle="popover"]').popover({html:true})
+})
+</script> 

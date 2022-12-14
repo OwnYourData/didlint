@@ -1,0 +1,80 @@
+en:
+  general:
+    title: "Consent Information"
+    today: "Today"
+    mood: "Mood"
+    note: "Note"
+    edit: "edit records"
+    stop_edit: "Stop editing"
+    cancel: "Cancel"
+    save: "Save"
+    submit: "Continue"
+    remember: "remember credentials"
+    wrongPassword: "Error: wrong password"
+    wrongCookiePassword: "Error: wrong password stored in your browser"
+    error: "missing or wrong parameters"
+    enterPassword: "Your data is encrypted. Enter your password to decrypt it!"
+    to_data_vault: "go to Data Vault"
+    result: "Result"
+    of: "of"
+    records: "records"
+    created_after: "created after"
+    reset_filter: "Reset filters"
+    any: "Any"
+    back_to_root: "back"    
+  footer:
+    about: "About OwnYourData.eu"
+    mobile: "Mobile Data Vault"
+    feedback: "Send Feedback"
+    info: "Developer Infos"
+    security: "Privacy"
+    impressum: "Imprint"
+    language: "Language"
+  dialog:
+    newEntry: "New Entry"
+    dateLbl: "Date"
+  date:
+    formats:
+      default: '%m/%d/%Y'
+      long: '%A, %B %-d, %Y'
+  time:
+    formats:
+      default: '%m/%d/%Y'
+  filter: 
+    source: "Source"
+  list:
+    date: "Date"
+    description: "Description"
+    action: "Action"
+    detailsBtn: "Show"
+  detail:
+    header: "Detailed Consent Information"
+    field_hdr: "Field"
+    content_hdr: "Content"
+    service_endpoint: "Service Endpoint"
+    identifier: "Record identifier"
+    policy: "Usage Policy"
+    retrieve_usage: "Show data usage"
+    request_btn: "Request"
+    revoke_lbl: "Revoke consent"
+    revoke_btn: "Submit"
+  data:
+    revoke_question: "Do you really want to delete the data?"
+    show_more: "show more"
+    show_less: "show less"
+  message:
+    success: "The revocation for the consent of the data transfer was successful."
+    failure: "The revocation for the consent of the data transfer could not be carried out."
+  usage:
+    data:
+      label: "Data Category"
+    recipient:
+      label: "Recipient"
+    purpose:
+      label: "Purpose"
+    processing:
+      label: "Processing"
+    location:
+      label: "Storage Location"
+    duration:
+      label: "Storage Duration"

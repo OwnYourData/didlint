@@ -1,0 +1,82 @@
+de:
+  general:
+    title: "Einverständniserklärung"
+    today: "Heute"
+    mood: "Stimmung"
+    note: "Notiz"
+    edit: "Datensätze bearbeiten"
+    stop_edit: "Bearbeiten beenden"
+    cancel: "Abbrechen"
+    save: "Speichern"
+    submit: "Weiter"
+    remember: "Anmeldedaten speichern"
+    wrongPassword: "Fehler: ungültiges Passwort"
+    wrongCookiePassword: "Error: ungültiges Passwort im Browser gespeichert"
+    error: "fehlende oder fehlerhafte Parameter"
+    enterPassword: "Deine Daten sind verschlüsselt. Gib dein Passwort ein, um sie zu entschlüsseln!"
+    to_data_vault: "zum Datentresor"
+    result: "Ergebnis"
+    of: "von"
+    records: "Datensätzen"
+    created_after: "erstellt nach"
+    reset_filter: "Filter zurücksetzen"
+    any: "Alle"
+    back_to_root: "zurück"
+  footer:
+    about: "Über OwnYourData.eu"
+    mobile: "Mobiler Datentresor"
+    feedback: "Feedback senden"
+    info: "Infos für App-Entwickler"
+    security: "Datensicherheit"
+    impressum: "Impressum"
+    language: "Sprache"
+  dialog:
+    newEntry: "Neuer Eintrag"
+    dateLbl: "Datum"
+  date:
+    day_names: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
+    month_names: [~, Jänner, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
+    formats:
+      default: '%d.%m.%Y'
+      long: '%A, %-d. %B %Y'
+  time:
+    formats:
+      default: '%d.%m.%Y'
+  filter: 
+    source: "Herkunft"
+  list:
+    date: "Datum"
+    description: "Beschreibung"
+    action: "Aktion"
+    detailsBtn: "Anzeigen"
+  detail:
+    header: "Einverständniserklärung - Details"
+    field_hdr: "Feld"
+    content_hdr: "Inhalt"
+    service_endpoint: "Service-Endpunkt"
+    identifier: "Datensatz ID"
+    policy: "Nutzungsrichtlinie"
+    retrieve_usage: "Datennutzung anzeigen"
+    request_btn: "Anfordern"    
+    revoke_lbl: "Zustimmung widerrufen"
+    revoke_btn: "Senden"
+  data:
+    revoke_question: "Sollen die Daten wirklich gelöscht werden?"
+    show_more: "mehr anzeigen"
+    show_less: "weniger anzeigen"
+  message:
+    success: "Der Widerruf für die Zustimmung der Datenweitergabe war erfolgreich."
+    failure: "Der Widerruf für die Zustimmung der Datenweitergabe konnte nicht durchgeführt werden."
+  usage:
+    data:
+      label: "Datenkategorie"
+    recipient:
+      label: "Empfänger"
+    purpose:
+      label: "Verwendung"
+    processing:
+      label: "Verarbeitung"
+    location:
+      label: "Speicherort"
+    duration:
+      label: "Speicherdauer"
