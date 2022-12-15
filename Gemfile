@@ -14,6 +14,7 @@ gem "rack-cors"
 gem "oydid"
 gem 'bootsnap'
 gem 'tzinfo-data'
+gem 'rswag'
 
 # UI
 gem 'sass-rails', '~> 5.0'

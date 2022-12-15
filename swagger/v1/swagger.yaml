@@ -1,0 +1,81 @@
+openapi: 3.0.1
+info:
+  title: DID Lint API
+  description: >-
+    The DID Lint service provides an easy to use interface for validating DID Documents.
+     
+     Further information:
+     - Public DID Lint website at [https://didlint.ownyourdata.eu/](https://didlint.ownyourdata.eu/)
+     - view other [OwnYourData Service API's](https://api-docs.ownyourdata.eu)
+  contact:
+    email: office@ownyourdata.eu
+  license:
+    name: MIT License
+    url: 'https://opensource.org/licenses/MIT'
+  version: v1
+servers:
+  - url: https://didlint.ownyourdata.eu/
+    description: official version hosted by OwnYourData
+paths:
+  /api/validate/{did}:
+    get:
+      summary: resolve DID and show validation information
+      tags:
+        - General
+      parameters:
+        - name: did
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+        '422':
+          description: invalid input
+  /api/validate:
+    post:
+      summary: validate DID document provided in body
+      tags: 
+        - General
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+  /version:
+    get:
+      summary: show information about the DID Lint service
+      tags:
+        - Administration
+      responses:
+        '200':
+          description: success
+
+
+
+components:
+  schemas:
+    ValidationResponse:
+      properties:
+        valid:
+          type: boolean
+        error:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              message:
+                type: string
+  requestBodies:
+    Input:
+      content:
+        application/json:
+          schema: {}

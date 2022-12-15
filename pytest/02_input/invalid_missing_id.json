@@ -1,0 +1,18 @@
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "verificationMethod": [
+    {
+      "id": "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1#key-doc",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1",
+      "publicKeyMultibase": "z6MuxZoTqKn4fuv3FWPpKzkPGSEoMdR6CfhuujnNaftic26E"
+    },
+    {
+      "id": "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1#key-rev",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1",
+      "publicKeyMultibase": "z6Mv9FAsD8oLdSWjCHCBHTiSYj4LEtCSZAkc12bHPJF5cKV9"
+    }
+  ],
+  "service": []
+}

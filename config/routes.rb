@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+    mount Rswag::Ui::Engine => '/api-docs'
+    mount Rswag::Api::Engine => '/api-docs'
 
     namespace :api, defaults: { format: :json } do
         scope "(:version)", :version => /v1/, module: :v1 do

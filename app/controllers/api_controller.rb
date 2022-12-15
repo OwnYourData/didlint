@@ -1,4 +1,5 @@
 class ApiController < ApplicationController
+    protect_from_forgery with: :null_session
     before_action :cors_preflight_check
     after_action :cors_set_access_control_headers
 
