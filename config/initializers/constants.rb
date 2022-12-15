@@ -1,1 +1,2 @@
 VERSION = "0.3"
+SOYA_DID_DRI = "zQmeLPR8wgQQqLSFw2pvLUE9kUcEUL8cRkdEatv3ufhhr78"

@@ -6,24 +6,54 @@ DID Lint provides services to validate conformance of DID Documents to the W3C D
 At the core of SOyA is a YAML-based data model for describing data structures with bases and optional overlays, which provide additional information and context. The DID Lint service uses the following SOyA structure for validating DID Documents: [click here](https://soya.ownyourdata.eu/Did/yaml).
 
 ## Usage
-Get the image for the base container from Dockerhub: https://hub.docker.com/r/semcon/sc-base/
 
-Perform the following steps to start the base container:
-1. Start the container  
-   `docker run -d -p 3000:3000 semcon/sc-base`
-2. Initialize the container  
-   `curl -H "Content-Type: application/json" -d "$(< init.json)" -X POST http://localhost:3000/api/desc`
-3. Write data into the container  
-   `curl -H "Content-Type: application/json" -d '{"my": "data"}' -X POST http://localhost:3000/api/data`
-4. Read data from container  
-   `curl http://localhost:3000/api/data`
-5. create image with data  
-   `docker commit container_name semcon/data-example`  
-   and afterwards you can start the container and access the data:  
-   `docker run -d -p 3001:3000 semcon/data-example`  
-   `curl http://localhost:3001/api/data`
+### On the Command Line
 
-More examples and step-by-step instructions are available in a tutorial here: https://github.com/sem-con/Tutorials/
+To validate DID documents on the command line make sure to have the soya-cli installed: https://github.com/OwnYourData/soya    
+
+You can use a pre-built package from npmjs.com:
+```bash
+npm install -g soya-cli@latest
+```
+
+The validation includes a pre-processing step (to make the DID Document compliant with SOyA) and is available as a [small script here](https://github.com/OwnYourData/didlint/blob/main/script/prep.sh)    
+example:    
+```bash
+cat did_document.json | ./script/prep.sh
+```
+
+The pre-preocessed JSON-LD document can then be validated with the `soya validate` command,    
+complete example (including pre-processing) and using the [ SOyA structure defining `Did`](https://soya.ownyourdata.eu/Did):
+```bash
+cat did_document.json | ./script/prep.sh | soya validate Did
+```
+
+The output describes the result of the validation process (using a [SHACL](https://en.wikipedia.org/wiki/SHACL)) and lists any unmet constraints.
+
+
+### With Docker
+
+The above steps are bundled in an Docker image available here: https://hub.docker.com/r/oydeu/didlint    
+
+Start the image with the following command:
+
+```bash
+docker run --name didlint -d -p 3000:3000 oydeu/didlint
+```
+
+and access validation features through exposed APIs on `http://localhost:3000` as described in the Swagger API documentation here: https://didlint.ownyourdata.eu/api-docs    
+
+examples:
+
+```bash
+curl http://localhost:3000/api/validate/did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1
+cat did_document.jsonld | curl -H 'Content-Type: application/json' -d @- -X POST http://localhost:3000/api/validate
+```
+
+### Online Service
+
+The DID Lint service is also available publicly here: https://didlint.ownyourdata.eu    
+Use either the web frontend or the provided REST API to resolve DIDs and validate DID Documents.
 
 
 ## Improve DID Lint
@@ -44,9 +74,8 @@ If you want to contribute pull requests, please follow these steps:
 
 ## About  
 
-This project has received funding from the European Union’s Horizon 2020 research and innovation program through the [NGI ONTOCHAIN program](https://ontochain.ngi.eu/) under cascade funding agreement No 957338.
+<img align="right" src="https://raw.githubusercontent.com/OwnYourData/didlint/main/app/assets/images/logo-ngi-ontochain-positive.png" height="150">This project has received funding from the European Union’s Horizon 2020 research and innovation program through the [NGI ONTOCHAIN program](https://ontochain.ngi.eu/) under cascade funding agreement No 957338.
 
-<img align="right" src="https://raw.githubusercontent.com/OwnYourData/didlint/main/app/assets/images/logo-ngi-ontochain-positive.png" height="150">
 
 <br clear="both" />
 

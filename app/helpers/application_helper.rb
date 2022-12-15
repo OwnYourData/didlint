@@ -50,7 +50,7 @@ module ApplicationHelper
 
     # expect json_input to be a valid JSON already formatted as string
     def soya_validate(json_input)
-        cmd = "echo '#{json_input}' | soya validate Did"
+        cmd = "echo '#{json_input}' | soya validate " + SOYA_DID_DRI
         out = nil
 
         require 'open3'
@@ -79,17 +79,12 @@ module ApplicationHelper
             return {"valid": true}
         end
         retVal = {"valid": false}
-
-puts "here!"
-
         result["results"].each do |r|
-puts r.to_json
             msg = r["message"] rescue nil
             if msg == [] || msg.to_s == ""
                 val = r["value"] rescue nil
                 if val != ""
                     obj = {"value": r["value"], "error": "invalid"}
-puts "aaa"
                     if retVal["errors"].nil?
                         retVal["errors"] = [obj]
                     else
