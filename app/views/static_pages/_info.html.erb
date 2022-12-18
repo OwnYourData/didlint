@@ -102,11 +102,12 @@
                                     <li>Pre-processing DID Documents to be usable by the <code>soya-cli</code><br>
                                         example script is available here: <a href="https://github.com/OwnYourData/didlint/blob/main/script/prep.sh" target="_blank"><code style="color: blue;">prep.sh</code></a></li>
                                     <li>Executing the <a href="https://en.wikipedia.org/wiki/SHACL" target="_blank">SHACL</a> validation with the SOyA structure and input DID document<br>
-                                        syntax for valiating a DID document is: <code>cat input.json | soya validate Did</code></li>
-                                    <li>Parsing the response from SHACL to make the output human-readable<br>
-                                        script demonstrating post-processing: <a href="https://github.com/OwnYourData/didlint/blob/main/script/iterate.sh" target="_blank"><code style="color: blue;">iterate.sh</code></a></li>
+                                        syntax for valiating a DID document is: <code>cat did_document.jsonld | ./preps.sh | soya validate Did</code></li>
+                                    <li>Verifying the correct JSON-LD context is not within the scope of SHACL and requires a separate step<br>
+                                        execute <a href="https://github.com/OwnYourData/didlint/blob/main/script/verify_context.rb" target="_blank"><code style="color: blue;">verify_context.rb</code></a>: <code>cat did_document.jsonld | ./verify_context.rb</code></li>
                                 </ol>
                             </p>
+                            <p>To make the output easier to read, the response (SHACL output and context checks) should be further processed as demonstrated in this script: <a href="https://github.com/OwnYourData/didlint/blob/main/script/iterate.sh" target="_blank"><code style="color: blue;">iterate.sh</code></a></p>
                             <p>A typical sequence of commands to validate a DID document locally on your preferred shell is:<br>
                                 <pre>docker run -it --rm oydeu/didlint bash
 cat test/example_did_document.json | script/prep.sh | soya validate Did</pre>

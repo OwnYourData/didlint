@@ -41,7 +41,7 @@ module ApplicationHelper
 
     def soya_prep(document)
         retVal = {}
-        retVal["@context"] = {"@version": 1.1, "did": "https://soya.data-container.net/Did/", "@vocab": "https://soya.data-container.net/Did/"}
+        retVal["@context"] = {"@version": 1.1, "did": "https://soya.data-container.net/" + SOYA_DID_DRI + "/", "@vocab": "https://soya.data-container.net/" + SOYA_DID_DRI + "/"}
         document["@type"] = "Did"
         retVal["@graph"] = [document.except("@context")]
 
@@ -66,14 +66,14 @@ module ApplicationHelper
     def parse_soya_output(soya_stdout)
         # check for plain error message
         if soya_stdout[0,16] == "\e[31merror\e[39m:"
-            return {"valid": false, "error": soya_stdout[soya_stdout.rindex("error:")+7, soya_stdout.length].strip}
+            return {"valid": false, "errors": [{"value":"soya-cli", "error": soya_stdout[soya_stdout.rindex("error:")+7, soya_stdout.length].strip}]}
             exit
         end
 
         # try to parse response
         result = JSON.parse(soya_stdout) rescue nil
         if result.nil?
-            return {"valid": false, "error": "cannot validate input"}
+            return {"valid": false, "errors": [{"value":"soya-cli", "error": "cannot validate input"}]}
         end
         if result["isValid"]
             return {"valid": true}
@@ -84,11 +84,12 @@ module ApplicationHelper
             if msg == [] || msg.to_s == ""
                 val = r["value"] rescue nil
                 if val != ""
-                    obj = {"value": r["value"], "error": "invalid"}
+                    obj = {"value": r["value"], "error": "invalid (compliant type?)"}
                     if retVal["errors"].nil?
                         retVal["errors"] = [obj]
                     else
                         retVal["errors"] << obj
+                        retVal["errors"] = retVal["errors"].flatten
                     end
                 end
             else
@@ -98,6 +99,7 @@ module ApplicationHelper
                         retVal["errors"] = [obj]
                     else
                         retVal["errors"] << obj
+                        retVal["errors"] = retVal["errors"].flatten
                     end
                 end
             end

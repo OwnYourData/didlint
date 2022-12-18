@@ -1,5 +1,6 @@
 class StaticPagesController < ApplicationController
     include ApplicationHelper
+    include ContextHelper
 
     def home
         @result = false
@@ -46,7 +47,23 @@ class StaticPagesController < ApplicationController
         # validation
         retVal = soya_validate(ddo.to_json)
 
-        puts retVal.stringify_keys.to_s
+        # context validation
+        context_retVal = validate_DID_context(@did_document.dup)
+
+        # merge responses
+        if context_retVal != []
+            if retVal["errors"].nil?
+                retVal["errors"] = context_retVal
+            else
+                retVal["errors"] << context_retVal
+                retVal["errors"] = retVal["errors"].flatten
+            end
+            if !retVal["errors"].nil? && retVal["errors"].count > 0
+                retVal["valid"] = false
+            end
+
+        end
+
         valid = retVal.stringify_keys["valid"] rescue nil
         if valid.nil?
             @result = false
@@ -65,8 +82,6 @@ class StaticPagesController < ApplicationController
         end
 
         @did_document = JSON.pretty_generate(@did_document)
-
         render "home"
-
     end
 end

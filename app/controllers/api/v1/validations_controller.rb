@@ -2,8 +2,10 @@ module Api
     module V1
         class ValidationsController < ApiController
             include ApplicationHelper
+            include ContextHelper
 
             def did
+puts "0-here!"
                 did = params[:did].to_s
                 puts "Did: " + did
                 if did == ""
@@ -22,10 +24,33 @@ module Api
                 puts input.to_json
 
                 # pre-process DID Document
-                ddo = soya_prep(input)
+                ddo = soya_prep(input.dup)
 
-                # validation
+                # soya validation
                 retVal = soya_validate(ddo.to_json)
+
+                # context validation
+                context_retVal = validate_DID_context(input.dup)
+
+                # merge responses
+                if context_retVal != []
+                    if retVal["errors"].nil?
+                        retVal["errors"] = context_retVal
+                    else
+                        retVal["errors"] << context_retVal
+                        retVal["errors"] = retVal["errors"].flatten
+                    end
+                    if !retVal["errors"].nil? && retVal["errors"].count > 0
+                        retVal["valid"] = false
+                    end
+                end
+
+                # post-process retVal
+                if !retVal["errors"].nil? && retVal["errors"].count > 0
+                    retVal["errors"].each do |e|
+                        e[:value] = e[:value].to_s.split("/").last.to_s
+                    end
+                end
 
                 # response
                 render json: retVal.to_json, 
@@ -53,10 +78,31 @@ module Api
                 puts input.to_json
 
                 # pre-process DID Document
-                ddo = soya_prep(input)
+                ddo = soya_prep(input.dup)
 
                 # validation
                 retVal = soya_validate(ddo.to_json)
+
+                # context validation
+                context_retVal = validate_DID_context(input.dup)
+
+                # merge responses
+                if context_retVal != []
+                    retVal["valid"] = false
+                    if retVal["errors"].nil?
+                        retVal["errors"] = context_retVal
+                    else
+                        retVal["errors"] << context_retVal
+                        retVal["errors"] = retVal["errors"].flatten
+                    end
+                end
+
+                # post-process retVal
+                if !retVal["errors"].nil? && retVal["errors"].count > 0
+                    retVal["errors"].each do |e|
+                        e[:value] = e[:value].to_s.split("/").last.to_s
+                    end
+                end
 
                 # response
                 render json: retVal.to_json, 
