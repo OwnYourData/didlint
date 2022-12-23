@@ -4,16 +4,16 @@ paramenters
 - context valid / not valid
 
 Options
-test 1) DID body correct, context exists & valid
+1) DID body correct, context exists & valid
 	-> valid
-test 2) DID body correct, context exists but not valid
+2) DID body correct, context exists but not valid
 	-> invalid with context error
-test 3) DID body correct, context does not exist
+3) DID body correct, context does not exist
 	-> valid and information about JSON-LD representation
-OK 4) DID body not correct, context exists & valid
+4) DID body not correct, context exists & valid
 	-> invalid with body errors
-OK 5) DID body not correct, context exists but not valid
+5) DID body not correct, context exists but not valid
 	-> invalid with body errors and context errors
-OK 6) DID body not correct, context does not exist
+6) DID body not correct, context does not exist
 	-> invalid with body errors and information about JSON-LD representation
 
