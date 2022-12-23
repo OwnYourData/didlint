@@ -29,13 +29,16 @@ class StaticPagesController < ApplicationController
             return
         end
 
-        @did = params[:did].to_s
         @did_document = JSON.parse(params[:did_document].to_s) rescue nil
         if @did_document.nil?
+            @did = params[:did].to_s
             @result = true
             flash.now[:warning] = "Invalid input (expecting JSON)"
+            @did_document = params[:did_document].to_s
             render "home"
             return
+        else
+            @did = @did_document["id"].to_s
         end
 
         puts "Input DID Document:"
@@ -50,18 +53,29 @@ class StaticPagesController < ApplicationController
         # context validation
         context_retVal = validate_DID_context(@did_document.dup)
 
-        # merge responses
-        if context_retVal != []
-            if retVal["errors"].nil?
-                retVal["errors"] = context_retVal
-            else
-                retVal["errors"] << context_retVal
-                retVal["errors"] = retVal["errors"].flatten
-            end
-            if !retVal["errors"].nil? && retVal["errors"].count > 0
-                retVal["valid"] = false
-            end
+        # consider JSON vs. JSON-LD representation
+        # https://www.w3.org/TR/did-core/#json
 
+        if @did_document["@context"].nil?
+            # assume JSON representation
+            retVal["infos"] = context_retVal
+
+        else
+            # assume JSON-LD representation
+            # https://www.w3.org/TR/did-core/#json-ld
+
+            # merge responses
+            if context_retVal != []
+                if retVal["errors"].nil?
+                    retVal["errors"] = context_retVal
+                else
+                    retVal["errors"] << context_retVal
+                    retVal["errors"] = retVal["errors"].flatten
+                end
+                if !retVal["errors"].nil? && retVal["errors"].count > 0
+                    retVal["valid"] = false
+                end
+            end
         end
 
         valid = retVal.stringify_keys["valid"] rescue nil
@@ -79,9 +93,17 @@ class StaticPagesController < ApplicationController
                 error_text += "</ul>"
                 flash.now[:danger] = error_text
             end
+            if !retVal["infos"].nil? && retVal["infos"].count > 0
+                info_text = "Consider JSON-LD representation by adding a JSON-LD Context:<ul>"
+                retVal.stringify_keys["infos"].each do |e|
+                    info_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
+                end unless retVal.stringify_keys["infos"].nil?
+                info_text += "</ul>"
+                flash.now[:info] = info_text
+            end
         end
 
-        @did_document = JSON.pretty_generate(@did_document)
+        @did_document = JSON.pretty_generate(@did_document) rescue nil?
         render "home"
     end
 end

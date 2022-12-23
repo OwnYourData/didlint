@@ -1,0 +1,15 @@
+{
+  "id": "did:self:3rdYsl79x51rfk8zMgQN7-1sStIro9cs0iUfNAqeElI",
+  "authentication": [
+    {
+      "id": "#key1",
+      "type": "JsonWebKey2020",
+      "publicKeyJwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "5y9L_pOEyepZBP3HCcn0u7wFkTwFIL1qUUq-oFsRNJk",
+        "y": "lxDZvayjRUH4r1HghIg0ZoknlWyqaATwsWtJazcUCRw"
+      }
+    }
+  ]
+}

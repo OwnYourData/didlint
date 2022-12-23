@@ -38,7 +38,7 @@ vmts.each do |vmt|
     vals = deep_find(key, did_document)
     if vals.count > 0
         if vals.include?(vmt[key]) || vmt[key] == "*"
-            if jld_context.nil? || !jld_context.include?(vmt["context"])
+            if jld_context.nil? || !jld_context.any? { |c| c.include?(vmt["context"].gsub("https://", "").gsub("http://", "")) }
                 violations << {"value":"@context", "error": "missing '" + vmt["context"].to_s + "'"}
             end
         end

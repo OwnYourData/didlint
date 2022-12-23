@@ -5,7 +5,6 @@ module Api
             include ContextHelper
 
             def did
-puts "0-here!"
                 did = params[:did].to_s
                 puts "Did: " + did
                 if did == ""
@@ -20,7 +19,7 @@ puts "0-here!"
                     return
                 end
 
-                puts "Input DID Document:"
+                puts "Input DID Document:--"
                 puts input.to_json
 
                 # pre-process DID Document
@@ -32,16 +31,28 @@ puts "0-here!"
                 # context validation
                 context_retVal = validate_DID_context(input.dup)
 
-                # merge responses
-                if context_retVal != []
-                    if retVal["errors"].nil?
-                        retVal["errors"] = context_retVal
-                    else
-                        retVal["errors"] << context_retVal
-                        retVal["errors"] = retVal["errors"].flatten
-                    end
-                    if !retVal["errors"].nil? && retVal["errors"].count > 0
-                        retVal["valid"] = false
+                # consider JSON vs. JSON-LD representation
+                # https://www.w3.org/TR/did-core/#json
+
+                if @did_document["@context"].nil?
+                    # assume JSON representation
+                    retVal["infos"] = context_retVal
+
+                else
+                    # assume JSON-LD representation
+                    # https://www.w3.org/TR/did-core/#json-ld
+
+                    # merge responses
+                    if context_retVal != []
+                        if retVal["errors"].nil?
+                            retVal["errors"] = context_retVal
+                        else
+                            retVal["errors"] << context_retVal
+                            retVal["errors"] = retVal["errors"].flatten
+                        end
+                        if !retVal["errors"].nil? && retVal["errors"].count > 0
+                            retVal["valid"] = false
+                        end
                     end
                 end
 
@@ -86,14 +97,28 @@ puts "0-here!"
                 # context validation
                 context_retVal = validate_DID_context(input.dup)
 
-                # merge responses
-                if context_retVal != []
-                    retVal["valid"] = false
-                    if retVal["errors"].nil?
-                        retVal["errors"] = context_retVal
-                    else
-                        retVal["errors"] << context_retVal
-                        retVal["errors"] = retVal["errors"].flatten
+                # consider JSON vs. JSON-LD representation
+                # https://www.w3.org/TR/did-core/#json
+
+                if input["@context"].nil?
+                    # assume JSON representation
+                    retVal["infos"] = context_retVal
+
+                else
+                    # assume JSON-LD representation
+                    # https://www.w3.org/TR/did-core/#json-ld
+
+                    # merge responses
+                    if context_retVal != []
+                        if retVal["errors"].nil?
+                            retVal["errors"] = context_retVal
+                        else
+                            retVal["errors"] << context_retVal
+                            retVal["errors"] = retVal["errors"].flatten
+                        end
+                        if !retVal["errors"].nil? && retVal["errors"].count > 0
+                            retVal["valid"] = false
+                        end
                     end
                 end
 
@@ -101,6 +126,11 @@ puts "0-here!"
                 if !retVal["errors"].nil? && retVal["errors"].count > 0
                     retVal["errors"].each do |e|
                         e[:value] = e[:value].to_s.split("/").last.to_s
+                    end
+                end
+                if !retVal["infos"].nil? && retVal["infos"].count > 0
+                    retVal["infos"].each do |e|
+                        e[:message] = e.delete(:error)
                     end
                 end
 

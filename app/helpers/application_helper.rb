@@ -64,6 +64,7 @@ module ApplicationHelper
     end
 
     def parse_soya_output(soya_stdout)
+
         # check for plain error message
         if soya_stdout[0,16] == "\e[31merror\e[39m:"
             return {"valid": false, "errors": [{"value":"soya-cli", "error": soya_stdout[soya_stdout.rindex("error:")+7, soya_stdout.length].strip}]}
@@ -83,8 +84,16 @@ module ApplicationHelper
             msg = r["message"] rescue nil
             if msg == [] || msg.to_s == ""
                 val = r["value"] rescue nil
-                if val != ""
-                    obj = {"value": r["value"], "error": "invalid (compliant type?)"}
+                if val.nil?
+                    val = r["severity"]["value"].to_s rescue nil
+                end
+                if val.to_s != ""
+                    case val
+                    when "http://www.w3.org/ns/shacl#Violation"
+                        obj = {"value": "Verification Relationship", "error": "missing"}
+                    else    
+                        obj = {"value": r["value"], "error": "invalid"}
+                    end
                     if retVal["errors"].nil?
                         retVal["errors"] = [obj]
                     else
