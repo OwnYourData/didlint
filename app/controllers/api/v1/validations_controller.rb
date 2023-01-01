@@ -19,7 +19,7 @@ module Api
                     return
                 end
 
-                puts "Input DID Document:--"
+                puts "Input DID Document:"
                 puts input.to_json
 
                 # pre-process DID Document
@@ -34,7 +34,7 @@ module Api
                 # consider JSON vs. JSON-LD representation
                 # https://www.w3.org/TR/did-core/#json
 
-                if @did_document["@context"].nil?
+                if input["@context"].nil?
                     # assume JSON representation
                     retVal["infos"] = context_retVal
 

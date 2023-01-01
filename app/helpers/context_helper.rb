@@ -40,7 +40,7 @@ module ContextHelper
             vals = deep_find(key, did_document)
             if vals.count > 0
                 if vals.include?(vmt[key]) || vmt[key] == "*"
-                    if jld_context.nil? || !jld_context.any? { |c| c.include?(vmt["context"].gsub("https://", "").gsub("http://", "")) }
+                    if jld_context.nil? || !jld_context.any? { |c| c.include?(vmt["context"].gsub("https://", "").gsub("http://", "").gsub("www.", "")) }
                         violations << {"value":"@context", "error": "add '" + vmt["context"].to_s + "'"}
                     end
                 end
