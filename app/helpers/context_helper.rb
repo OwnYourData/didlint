@@ -29,12 +29,13 @@ module ContextHelper
     end
 
     def validate_DID_context(did_document)
+        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
         violations=[]
         jld_context = did_document["@context"]
         if jld_context.is_a?(String)
             jld_context = [jld_context]
         end
-        vmts = getVerificationMethodTypes(SOYA_DID_DRI)
+        vmts = getVerificationMethodTypes(soya_did_dri)
         vmts.each do |vmt|
             key = (vmt.keys - ["context"]).first
             vals = deep_find(key, did_document)

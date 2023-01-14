@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 require 'httparty'
-SOYA_DID_DRI = "zQmeCh8bqJWLGYfFz2evRY7MT6QjeSZDyK64h1EdnnYbaGg"
+SOYA_DID_DRI = "zQmRzHbnveLrgLBgyvHHuX5rNbyrzHUoCepzqibWJ2D3fGE"
 did_document = JSON.parse($stdin.read)
 
 def getVerificationMethodTypes(soya_dri)

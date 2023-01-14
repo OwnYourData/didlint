@@ -6,8 +6,5 @@
   "id": "did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh",
   "authentication": [
     "did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh#key-doc"
-  ],
-  "service": {
-    "simple": "example"
-  }
+  ]
 }

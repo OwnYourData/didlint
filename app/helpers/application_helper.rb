@@ -1,6 +1,6 @@
 module ApplicationHelper
     def soya_version
-        return "0.16.7"
+        return "0.16.9"
     end
 
     # Returns the full title on a per-page basis.
@@ -41,7 +41,8 @@ module ApplicationHelper
 
     def soya_prep(document)
         retVal = {}
-        retVal["@context"] = {"@version": 1.1, "did": "https://soya.data-container.net/" + SOYA_DID_DRI + "/", "@vocab": "https://soya.data-container.net/" + SOYA_DID_DRI + "/"}
+        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        retVal["@context"] = {"@version": 1.1, "did": "https://soya.ownyourdata.eu/" + soya_did_dri + "/", "@vocab": "https://soya.ownyourdata.eu/" + soya_did_dri + "/"}
         document["@type"] = "Did"
         retVal["@graph"] = [document.except("@context")]
 
@@ -50,7 +51,8 @@ module ApplicationHelper
 
     # expect json_input to be a valid JSON already formatted as string
     def soya_validate(json_input)
-        cmd = "echo '#{json_input}' | soya validate " + SOYA_DID_DRI
+        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        cmd = "echo '#{json_input}' | soya validate " + soya_did_dri
         out = nil
 
         require 'open3'

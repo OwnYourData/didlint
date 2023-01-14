@@ -81,4 +81,4 @@ If you want to contribute pull requests, please follow these steps:
 
 ## License
 
-[MIT License 2022 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/didlint/main/LICENSE)
+[MIT License 2023 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/didlint/main/LICENSE)

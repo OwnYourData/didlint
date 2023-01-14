@@ -3,8 +3,8 @@
 # default context for SOyA validation
 did_context='{
     "@version": 1.1,
-    "did": "https://soya.data-container.net/Did/",
-    "@vocab": "https://soya.data-container.net/Did/"}'
+    "did": "https://soya.ownyourdata.eu/Did/",
+    "@vocab": "https://soya.ownyourdata.eu/Did/"}'
 
 # use all available inputs
 echo $did_context "$(cat -)" | \

@@ -2,7 +2,8 @@ class ApplicationController < ActionController::Base
 	include ApplicationHelper
 
     def version
-        render json: {"service": "did linter", "version": VERSION.to_s, "soya-version": soya_version.to_s, "did-dri": SOYA_DID_DRI.to_s}.to_json,
+        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        render json: {"service": "did linter", "version": VERSION.to_s, "soya-cli_version": soya_version.to_s, "did-dri": soya_did_dri}.to_json,
                status: 200
     end    
 

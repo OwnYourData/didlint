@@ -1,2 +1,2 @@
-VERSION = "0.4.3"
-SOYA_DID_DRI = "zQmZTiseS1fB4DzQNAaw2pUtcvXwcg9q6hRpun6fxT2JAEZ"
+VERSION = "0.4.4"
+SOYA_DID_DRI = "zQmRzHbnveLrgLBgyvHHuX5rNbyrzHUoCepzqibWJ2D3fGE"
