@@ -1,2 +1,2 @@
-docker run -d --name didlint -p 3000:3000 -e SOYA_DID_DRI=zQmYXZPLfhhbqXJFo4WVmQr9wNc19ak2fQtbLasphLL8ofh oydeu/didlint
+docker run -d --name didlint -p 3200:3000 -e SOYA_DID_DRI=zQmUTuW3q765ByPMjYxZ3BZAFbFd1pivrbvHSt2UTTutuoA oydeu/didlint
 
