@@ -1,0 +1,1620 @@
+{
+  "did:btcr": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:btcr:xz35-jznz-q9yu-ply": {
+          "valid": false,
+          "error": "Driver: esolve problem for did:btcr:xz35-jznz-q9yu-ply: RPC Query Failed (method: getblockhash, params: [1354001])"
+        }
+      },
+      {
+        "did:btcr:xkrn-xz7q-qsye-28p": {
+          "valid": false,
+          "error": "Driver: esolve problem for did:btcr:xkrn-xz7q-qsye-28p: RPC Query Failed (method: getblockhash, params: [1156667])"
+        }
+      },
+      {
+        "did:btcr:x705-jznz-q3nl-srs": {
+          "valid": false,
+          "error": "Driver: esolve problem for did:btcr:x705-jznz-q3nl-srs: RPC Query Failed (method: getblockhash, params: [1353983])"
+        }
+      }
+    ]
+  },
+  "did:sov": {
+    "status": "partially compliant",
+    "identifiers": [
+      {
+        "did:sov:WRfXPg8dantKVubE3HX8pw": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "id",
+              "error": "there must be one 'id' in 'service'"
+            },
+            {
+              "value": "id",
+              "error": "there must be one 'id' in 'service'"
+            }
+          ]
+        }
+      },
+      {
+        "did:sov:builder:VbPQNHsvoLZdaNU7fTBeFx": {
+          "valid": true
+        }
+      },
+      {
+        "did:sov:staging:6cgbu8ZPoWTnR5Rv5JcSMB": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "id",
+              "error": "there must be one 'id' in 'service'"
+            }
+          ]
+        }
+      },
+      {
+        "did:sov:idunion:2GMSLg2A8JXcdYVsPC4Jui": {
+          "valid": true
+        }
+      },
+      {
+        "did:sov:idunion:test:BDrEcHc8Tb4Lb2VyQZWEDE": {
+          "valid": true
+        }
+      },
+      {
+        "did:sov:indicio:test:5DiMymoHmgfCB2H2WbM7ZL": {
+          "valid": true
+        }
+      }
+    ]
+  },
+  "did:indy": {
+    "status": "partially compliant",
+    "identifiers": [
+      {
+        "did:indy:sovrin:WRfXPg8dantKVubE3HX8pw": {
+          "valid": true
+        }
+      },
+      {
+        "did:indy:sovrin:builder:VbPQNHsvoLZdaNU7fTBeFx": {
+          "valid": true
+        }
+      },
+      {
+        "did:indy:sovrin:staging:6cgbu8ZPoWTnR5Rv5JcSMB": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "serviceEndpoint",
+              "error": "there must be one 'serviceEndpoint' in 'service'"
+            }
+          ],
+          "infos": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:indy:idunion:2GMSLg2A8JXcdYVsPC4Jui": {
+          "valid": true
+        }
+      },
+      {
+        "did:indy:idunion:test:BDrEcHc8Tb4Lb2VyQZWEDE": {
+          "valid": true
+        }
+      },
+      {
+        "did:indy:indicio:test:5DiMymoHmgfCB2H2WbM7ZL": {
+          "valid": false,
+          "error": "404 Not Found (404)"
+        }
+      }
+    ]
+  },
+  "did:v1": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:v1:nym:z6Mkmpe2DyE4NsDiAb58d75hpi1BjqbH6wYMschUkjWDEEuR": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:v1:test:nym:z6MkgF4uJbLMoUin2uKaBf4Jb1F7SHzuALE8Ldq8FPPpHE9t": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:v1:test:nym:z6MkmWLiAt5FtfwgFJwMDGS1GiFn1KpUXsd7bn1v2hLyXvud": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:stack": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:stack:v0:16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg-0": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:stack:v0:16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg-0: 500 Server Error (Driver reported for did:stack:v0:16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg-0: Cannot retrieve names owned by address `16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg`: HTTP/1.1 404 Not Found)"
+        }
+      }
+    ]
+  },
+  "did:web": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:web:did.actor:alice": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'http://w3id.org/security/suites/x25519-2019/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:web:did.actor:bob": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:web:did.actor:carol": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'http://w3id.org/security/suites/x25519-2019/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:web:did.actor:mike": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/jws-2020/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:web:identity.foundation": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:ethr": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ethr:0x3b0BC51Ab9De1e5B7B6E34E5b960285805C41736": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:0x1:0x3b0BC51Ab9De1e5B7B6E34E5b960285805C41736": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:0x1:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:goerli:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:0x5:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:rsk:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:0x1e:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:ewc:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ethr:volta:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:ens": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ens:vitalik.eth": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ],
+          "infos": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1recovery-2020'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ens:goerli:whatever.eth": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ],
+          "infos": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'http://w3id.org/security/suites/x25519-2019/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1recovery-2020'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:eosio": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:eosio:eos:eoscanadacom": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:eosio:4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11:caleosblocks": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:nacl": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:jolo": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:jolo:e76fb4b4900e43891f613066b9afca366c6d22f7d87fc9f78a91515be24dfb21": {
+          "error": "no response"
+        }
+      }
+    ]
+  },
+  "did:hcr": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:hcr:0f674e7e-4b49-4898-85f6-96176c1e30de": {
+          "valid": false,
+          "error": "404 Not Found (404 page not found\n)"
+        }
+      }
+    ]
+  },
+  "did:elem": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:elem:ropsten:EiCtwD11AV9e1oISQRHnMJsBC3OBdYDmx8xeKeASrKaw6A": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:elem:ropsten:EiCtwD11AV9e1oISQRHnMJsBC3OBdYDmx8xeKeASrKaw6A: 503 Service Unavailable (Service Unavailable)"
+        }
+      }
+    ]
+  },
+  "did:github": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:github:gjgd": {
+          "valid": false,
+          "error": "404 Not Found (\n<!doctype html>\n<html>\n  <head>\n    <title>Site Not Found</title>\n    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <style>\n\n      body {\n        margin: 0 auto;\n        margin-top: 48px;\n        max-width: 616px;\n        padding: 0 16px;\n        font-family: 'Roboto', 'Helvetica Neue', sans-serif;\n        font-size: 16px;\n        line-height: 24px;\n        color: rgba(0,0,0,0.87);\n      }\n      h1, h2, h3 {\n        font-family: 'Roboto', 'Helvetica Neue', sans-serif;\n        font-weight: 300;\n      }\n      h1 {\n        margin: 24px 0 16px 0;\n        padding: 0 0 16px 0;\n        border-bottom: 1px solid rgba(0,0,0,0.1);\n        font-size: 32px;\n        line-height: 36px;\n      }\n      h2 {\n        margin: 24px 0 16px 0;\n        padding: 0;\n        font-size: 20px;\n        line-height: 32px;\n        color: rgba(0,0,0,0.54);\n      }\n      p {\n        margin: 0;\n        margin-bottom: 16px;\n      }\n      ol {\n        margin: 0;\n\n      }\n      ol li {\n        margin: 0;\n        line-height: 24px;\n        padding-left: 12px;\n      }\n      a {\n        color: #039BE5;\n        text-decoration: underline;\n      }\n      a:hover {\n        text-decoration: underline;\n      }\n      code {\n        display: inline-block;\n        padding: 3px 4px;\n        background-color: #ECEFF1;\n        border-radius: 3px;\n        font-family: 'Roboto Mono',\"Liberation Mono\",Courier,monospace;\n        font-size: 14px;\n        line-height: 1;\n      }\n      .logo {\n        display: block;\n        text-align: center;\n        margin-top: 48px;\n        margin-bottom: 24px;\n      }\n      img {\n        width: 220px;\n      }\n      @media screen and (max-width: 616px) {\n        body {\n         margin-top: 24px;\n        }\n\n        .logo  {\n          margin: 0;\n        }\n      }\n    </style>\n  </head>\n  <body>\n\n\t\t<h1>Site Not Found</h1>\n\t\t<h2>Why am I seeing this?</h2>\n\t\t<p>\n\t\t\tThere are a few potential reasons:\n\t\t</p>\n\t\t<ol>\n\t\t\t<li>You haven't deployed an app yet.</li>\n\t\t\t<li>You may have deployed an empty directory.</li>\n\t\t\t<li>This is a custom domain, but we haven't finished setting it up yet.</li>\n\t\t</ol>\n\t\t<h2>How can I deploy my first app?</h2>\n\t\t<p>Refer to our <a href=\"https://firebase.google.com/docs/hosting/\">hosting documentation</a> to get started.</p>\n\t\n    <a class=\"logo\" href=\"https://firebase.google.com\">\n      <img src=\"data:image/png;base64,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\"/>\n    </a>\n  </body>\n</html>\n)"
+        }
+      }
+    ]
+  },
+  "did:ccp": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ccp:ceNobbK6Me9F5zwyE3MKY88QZLw": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "id",
+              "error": "there must be one 'id' in 'service'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:ccp:3CzQLF3qfFVQ1CjGVzVRZaFXrjAd": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "id",
+              "error": "there must be one 'id' in 'service'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:ont": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ont:AN5g6gz9EoQ3sCNu7514GEghZurrktCMiH": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:kilt": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:kilt:4rNTX3ihuxyWkB7wG3oLgUWSBLa2gva1NBKJsBFm7jJZUYfc": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:kilt:light:004pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      },
+      {
+        "did:kilt:light:004pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy:z14mMLbhZGB6YYU7ud2eFvUiHz3Mwo6UdttffCxB5s4hB3pxV2UgTQrgTyV6MZ8FAvqqKZQpxsJTFRYHzYhjzDUbxMtyxQtTrBu4F9YZx99AuEHuNSPCCd8RqpLeczkuDTGMP7eBDmmNbPbiXhKv5hb6ibYPCpZjUtjPBDqUQ1wXmBv3": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'http://w3id.org/security/suites/x25519-2019/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:factom": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:factom:testnet:6aa7d4afe4932885b5b6e93accb5f4f6c14bd1827733e05e3324ae392c0b2764": {
+          "valid": false,
+          "error": "Uniresolver cannot resolve did:factom:testnet:6aa7d4afe4932885b5b6e93accb5f4f6c14bd1827733e05e3324ae392c0b2764"
+        }
+      },
+      {
+        "did:factom:testnet:c2d5aa15943c93db313f140e7ed87ec9891d02acbde748932db583aa3080af08": {
+          "valid": false,
+          "error": "Uniresolver cannot resolve did:factom:testnet:c2d5aa15943c93db313f140e7ed87ec9891d02acbde748932db583aa3080af08"
+        }
+      }
+    ]
+  },
+  "did:io": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:io:0x476c81C27036D05cB5ebfe30ae58C23351a61C4A": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:bba": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:bba:t:45e6df15dc0a7d91dcccd24fda3b52c3983a214fb0eed0938321c11ec99403cf": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/2018/credentials/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:bba:47ef0798566073ea302b8178943aaa83f227614d6f36a4d2bcd92993bbed6044": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:schema": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:schema:public-ipfs:json-schema:Qma2beXKwZeiUXcaRaQKwbBV1TqyiJnsMTYExUTdQue43J": {
+          "valid": false,
+          "error": "404 Not Found ({\"statusCode\":404,\"message\":\"Not Found\"})"
+        }
+      },
+      {
+        "did:schema:evan-ipfs:json-schema:Qma2beXKwZeiUXcaRaQKwbBV1TqyiJnsMTYExUTdQue43J": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:ion": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ion:EiClkZMDxPKqC9c-umQfTkR8vvZ9JPhl_xLDI9Nfk38w5w": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:ace": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ace:0xf81c16a78b257c10fddf87ed4324d433317169a005ddf36a3a1ba937ba9788e3": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/2018/credentials/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:gatc": {
+    "status": "partially compliant",
+    "identifiers": [
+      {
+        "did:gatc:2xtSori9UQZdTqzxrkp7zqKM4Kj5B4C7": {
+          "valid": true
+        }
+      },
+      {
+        "did:gatc:acYseLtTEVeqF8oBhJEejbCVHJ8auVupaRuo6gw4hmXjcc77uCKqyM3imEJH": {
+          "valid": true
+        }
+      },
+      {
+        "did:gatc:MDU2OGVjYTViNGUzYmM2OGJiMGE1ZGM3": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:gatc:MDU2OGVjYTViNGUzYmM2OGJiMGE1ZGM3: 400 Bad Request ({\"message\":\"DID is not available\"}\n)"
+        }
+      }
+    ]
+  },
+  "did:icon": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:icon:01:64aa0a2a479cb47afbf2d18d6f9f216bcdcbecdda27ccba3": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:vaa": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:vaa:3wJVWDQWtDFx27FqvSqyo5xsTsxC": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/2018/credentials/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:unisot": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:unisot:test:n1aAmTXAg4o44Z9k8YCQncEY91r3TV7WU4": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:sol": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:sol:devnet:2eK2DKs6vdzTEoj842Gfcs6DdtffPpw1iF6JbzQL4TuK": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:lit": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:lit:AEZ87t1bi5bRxmVh3ksMUi": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:lit:AEZ87t1bi5bRxmVh3ksMUi: 400 Bad Request ({\"message\":\"Can not found did document\",\"code\":400,\"path\":\"/1.0/identifiers/did:lit:AEZ87t1bi5bRxmVh3ksMUi\",\"method\":\"GET\",\"error\":\"Can not found did document\"})"
+        }
+      }
+    ]
+  },
+  "did:ebsi": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:ebsi:zeq8HUiJfnbvEKyum5XYscv": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:emtrust": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:emtrust:0x242a5ac36676462bd58a": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:meta": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:meta:0000000000000000000000000000000000000000000000000000000000005e65": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:tz": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:tz:tz1YwA1FwpgLtc1G8DKbbZ6e6PTb1dQMRn5x": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      },
+      {
+        "did:tz:delphinet:tz1WvvbEGpBXGeTVbLiR6DYBe1izmgiYuZbq": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:tz:delphinet:tz1WvvbEGpBXGeTVbLiR6DYBe1izmgiYuZbq: 500 Internal Server Error (error sending request for url (https://api.delphinet.tzkt.io/v1/contracts?creator=tz1WvvbEGpBXGeTVbLiR6DYBe1izmgiYuZbq&sort=lastActivity&select=address&codeHash=1222545108): error trying to connect: dns error: failed to lookup address information: Name does not resolve)"
+        }
+      }
+    ]
+  },
+  "did:key": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:key:zQ3shokFTS3brHcDQrn82RUDfCZESWL1ZdCEJwekUDPQiYBme": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1-2019'"
+            }
+          ]
+        }
+      },
+      {
+        "did:key:zDnaerDaTF5BXEavCrfRZEk316dpbLsfPDZ3WJ5hRTPFU2169": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      },
+      {
+        "did:key:z4MXj1wBzi9jUstyPMS4jQqB6KdJaiatPkAtVtGc6bQEQEEsKTic4G7Rou3iBf9vPmT5dbkm9qsZsuVNjq8HCuW1w24nhBFGkRE4cd2Uf2tfrB3N7h4mnyPp1BF3ZttHTYv3DLUPi1zMdkULiow3M1GfXkoC6DoxDUm1jmN6GBj22SjVsr6dxezRVQc7aj9TxE7JLbMH1wh5X3kA58H3DFW8rnYMakFGbca5CB2Jf6CnGQZmL7o5uJAdTwXfy2iiiyPxXEGerMhHwhjTA1mKYobyk2CpeEcmvynADfNZ5MBvcCS7m3XkFCMNUYBS9NQ3fze6vMSUPsNa6GVYmKx2x6JrdEjCk3qRMMmyjnjCMfR4pXbRMZa3i": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/jws-2020/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:pkh": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:pkh:tz:tz2BFTyPeYRzxd5aiBchbXN3WCZhx7BqbMBq": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1recovery-2020'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:orb": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:orb:hl:uEiBuxTFn4L_Hn8KsOWo8e9kqWP38MThBaToB_5yV3c5QTg:uoQ-BeEJpcGZzOi8vYmFma3JlaWRveXV5d3B5Zjd5NnA0Zmxiem5pNmh4d2prbGQ2N3ltanlpZnV0dWFwN3RzazUzdHNxank:EiD_igS1OSEftg5BGfisJGOS1rgcx5AkQhX0h1B4dHTUYA": {
+          "error": "no response"
+        }
+      }
+    ]
+  },
+  "did:oyd": {
+    "status": "compliant",
+    "identifiers": [
+      {
+        "did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh": {
+          "valid": true
+        }
+      },
+      {
+        "did:oyd:zQmNauTUUdkpi5TcrTZ2524SKM8dJAzuuw4xfW13iHrtY1W%40did2.data-container.net": {
+          "valid": true
+        }
+      }
+    ]
+  },
+  "did:moncon": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:moncon:z6MkfrVYbLejh9Hv7Qmx4B2P681wBfPFkcHkbUCkgk1Q8LoA": {
+          "valid": false,
+          "error": "Driver cannot retrieve resolve result for did:moncon:z6MkfrVYbLejh9Hv7Qmx4B2P681wBfPFkcHkbUCkgk1Q8LoA from https://did.driver.moncon.co/1.0/identifiers/did:moncon:z6MkfrVYbLejh9Hv7Qmx4B2P681wBfPFkcHkbUCkgk1Q8LoA: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target"
+        }
+      }
+    ]
+  },
+  "did:dock": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:dock:5CxUdCGtopZEJhdv6kfLBZ22PMZX7UK8mdcHbTVw2nw6MVZH": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      },
+      {
+        "did:dock:5CDsD8HZa6TeSfgmMcxAkbSXYWeob4jFQmtU6sxr4XWTZzUA": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:mydata": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:mydata:z6MkjNiGktLUrNrwMW6obMR85UsjYmLPFmcXc9qaiAGqPaJT": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:mydata:z6MkjNiGktLUrNrwMW6obMR85UsjYmLPFmcXc9qaiAGqPaJT: 400 Bad Request (invalid input!)"
+        }
+      },
+      {
+        "did:mydata:z6MkscL1kQFhsAQdmXWVQrT6d8AiSwupTxshsreQnjhjVBzu": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:mydata:z6MkscL1kQFhsAQdmXWVQrT6d8AiSwupTxshsreQnjhjVBzu: 400 Bad Request (invalid input!)"
+        }
+      }
+    ]
+  },
+  "did:dns": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:dns:danubetech.com": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:everscale": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:everscale:47325e80e3cef5922d3a3583ae5c405ded7bda781cb069f2bc932a6c3d6ec62e": {
+          "error": "no response"
+        }
+      },
+      {
+        "did:everscale:mainnet:47325e80e3cef5922d3a3583ae5c405ded7bda781cb069f2bc932a6c3d6ec62e": {
+          "error": "no response"
+        }
+      },
+      {
+        "did:everscale:testnet:d760f69f830dfa0668f2e7923392217589ec8d62dcb90f2c06656665dba7fb4d": {
+          "error": "no response"
+        }
+      }
+    ]
+  },
+  "did:ala": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:ala:quor:redT:706b3e4611a855b8b1267c4e9f0c77124af003fe": {
+          "error": "no response"
+        }
+      },
+      {
+        "did:ala:quor:redT:3729a1872356dd5c5ac377c85d539fe63cb561d8": {
+          "error": "no response"
+        }
+      },
+      {
+        "did:ala:quor:redT:ec27f358fd0d11d8934ceb51305622ae79b6ad15": {
+          "error": "no response"
+        }
+      }
+    ]
+  },
+  "did:cheqd": {
+    "status": "compliant",
+    "identifiers": [
+      {
+        "did:cheqd:mainnet:Ps1ysXP2Ae6GBfxNhNQNKN": {
+          "valid": true
+        }
+      },
+      {
+        "did:cheqd:testnet:55dbc8bf-fba3-4117-855c-1e0dc1d3bb47": {
+          "valid": true
+        }
+      }
+    ]
+  },
+  "did:com": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:com:1l6zglh8pvcrjtahsvds2qmfpn0hv83vn8f9cf3": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      },
+      {
+        "did:com:17rhmdzlv0zjuahw4mvpfhf3u5tuwyjhr4m06dr": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:dyne": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:dyne:controller:DwPLgTPBjVwDqoLQV8gbuCiTVEHrHMPmufn8T2DZwjRQ": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ],
+          "infos": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1recovery-2020'"
+            }
+          ]
+        }
+      },
+      {
+        "did:dyne:fabchain:DwPLgTPBjVwDqoLQV8gbuCiTVEHrHMPmufn8T2DZwjRQ": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ],
+          "infos": [
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:dyne:id:nNer8S1CceT26TmBEA1u2kQSka6KTTRYMBqpwqhapQE": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/secp256k1recovery-2020'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:jwk": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:jwk:eyJraWQiOiJ1cm46aWV0ZjpwYXJhbXM6b2F1dGg6andrLXRodW1icHJpbnQ6c2hhLTI1NjpGZk1iek9qTW1RNGVmVDZrdndUSUpqZWxUcWpsMHhqRUlXUTJxb2JzUk1NIiwia3R5IjoiT0tQIiwiY3J2IjoiRWQyNTUxOSIsImFsZyI6IkVkRFNBIiwieCI6IkFOUmpIX3p4Y0tCeHNqUlBVdHpSYnA3RlNWTEtKWFE5QVBYOU1QMWo3azQifQ": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/jws-2020/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:jwk:eyJraWQiOiJ1cm46aWV0ZjpwYXJhbXM6b2F1dGg6andrLXRodW1icHJpbnQ6c2hhLTI1Njpnc0w0VTRxX1J6VFhRckpwQUNnZGkwb1lCdUV1QjNZNWZFanhDd1NPUFlBIiwia3R5IjoiRUMiLCJjcnYiOiJQLTM4NCIsImFsZyI6IkVTMzg0IiwieCI6ImEtRWV5T2hlRUNWcDJqRkdVRTNqR0RCNlAzVV80S0lyZHRzTU9RQXFQN0NBMlVvV3NERG1nOWdJUVhiOEthd0ciLCJ5Ijoib3cxWDJ6VFVRaG12elY4NnpHdGhKc0xLeDE2MmhmSmxmN1p0OTFYUnZBTzRScE4zR2RGaVl3Tmc0NXJWUmlUcSJ9": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/jws-2020/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:kscirc": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:kscirc:k12NqvVM9BX6AaMjPK1hUTUkKBWPBAUXAszTxdx7jDZPv4iqCZ1D": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      },
+      {
+        "did:kscirc:k17qQYbApdfTdxsrS77k3sbFmJCWfJf7QrvZSfMaAmq6MWpbeGs": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://w3id.org/security/suites/ed25519-2018/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:iscc": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:iscc:miagwptv4j2z57ci": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:ev": {
+    "status": "no response",
+    "identifiers": [
+      {
+        "did:ev:bmM8apgHQD8cPbwNsMSJKqkYRCDYhkK55uxR9": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:ev:bmM8apgHQD8cPbwNsMSJKqkYRCDYhkK55uxR9: 500 Internal Server Error (\"Can't resolve did: did:ev:bmM8apgHQD8cPbwNsMSJKqkYRCDYhkK55uxR9\")"
+        }
+      },
+      {
+        "did:ev:bmM8MpeJAGF2ky7YUnwgJGKxyHdCL6DGAUmEW": {
+          "valid": false,
+          "error": "Driver cannot retrieve result for did:ev:bmM8MpeJAGF2ky7YUnwgJGKxyHdCL6DGAUmEW: 500 Internal Server Error (\"Can't resolve did: did:ev:bmM8MpeJAGF2ky7YUnwgJGKxyHdCL6DGAUmEW\")"
+        }
+      }
+    ]
+  },
+  "did:iid": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:iid:3QUs61mk7a9CdCpckriQbA5emw8pubj6RMtHXP6gD66YbcungS6w2sa": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            },
+            {
+              "value": "authentication",
+              "error": "invalid 'authentication'"
+            },
+            {
+              "value": "id",
+              "error": "there must be one 'id' in 'service'"
+            },
+            {
+              "value": "type",
+              "error": "there must be one 'type' in 'service'"
+            },
+            {
+              "value": "serviceEndpoint",
+              "error": "there must be one 'serviceEndpoint' in 'service'"
+            },
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:evan": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:evan:testcore:0x126E901F6F408f5E260d95c62E7c73D9B60fd734": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "Verification Relationship",
+              "error": "missing"
+            },
+            {
+              "value": "@context",
+              "error": "add 'https://www.w3.org/ns/did/v1'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:bid": {
+    "status": "non-compliant",
+    "identifiers": [
+      {
+        "did:bid:ef214PmkhKndUcArDQPgD5J4fFVwqJFPt": {
+          "valid": false,
+          "errors": [
+            {
+              "value": "verificationMethod",
+              "error": "invalid 'verificationMethod'"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "did:algo": {
+    "status": "compliant",
+    "identifiers": [
+      {
+        "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82": {
+          "valid": true
+        }
+      }
+    ]
+  }
+}
