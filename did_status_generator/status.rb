@@ -10,10 +10,10 @@ STATUS_PARTIALLY_COMPLIANT = "partially compliant"
 STATUS_NON_COMPLIANT = "non-compliant"
 STATUS_NO_RESPONSE = "no response"
 
-
 did_source = ENV["DID_SOURCE"] || "https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml"
 did_linter = ENV["DID_LINTER"] || "https://didlint.ownyourdata.eu/api/validate/"
 did_resolver = ENV["DID_RESOLVER"] || "https://dev.uniresolver.io/1.0/identifiers/"
+http_timeout = ENV["HTTP_TIMEOUT"] || 5 rescue 5
 
 input = YAML.load(HTTParty.get(did_source)) rescue nil
 if input.nil?
@@ -29,9 +29,10 @@ end
 
 retVal = {}
 dids.each do |did|
+    ts_start = Time.now
     did_method = did.split(":")[0..1].join(":")
     begin
-        validation_response = HTTParty.get(did_linter + did, timeout: 10)
+        validation_response = HTTParty.get(did_linter + did, timeout: http_timeout)
         if validation_response.body.nil? || validation_response.body.empty?
             did_status = nil
         else
@@ -42,7 +43,10 @@ dids.each do |did|
     end
     identifier = {}
     if did_status.nil?
-        identifier[did] = {"error": "no response"}
+        identifier[did] = {
+            "error": "no response",
+            "duration": Time.now - ts_start
+        }
         if retVal[did_method].nil?
             retVal[did_method] = {
                 "status":STATUS_NO_RESPONSE,
@@ -60,11 +64,14 @@ dids.each do |did|
         end
     else
         if did_status["valid"]
-            identifier[did] = {"valid": true}
+            identifier[did] = {
+                "valid": true,
+                "duration": Time.now - ts_start
+            }
             if retVal[did_method].nil?
                 retVal[did_method] = {
                     "status":STATUS_COMPLIANT,
-                    "identifiers":[identifier]
+                    "identifiers":[identifier],
                 }.transform_keys(&:to_s)
             else
                 retVal[did_method]["identifiers"] << identifier
@@ -79,8 +86,9 @@ dids.each do |did|
             end
         else
             identifier[did] = did_status
+            identifier[did]["duration"] = Time.now - ts_start
             begin
-                resolver_response = HTTParty.get(did_resolver + did, timeout: 10).code
+                resolver_response = HTTParty.get(did_resolver + did, timeout: http_timeout).code
             rescue
                 resolver_response = 500
             end
@@ -141,7 +149,5 @@ dids.each do |did|
         end
     end
 end
-
-
 
 puts JSON.pretty_generate(retVal)

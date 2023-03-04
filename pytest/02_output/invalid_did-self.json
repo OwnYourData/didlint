@@ -1,1 +1,1 @@
-{"valid":false,"errors":[{"value":"authentication","error":"invalid"}],"infos":[{"value":"@context","message":"add 'https://www.w3.org/ns/did/v1'"},{"value":"@context","message":"add 'https://w3id.org/security/suites/jws-2020/v1'"}]}
+{"valid":false,"errors":[{"value":"authentication","error":"invalid 'authentication'"}],"infos":[{"value":"@context","message":"add 'https://www.w3.org/ns/did/v1'"},{"value":"@context","message":"add 'https://w3id.org/security/suites/jws-2020/v1'"}]}

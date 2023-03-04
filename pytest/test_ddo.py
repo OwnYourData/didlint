@@ -13,6 +13,7 @@ url = os.getenv('URL') or "https://didlint.ownyourdata.eu"
 # 00 - admin
 # 01 - DIDs
 # 02 - DID Documents
+# 03 - JSON-LD context handling
 
 # 02 validate DID Documents
 cwd = os.getcwd()
