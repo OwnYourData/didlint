@@ -1,0 +1,16 @@
+# DID Linter - fastest: 2.5s (valid)
+ts=$(gdate +%s%N); cat example_valid.jsonld | curl -H 'Content-Type: application/json' -d @- -X POST https://didlint.ownyourdata.eu/api/validate; echo "$((($(gdate +%s%N) - $ts)/1000000)) milliseconds"
+
+# local soya-web-cli (x86) - fastest: 1.0s (valid)
+# docker run -d -p 8080:8080 --name soya_web_cli oydeu/soya-web-cli
+ts=$(gdate +%s%N); cat example_valid.jsonld | ~/dev/didlint/script/prep.sh | curl -H 'Content-Type: application/json' -d @- -X POST http://localhost:8080/api/v1/validate/Did; echo "$((($(gdate +%s%N) - $ts)/1000000)) milliseconds"
+
+# local soya-web-cli (arm) - fastest: 1.0s (valid)
+# docker run -d -p 8081:8080 --name soya_web_cli_arm oydeu/soya-web-cli:arm64v8
+ts=$(gdate +%s%N); cat example_valid.jsonld | ~/dev/didlint/script/prep.sh | curl -H 'Content-Type: application/json' -d @- -X POST http://localhost:8081/api/v1/validate/Did; echo "$((($(gdate +%s%N) - $ts)/1000000)) milliseconds"
+
+# online soya-web-cli - fastest: 0.5s (valid)
+ts=$(gdate +%s%N); cat example_valid.jsonld | ~/dev/didlint/script/prep.sh | curl -H 'Content-Type: application/json' -d @- -X POST https://soya-web-cli.ownyourdata.eu/api/v1/validate/Did; echo "$((($(gdate +%s%N) - $ts)/1000000)) milliseconds"
+
+# commandline - fastest: 0.7s (valid)
+ts=$(gdate +%s%N); cat example_valid.jsonld| ~/dev/didlint/script/prep.sh | soya validate Did; echo "$((($(gdate +%s%N) - $ts)/1000000)) milliseconds"

@@ -1,0 +1,110 @@
+invalid (Driver: esolve problem for did ...) - did:btcr:xz35-jznz-q9yu-ply
+invalid (Driver: esolve problem for did ...) - did:btcr:xkrn-xz7q-qsye-28p
+invalid (Driver: esolve problem for did ...) - did:btcr:x705-jznz-q3nl-srs
+invalid ( id: there must be one 'id' in 'service'  ) - did:sov:WRfXPg8dantKVubE3HX8pw
+valid - did:sov:builder:VbPQNHsvoLZdaNU7fTBeFx
+invalid ( id: there must be one 'id' in 'service'  ) - did:sov:staging:6cgbu8ZPoWTnR5Rv5JcSMB
+valid - did:sov:idunion:2GMSLg2A8JXcdYVsPC4Jui
+valid - did:sov:idunion:test:BDrEcHc8Tb4Lb2VyQZWEDE
+valid - did:sov:indicio:test:5DiMymoHmgfCB2H2WbM7ZL
+valid - did:indy:sovrin:WRfXPg8dantKVubE3HX8pw
+valid - did:indy:sovrin:builder:VbPQNHsvoLZdaNU7fTBeFx
+invalid ( serviceEndpoint: there must be one 'serviceEndpoint' in 'service'  ) - did:indy:sovrin:staging:6cgbu8ZPoWTnR5Rv5JcSMB
+valid - did:indy:idunion:2GMSLg2A8JXcdYVsPC4Jui
+valid - did:indy:idunion:test:BDrEcHc8Tb4Lb2VyQZWEDE
+invalid (404 Not Found (404) ...) - did:indy:indicio:test:5DiMymoHmgfCB2H2WbM7ZL
+invalid ( @context: add 'https://www.w3.org/ns/did/v1'  ) - did:v1:nym:z6Mkmpe2DyE4NsDiAb58d75hpi1BjqbH6wYMschUkjWDEEuR
+invalid ( @context: add 'https://www.w3.org/ns/did/v1'  ) - did:v1:test:nym:z6MkgF4uJbLMoUin2uKaBf4Jb1F7SHzuALE8Ldq8FPPpHE9t
+invalid ( @context: add 'https://www.w3.org/ns/did/v1'  ) - did:v1:test:nym:z6MkmWLiAt5FtfwgFJwMDGS1GiFn1KpUXsd7bn1v2hLyXvud
+invalid (Driver cannot retrieve result  ...) - did:stack:v0:16EMaNw3pkn3v6f2BgnSSs53zAKH4Q8YJg-0
+invalid ( @context: add 'http://w3id.org/security/suites/x25519-2019/v1'  ) - did:web:did.actor:alice
+invalid ( Verification Relationship: missing  ) - did:web:did.actor:bob
+invalid ( Verification Relationship: missing  ) - did:web:did.actor:carol
+invalid ( @context: add 'https://w3id.org/security/suites/jws-2020/v1'  ) - did:web:did.actor:mike
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:0x3b0BC51Ab9De1e5B7B6E34E5b960285805C41736
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:0x1:0x3b0BC51Ab9De1e5B7B6E34E5b960285805C41736
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:0x1:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:goerli:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:0x5:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:rsk:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:0x1e:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:ewc:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ethr:volta:0x03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ens:vitalik.eth
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ens:goerli:whatever.eth
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:eosio:eos:eoscanadacom
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:eosio:4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11:caleosblocks
+invalid ( authentication: invalid 'authentication'  ) - did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI
+invalid (time out ...) - did:jolo:e76fb4b4900e43891f613066b9afca366c6d22f7d87fc9f78a91515be24dfb21
+invalid (404 Not Found (404 page not fo ) ...) - did:hcr:0f674e7e-4b49-4898-85f6-96176c1e30de
+invalid (Driver cannot retrieve result  ...) - did:elem:ropsten:EiCtwD11AV9e1oISQRHnMJsBC3OBdYDmx8xeKeASrKaw6A
+invalid (404 Not Found ( ...) - did:github:gjgd
+invalid ( authentication: invalid 'authentication'  ) - did:ccp:ceNobbK6Me9F5zwyE3MKY88QZLw
+invalid ( authentication: invalid 'authentication'  ) - did:ccp:3CzQLF3qfFVQ1CjGVzVRZaFXrjAd
+invalid ( id: there must be one 'id' in 'service'  ) - did:work:2UUHQCd4psvkPLZGnWY33L
+invalid ( Verification Relationship: missing  ) - did:ont:AN5g6gz9EoQ3sCNu7514GEghZurrktCMiH
+invalid ( @context: add 'https://w3id.org/security/suites/ed25519-2018/v1'  ) - did:kilt:4rNTX3ihuxyWkB7wG3oLgUWSBLa2gva1NBKJsBFm7jJZUYfc
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:kilt:light:004pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:kilt:light:004pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy:z14mMLbhZGB6YYU7ud2eFvUiHz3Mwo6UdttffCxB5s4hB3pxV2UgTQrgTyV6MZ8FAvqqKZQpxsJTFRYHzYhjzDUbxMtyxQtTrBu4F9YZx99AuEHuNSPCCd8RqpLeczkuDTGMP7eBDmmNbPbiXhKv5hb6ibYPCpZjUtjPBDqUQ1wXmBv3
+invalid (Uniresolver cannot resolve did ...) - did:factom:testnet:6aa7d4afe4932885b5b6e93accb5f4f6c14bd1827733e05e3324ae392c0b2764
+invalid (Uniresolver cannot resolve did ...) - did:factom:testnet:c2d5aa15943c93db313f140e7ed87ec9891d02acbde748932db583aa3080af08
+invalid ( authentication: invalid 'authentication'  ) - did:io:0x476c81C27036D05cB5ebfe30ae58C23351a61C4A
+invalid ( authentication: invalid 'authentication'  ) - did:bba:t:45e6df15dc0a7d91dcccd24fda3b52c3983a214fb0eed0938321c11ec99403cf
+invalid ( Verification Relationship: missing  ) - did:bba:47ef0798566073ea302b8178943aaa83f227614d6f36a4d2bcd92993bbed6044
+invalid (404 Not Found ({"statusCode":4 ...) - did:schema:public-ipfs:json-schema:Qma2beXKwZeiUXcaRaQKwbBV1TqyiJnsMTYExUTdQue43J
+invalid ( Verification Relationship: missing  ) - did:schema:evan-ipfs:json-schema:Qma2beXKwZeiUXcaRaQKwbBV1TqyiJnsMTYExUTdQue43J
+invalid ( @context: add 'https://w3id.org/security/suites/secp256k1-2019'  ) - did:ion:EiClkZMDxPKqC9c-umQfTkR8vvZ9JPhl_xLDI9Nfk38w5w
+invalid ( Verification Relationship: missing  ) - did:ace:0xf81c16a78b257c10fddf87ed4324d433317169a005ddf36a3a1ba937ba9788e3
+valid - did:gatc:2xtSori9UQZdTqzxrkp7zqKM4Kj5B4C7
+valid - did:gatc:acYseLtTEVeqF8oBhJEejbCVHJ8auVupaRuo6gw4hmXjcc77uCKqyM3imEJH
+invalid (Driver cannot retrieve result  ) ...) - did:gatc:MDU2OGVjYTViNGUzYmM2OGJiMGE1ZGM3
+invalid ( authentication: invalid 'authentication'  ) - did:icon:01:64aa0a2a479cb47afbf2d18d6f9f216bcdcbecdda27ccba3
+invalid ( Verification Relationship: missing  ) - did:vaa:3wJVWDQWtDFx27FqvSqyo5xsTsxC
+invalid ( Verification Relationship: missing  ) - did:unisot:test:n1aAmTXAg4o44Z9k8YCQncEY91r3TV7WU4
+invalid ( @context: add 'https://www.w3.org/ns/did/v1'  ) - did:sol:devnet:2eK2DKs6vdzTEoj842Gfcs6DdtffPpw1iF6JbzQL4TuK
+invalid (Driver cannot retrieve result  ...) - did:lit:AEZ87t1bi5bRxmVh3ksMUi
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:ebsi:zeq8HUiJfnbvEKyum5XYscv
+invalid ( Verification Relationship: missing  ) - did:emtrust:0x242a5ac36676462bd58a
+invalid ( Verification Relationship: missing  ) - did:meta:0000000000000000000000000000000000000000000000000000000000005e65
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:tz:tz1YwA1FwpgLtc1G8DKbbZ6e6PTb1dQMRn5x
+invalid (Driver cannot retrieve result  ...) - did:tz:delphinet:tz1WvvbEGpBXGeTVbLiR6DYBe1izmgiYuZbq
+invalid ( Verification Relationship: missing  ) - did:web:identity.foundation
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH
+invalid ( @context: add 'https://w3id.org/security/suites/secp256k1-2019'  ) - did:key:zQ3shokFTS3brHcDQrn82RUDfCZESWL1ZdCEJwekUDPQiYBme
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:key:zDnaerDaTF5BXEavCrfRZEk316dpbLsfPDZ3WJ5hRTPFU2169
+invalid ( @context: add 'https://w3id.org/security/suites/jws-2020/v1'  ) - did:key:z4MXj1wBzi9jUstyPMS4jQqB6KdJaiatPkAtVtGc6bQEQEEsKTic4G7Rou3iBf9vPmT5dbkm9qsZsuVNjq8HCuW1w24nhBFGkRE4cd2Uf2tfrB3N7h4mnyPp1BF3ZttHTYv3DLUPi1zMdkULiow3M1GfXkoC6DoxDUm1jmN6GBj22SjVsr6dxezRVQc7aj9TxE7JLbMH1wh5X3kA58H3DFW8rnYMakFGbca5CB2Jf6CnGQZmL7o5uJAdTwXfy2iiiyPxXEGerMhHwhjTA1mKYobyk2CpeEcmvynADfNZ5MBvcCS7m3XkFCMNUYBS9NQ3fze6vMSUPsNa6GVYmKx2x6JrdEjCk3qRMMmyjnjCMfR4pXbRMZa3i
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:pkh:tz:tz2BFTyPeYRzxd5aiBchbXN3WCZhx7BqbMBq
+invalid (time out ...) - did:orb:hl:uEiBuxTFn4L_Hn8KsOWo8e9kqWP38MThBaToB_5yV3c5QTg:uoQ-BeEJpcGZzOi8vYmFma3JlaWRveXV5d3B5Zjd5NnA0Zmxiem5pNmh4d2prbGQ2N3ltanlpZnV0dWFwN3RzazUzdHNxank:EiD_igS1OSEftg5BGfisJGOS1rgcx5AkQhX0h1B4dHTUYA
+valid - did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh
+valid - did:oyd:zQmNauTUUdkpi5TcrTZ2524SKM8dJAzuuw4xfW13iHrtY1W%40did2.data-container.net
+invalid (Driver cannot retrieve resolve ...) - did:moncon:z6MkfrVYbLejh9Hv7Qmx4B2P681wBfPFkcHkbUCkgk1Q8LoA
+invalid ( Verification Relationship: missing  ) - did:dock:5CxUdCGtopZEJhdv6kfLBZ22PMZX7UK8mdcHbTVw2nw6MVZH
+invalid ( Verification Relationship: missing  ) - did:dock:5CDsD8HZa6TeSfgmMcxAkbSXYWeob4jFQmtU6sxr4XWTZzUA
+invalid (Driver cannot retrieve result  ...) - did:mydata:z6MkjNiGktLUrNrwMW6obMR85UsjYmLPFmcXc9qaiAGqPaJT
+invalid (Driver cannot retrieve result  ...) - did:mydata:z6MkscL1kQFhsAQdmXWVQrT6d8AiSwupTxshsreQnjhjVBzu
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:dns:danubetech.com
+invalid (time out ...) - did:everscale:47325e80e3cef5922d3a3583ae5c405ded7bda781cb069f2bc932a6c3d6ec62e
+invalid (time out ...) - did:everscale:mainnet:47325e80e3cef5922d3a3583ae5c405ded7bda781cb069f2bc932a6c3d6ec62e
+invalid (time out ...) - did:everscale:testnet:d760f69f830dfa0668f2e7923392217589ec8d62dcb90f2c06656665dba7fb4d
+invalid (invalid Uniresolver response ...) - did:ala:quor:redT:706b3e4611a855b8b1267c4e9f0c77124af003fe
+invalid (time out ...) - did:ala:quor:redT:3729a1872356dd5c5ac377c85d539fe63cb561d8
+invalid (time out ...) - did:ala:quor:redT:ec27f358fd0d11d8934ceb51305622ae79b6ad15
+invalid ( @context: add 'https://w3id.org/security/suites/ed25519-2020/v1'  ) - did:cheqd:mainnet:zF7rhDBfUt9d1gJPjx7s1JXfUY7oVWkY
+invalid (Uniresolver cannot resolve did ...) - did:cheqd:testnet:MTMxDQKMTMxDQKMT
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:com:1l6zglh8pvcrjtahsvds2qmfpn0hv83vn8f9cf3
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:com:17rhmdzlv0zjuahw4mvpfhf3u5tuwyjhr4m06dr
+invalid ( soya-cli: Failed to load remote context https://dyne.github.io/W3C-DID/specs/EcdsaSecp256k1_b64.json: Unsupported JSON-LD media type application/json  ) - did:dyne:controller:DwPLgTPBjVwDqoLQV8gbuCiTVEHrHMPmufn8T2DZwjRQ
+invalid ( Verification Relationship: missing  ) - did:dyne:fabchain:DwPLgTPBjVwDqoLQV8gbuCiTVEHrHMPmufn8T2DZwjRQ
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:dyne:id:nNer8S1CceT26TmBEA1u2kQSka6KTTRYMBqpwqhapQE
+invalid ( @context: add 'https://w3id.org/security/suites/jws-2020/v1'  ) - did:jwk:eyJraWQiOiJ1cm46aWV0ZjpwYXJhbXM6b2F1dGg6andrLXRodW1icHJpbnQ6c2hhLTI1NjpGZk1iek9qTW1RNGVmVDZrdndUSUpqZWxUcWpsMHhqRUlXUTJxb2JzUk1NIiwia3R5IjoiT0tQIiwiY3J2IjoiRWQyNTUxOSIsImFsZyI6IkVkRFNBIiwieCI6IkFOUmpIX3p4Y0tCeHNqUlBVdHpSYnA3RlNWTEtKWFE5QVBYOU1QMWo3azQifQ
+invalid ( @context: add 'https://w3id.org/security/suites/jws-2020/v1'  ) - did:jwk:eyJraWQiOiJ1cm46aWV0ZjpwYXJhbXM6b2F1dGg6andrLXRodW1icHJpbnQ6c2hhLTI1Njpnc0w0VTRxX1J6VFhRckpwQUNnZGkwb1lCdUV1QjNZNWZFanhDd1NPUFlBIiwia3R5IjoiRUMiLCJjcnYiOiJQLTM4NCIsImFsZyI6IkVTMzg0IiwieCI6ImEtRWV5T2hlRUNWcDJqRkdVRTNqR0RCNlAzVV80S0lyZHRzTU9RQXFQN0NBMlVvV3NERG1nOWdJUVhiOEthd0ciLCJ5Ijoib3cxWDJ6VFVRaG12elY4NnpHdGhKc0xLeDE2MmhmSmxmN1p0OTFYUnZBTzRScE4zR2RGaVl3Tmc0NXJWUmlUcSJ9
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:kscirc:k12NqvVM9BX6AaMjPK1hUTUkKBWPBAUXAszTxdx7jDZPv4iqCZ1D
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:kscirc:k17qQYbApdfTdxsrS77k3sbFmJCWfJf7QrvZSfMaAmq6MWpbeGs
+invalid ( Verification Relationship: missing  ) - did:iscc:miagwptv4j2z57ci
+invalid (Driver cannot retrieve result  ...) - did:ev:bmM8apgHQD8cPbwNsMSJKqkYRCDYhkK55uxR9
+invalid (Driver cannot retrieve result  ...) - did:ev:bmM8MpeJAGF2ky7YUnwgJGKxyHdCL6DGAUmEW
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:iid:3QUs61mk7a9CdCpckriQbA5emw8pubj6RMtHXP6gD66YbcungS6w2sa
+invalid ( Verification Relationship: missing  ) - did:evan:testcore:0x126E901F6F408f5E260d95c62E7c73D9B60fd734
+invalid ( verificationMethod: invalid 'verificationMethod'  ) - did:bid:ef214PmkhKndUcArDQPgD5J4fFVwqJFPt
+invalid (Uniresolver cannot resolve did ...) - did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82

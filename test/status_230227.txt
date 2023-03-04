@@ -1,0 +1,14 @@
+compliant DIDs
+did:cheqd, did:oyd
+
+partially compliant DIDs
+did:gatc, did:sov, did:indy
+
+resolved DIDs not yet compliant
+did:ace, did:bba, did:bid, did:ccp, did:com, did:dns, did:dock, did:dyne, did:emtrust, did:ens, did:eosio, did:ethr, did:evan, did:icon, did:iid, did:indy, did:io, did:ion, did:iscc, did:jwk, did:key, did:kilt, did:kscirc, did:meta, did:ont, did:pkh, did:schema, did:sol, did:sov, did:tz, did:unisot, did:v1, did:vaa, did:web
+
+DIDs from Uniresolver that cannot be resolved
+did:ala, did:btcr, did:elem, did:ev, did:everscale, did:factom, did:gatc, did:jolo, did:lit, did:mydata, did:orb, did:schema, did:stack
+
+DIDs from W3C Spec registry with no DID Documents available
+did:3, did:abt, did:aergo, did:amo, did:art, did:asset, did:bee, did:bluetoqueagent, did:bluetoquedeed, did:bluetoquenfe, did:bluetoqueproc, did:bnb, did:bryk, did:ccf, did:celo, did:corda, did:cosmos, did:cr, did:did, did:dom, did:dsrv, did:dual, did:dxd, did:echo, did:elastos, did:erc725, did:etho, did:example, did:fairx, did:future, did:gns, did:grg, did:grn, did:health, did:hedera, did:holo, did:hpass, did:hsk, did:iamx, did:ibmdc, did:id, did:infra, did:iota, did:ipid, did:is, did:iwt, did:jlinc, did:jnctn, did:keri, did:klay, did:kr, did:lac, did:life, did:meme, did:mesh, did:moac, did:monid, did:morpheus, did:near, did:next, did:nft, did:nuggets, did:nuts, did:object, did:ockam, did:omn, did:onion, did:op, did:panacea, did:peaq, did:peer, did:pid, did:pistis, did:pml, did:polygon, did:psi, did:psqr, did:ptn, did:qes, did:qui, did:ray, did:real, did:rm, did:safe, did:san, did:scid, did:self, did:selfkey, did:sideos, did:signor, did:sirius, did:snail, did:snplab, did:ssb, did:ssw, did:tangle, did:tdid, did:tls, did:trust, did:trustbloc, did:trx, did:ttm, did:twit, did:tyron, did:tys, did:unik, did:uns, did:uport, did:vaultie, did:vertu, did:vid, did:vivid, did:vtid, did:vvo, did:wlk, did:work, did:zk

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # input list of DIDs
-# e.g.: curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' > dids.list
+# Linux: curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq -o json .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' > dids.list
+# MacOS: curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' > dids.list
 
 while read -r did; do
 	# response=$(curl -s https://didlint.ownyourdata.eu/api/validate/$did | jq '.valid')

@@ -51,17 +51,35 @@ module ApplicationHelper
 
     # expect json_input to be a valid JSON already formatted as string
     def soya_validate(json_input)
-        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
-        cmd = "echo '#{json_input}' | soya validate " + soya_did_dri
-        out = nil
+        soya_validation_url = "https://soya-web-cli.ownyourdata.eu/api/v1/validate/" + ENV["SOYA_DID_DRI"].to_s
+        timeout = false
+        begin
+            response = HTTParty.post(soya_validation_url, 
+                timeout: 10,
+                headers: { 'Content-Type' => 'application/json' },
+                body: json_input)
+        rescue
+            timeout = true
+        end
 
-        require 'open3'
-        Open3.popen3(cmd) {|stdin, stdout, stderr, wait_thr|
-          pid = wait_thr.pid # pid of the started process.
-          out = stdout.gets(nil)
-          exit_status = wait_thr.value # Process::Status object returned.
-        }
-        return parse_soya_output(out)
+        if timeout or response.nil? or response.code != 200
+            return parse_soya_output({})
+        else
+            return parse_soya_output(response.parsed_response["data"].to_json)
+        end
+
+        # Command line
+        # soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        # cmd = "echo '#{json_input}' | soya validate " + soya_did_dri
+        # out = nil
+
+        # require 'open3'
+        # Open3.popen3(cmd) {|stdin, stdout, stderr, wait_thr|
+        #   pid = wait_thr.pid # pid of the started process.
+        #   out = stdout.gets(nil)
+        #   exit_status = wait_thr.value # Process::Status object returned.
+        # }
+        # return parse_soya_output(out)
 
     end
 
