@@ -9,7 +9,7 @@
                             <a role="button" data-toggle="collapse" 
                                 data-parent="#accordion" href="#collapseOne" 
                                 aria-expanded="true" aria-controls="collapseOne">
-                                    About Decentralised Identifiers (DIDs)
+                                    What is a Decentralised Identifier (DID)?
                             </a>
                         </h2>
                     </div>
@@ -27,7 +27,7 @@
                             <a role="button" data-toggle="collapse" 
                                 data-parent="#accordion" href="#collapseTwo" 
                                 aria-expanded="true" aria-controls="collapseTwo">
-                                    About Semantic Overlay Architecture (SOyA)
+                                    What is the Semantic Overlay Architecture (SOyA)?
                             </a>
                         </h2>
                     </div>
@@ -40,30 +40,12 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="panel_3">
-                        <h2 class="panel-title">
-                            <a role="button" data-toggle="collapse" 
-                                data-parent="#accordion" href="#collapseThree" 
-                                aria-expanded="true" aria-controls="collapseThree">
-                                    Provide Feedback
-                            </a>
-                        </h2>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse" 
-                            role="tabpanel" aria-labelledby="panel_3">
-                        <div class="panel-body">
-                            <p>This service is a Proof-of-Concept to demonstrate the <a href="https://ownyourdata.github.io/soya/#validation"  target="_blank">validation overlay capabilities of SOyA</a>, i.e., show-case an easy but still <a href="https://soya.ownyourdata.eu/Did/yaml" target="_blank">machine-readable format to describe DID Documents</a> and use the built-in mechanisms of SOyA to either validate conformance or list identified violations.</p>
-                            <p>The current <a href="https://soya.ownyourdata.eu/Did/yaml" target="_blank">DID Document SOyA structure</a> is most certainly not a complete and correct representation of the <a href="https://www.w3.org/TR/did-core/" target="_blank">DID Core Spec</a> and we would like to encourage everyone to <a href="https://github.com/OwnYourData/didlint/issues" target="_blank">report issues</a> or even <a href="https://github.com/OwnYourData/didlint/pulls" target="_blank">provide pull-requests</a> on the public <a href="https://github.com/OwnYourData/didlint" target="_blank">DID Lint Github repository</a>.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="panel_4">
                         <h2 class="panel-title">
                             <a role="button" data-toggle="collapse" 
                                 data-parent="#accordion" href="#collapseFour" 
                                 aria-expanded="true" aria-controls="collapseFour">
-                                    DID Lint API
+                                    Using the DID Lint API
                             </a>
                         </h2>
                     </div>
@@ -112,6 +94,24 @@
                                 <pre>docker run -it --rm oydeu/didlint bash
 cat test/example_did_document.json | script/prep.sh | soya validate Did</pre>
                             </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panel_3">
+                        <h2 class="panel-title">
+                            <a role="button" data-toggle="collapse" 
+                                data-parent="#accordion" href="#collapseThree" 
+                                aria-expanded="true" aria-controls="collapseThree">
+                                    Provide Feedback
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" 
+                            role="tabpanel" aria-labelledby="panel_3">
+                        <div class="panel-body">
+                            <p>This service is a Proof-of-Concept to demonstrate the <a href="https://ownyourdata.github.io/soya/#validation"  target="_blank">validation overlay capabilities of SOyA</a>, i.e., show-case an easy but still <a href="https://soya.ownyourdata.eu/Did/yaml" target="_blank">machine-readable format to describe DID Documents</a> and use the built-in mechanisms of SOyA to either validate conformance or list identified violations.</p>
+                            <p>The current <a href="https://soya.ownyourdata.eu/Did/yaml" target="_blank">DID Document SOyA structure</a> is most certainly not a complete and correct representation of the <a href="https://www.w3.org/TR/did-core/" target="_blank">DID Core Spec</a> and we would like to encourage everyone to <a href="https://github.com/OwnYourData/didlint/issues" target="_blank">report issues</a> or even <a href="https://github.com/OwnYourData/didlint/pulls" target="_blank">provide pull-requests</a> on the public <a href="https://github.com/OwnYourData/didlint" target="_blank">DID Lint Github repository</a>.</p>
                         </div>
                     </div>
                 </div>

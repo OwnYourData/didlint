@@ -26,7 +26,7 @@ module Api
                 ddo = soya_prep(input.dup)
 
                 # soya validation
-                retVal = soya_validate(ddo.to_json)
+                retVal = soya_validate(ddo.to_json, input.dup.to_json)
 
                 # context validation
                 context_retVal = validate_DID_context(input.dup)
@@ -92,7 +92,7 @@ module Api
                 ddo = soya_prep(input.dup)
 
                 # validation
-                retVal = soya_validate(ddo.to_json)
+                retVal = soya_validate(ddo.to_json, input.dup.to_json).transform_keys(&:to_s)
 
                 # context validation
                 context_retVal = validate_DID_context(input.dup)
@@ -129,8 +129,12 @@ module Api
                     end
                 end
                 if !retVal["infos"].nil? && retVal["infos"].count > 0
-                    retVal["infos"].each do |e|
-                        e[:message] = e.delete(:error)
+                    if retVal["infos"].first.is_a?(String)
+                        retVal["infos"] = ["message": retVal["infos"].first.to_s]
+                    else
+                        retVal["infos"].each do |e|
+                            e[:message] = e.delete(:error)
+                        end
                     end
                 end
 

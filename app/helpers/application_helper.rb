@@ -1,4 +1,6 @@
 module ApplicationHelper
+    Hash.include CoreExtensions
+
     def soya_version
         return "0.16.9"
     end
@@ -30,8 +32,13 @@ module ApplicationHelper
             end
             ddo = JSON.parse(uniresolver_response)["didDocument"] rescue nil?
             if ddo.nil?
-                msg = JSON.parse(uniresolver_response)["didResolutionMetadata"]["errorMessage"] rescue nil
-                if msg.nil?
+                err = JSON.parse(uniresolver_response)["didResolutionMetadata"]["error"] rescue nil
+                if err.nil?
+                    msg = JSON.parse(uniresolver_response)["didResolutionMetadata"]["errorMessage"] rescue nil
+                    if msg.nil?
+                        msg = "Uniresolver cannot resolve " + did
+                    end
+                else
                     msg = "Uniresolver cannot resolve " + did
                 end
             end
@@ -50,8 +57,9 @@ module ApplicationHelper
     end
 
     # expect json_input to be a valid JSON already formatted as string
-    def soya_validate(json_input)
-        soya_validation_url = "https://soya-web-cli.ownyourdata.eu/api/v1/validate/" + ENV["SOYA_DID_DRI"].to_s
+    def soya_validate(json_input, orig_ddo)
+        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        soya_validation_url = "https://soya-web-cli.ownyourdata.eu/api/v1/validate/" + soya_did_dri.to_s
         timeout = false
         begin
             response = HTTParty.post(soya_validation_url, 
@@ -61,11 +69,32 @@ module ApplicationHelper
         rescue
             timeout = true
         end
-
         if timeout or response.nil? or response.code != 200
             return parse_soya_output({})
         else
-            return parse_soya_output(response.parsed_response["data"].to_json)
+            # check for alternative context
+            first_error_message = response["results"].first["message"].first["value"] rescue ""
+            if first_error_message.include?("invalid '")
+                jsonld_validation_url = "https://soya-web-cli.ownyourdata.eu/api/v1/validate/jsonld"
+                timeout = false
+                begin
+                    jld_response = HTTParty.post(jsonld_validation_url, 
+                        timeout: 10,
+                        headers: { 'Content-Type' => 'application/json' },
+                        body: orig_ddo)
+                rescue
+                    timeout = true
+                end
+                if jld_response.parsed_response == []
+                    vm_type = JSON.parse(orig_ddo).deep_find("type")
+                    return {"valid": true, "infos":["'" + vm_type.to_s + "' is not yet listed as Verification Method Type in the <a href='https://www.w3.org/TR/did-spec-registries/#verification-method-types'>DID Specification Registries</a>"]}
+                else
+                    return parse_soya_output(response.to_json)
+                end
+            else
+                # return parse_soya_output(response.parsed_response["data"].to_json)
+                return parse_soya_output(response.to_json)
+            end
         end
 
         # Command line
@@ -84,9 +113,9 @@ module ApplicationHelper
     end
 
     def parse_soya_output(soya_stdout)
-
         # check for plain error message
-        if soya_stdout[0,16] == "\e[31merror\e[39m:"
+        start_str = soya_stdout[0,16] rescue ""
+        if start_str == "\e[31merror\e[39m:"
             return {"valid": false, "errors": [{"value":"soya-cli", "error": soya_stdout[soya_stdout.rindex("error:")+7, soya_stdout.length].strip}]}
             exit
         end

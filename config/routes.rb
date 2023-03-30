@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     match 'home',       to: 'static_pages#home',     via: 'get'
     match '/resolve',   to: 'static_pages#resolve',  via: 'post'
     match '/validate',  to: 'static_pages#validate', via: 'post'
+    match '/validate',  to: 'static_pages#resolve_and_validate', via: 'get'
 
     # administrative
     # root 'application#home'

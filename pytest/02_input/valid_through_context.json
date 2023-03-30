@@ -1,0 +1,32 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://schema.iden3.io/core/jsonld/auth.jsonld"
+  ],
+  "id": "did:polygonid:polygon:mumbai:2qL4AhwQThPWJ8QH9mxH41CDgKj9chrHN92azh5wkx",
+  "authentication": [
+    {
+      "id": "did:polygonid:polygon:mumbai:2qL4AhwQThPWJ8QH9mxH41CDgKj9chrHN92azh5wkx?state=f3ed43e7fa950d746331b143bf16eae2dd97a1876704cbb8c620913421ea2f12",
+      "type": "Iden3StateInfo2023",
+      "blockchainAccountId": "80001:0x134B1BE34911E39A8397ec6289782989729807a4",
+      "published": true,
+      "info": {
+        "id": "did:polygonid:polygon:mumbai:2qL4AhwQThPWJ8QH9mxH41CDgKj9chrHN92azh5wkx",
+        "state": "f3ed43e7fa950d746331b143bf16eae2dd97a1876704cbb8c620913421ea2f12",
+        "replacedByState": "0000000000000000000000000000000000000000000000000000000000000000",
+        "createdAtTimestamp": "1677691329",
+        "replacedAtTimestamp": "0",
+        "createdAtBlock": "32582097",
+        "replacedAtBlock": "0"
+      },
+      "global": {
+        "root": "d5a1afd7dd885ca97493c29640c8d43bc1af1ce165186974a42ddddfdea4182d",
+        "replacedByRoot": "0000000000000000000000000000000000000000000000000000000000000000",
+        "createdAtTimestamp": "1677691329",
+        "replacedAtTimestamp": "0",
+        "createdAtBlock": "32582097",
+        "replacedAtBlock": "0"
+      }
+    }
+  ]
+}

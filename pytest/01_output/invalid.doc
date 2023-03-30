@@ -1,1 +1,1 @@
-{"valid":false,"error":"Method not supported: fake"}
+{"valid":false,"error":"Uniresolver cannot resolve did:fake:inexistent"}

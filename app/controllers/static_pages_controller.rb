@@ -12,7 +12,7 @@ class StaticPagesController < ApplicationController
                 @result = true
                 flash.now[:warning] = "Error in resolving DID Document: " + retVal.last.to_s
             else
-                @did_document = JSON.pretty_generate(retVal.first)
+                @did_document = JSON.pretty_generate(retVal.first) rescue ""
             end
         end
     end
@@ -48,7 +48,93 @@ class StaticPagesController < ApplicationController
         ddo = soya_prep(@did_document.dup)
 
         # validation
-        retVal = soya_validate(ddo.to_json)
+        retVal = soya_validate(ddo.to_json, @did_document.dup.to_json).transform_keys(&:to_s)
+
+        # context validation
+        context_retVal = validate_DID_context(@did_document.dup)
+
+        # consider JSON vs. JSON-LD representation
+        # https://www.w3.org/TR/did-core/#json
+
+        if @did_document["@context"].nil?
+            # assume JSON representation
+            retVal["infos"] = context_retVal
+
+        else
+            # assume JSON-LD representation
+            # https://www.w3.org/TR/did-core/#json-ld
+
+            # merge responses
+            if context_retVal != []
+                if retVal["errors"].nil?
+                    retVal["errors"] = context_retVal
+                else
+                    retVal["errors"] << context_retVal
+                    retVal["errors"] = retVal["errors"].flatten
+                end
+                if !retVal["errors"].nil? && retVal["errors"].count > 0
+                    retVal["valid"] = false
+                end
+            end
+        end
+
+        valid = retVal.stringify_keys["valid"] rescue nil
+        if valid.nil?
+            @result = false
+        else
+            @result = true
+            if valid
+                flash.now[:success] = "Conforms to W3C DID Spec v1.0"
+            else
+                error_text = "Error in validating DID Document:<ul>"
+                retVal.stringify_keys["errors"].each do |e|
+                    error_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
+                end unless retVal.stringify_keys["errors"].nil?
+                error_text += "</ul>"
+                flash.now[:danger] = error_text
+            end
+
+            if !retVal["infos"].nil? && retVal["infos"].count > 0
+                if retVal["infos"].first.is_a?(String)
+                    info_text = retVal["infos"].first.to_s
+                else
+                    info_text = "Consider JSON-LD representation by adding a JSON-LD Context:<ul>"
+                    retVal.stringify_keys["infos"].each do |e|
+                        info_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
+                    end unless retVal.stringify_keys["infos"].nil?
+                    info_text += "</ul>"
+                end
+                flash.now[:info] = info_text
+            end
+        end
+
+        @did_document = JSON.pretty_generate(@did_document) rescue nil?
+        render "home"
+    end
+
+    def resolve_and_validate
+        @did = params[:did].to_s
+        if @did != ""
+            retVal = did_resolve(@did)
+            if retVal.first.nil?
+                @result = true
+                flash.now[:warning] = "Error in resolving DID Document: " + retVal.last.to_s
+                render "home"
+                return
+            else
+                @did_document = retVal.first
+            end
+        else
+            flash.now[:warning] = "Missing DID"
+            render "home"
+            return
+        end
+
+        # pre-process DID Document
+        ddo = soya_prep(@did_document.dup, @did_document.dup.to_json)
+
+        # validation
+        retVal = soya_validate(ddo.to_json).transform_keys(&:to_s)
 
         # context validation
         context_retVal = validate_DID_context(@did_document.dup)
@@ -94,16 +180,21 @@ class StaticPagesController < ApplicationController
                 flash.now[:danger] = error_text
             end
             if !retVal["infos"].nil? && retVal["infos"].count > 0
-                info_text = "Consider JSON-LD representation by adding a JSON-LD Context:<ul>"
-                retVal.stringify_keys["infos"].each do |e|
-                    info_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
-                end unless retVal.stringify_keys["infos"].nil?
-                info_text += "</ul>"
+                if retVal["infos"].first.is_a?(String)
+                    info_text = retVal["infos"].first.to_s
+                else
+                    info_text = "Consider JSON-LD representation by adding a JSON-LD Context:<ul>"
+                    retVal.stringify_keys["infos"].each do |e|
+                        info_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
+                    end unless retVal.stringify_keys["infos"].nil?
+                    info_text += "</ul>"
+                end
                 flash.now[:info] = info_text
             end
         end
 
         @did_document = JSON.pretty_generate(@did_document) rescue nil?
         render "home"
+
     end
 end
