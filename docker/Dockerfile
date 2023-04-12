@@ -14,6 +14,8 @@ RUN git config --global url."https://".insteadOf git:// && \
 COPY . .
 RUN bundle install
 
+ENV allowed_hosts=${allowed_hosts}
+
 CMD ["./docker/init.sh"]
 
 EXPOSE 3000 3000
