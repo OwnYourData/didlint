@@ -50,6 +50,35 @@ curl http://localhost:3000/api/validate/did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3
 cat did_document.jsonld | curl -H 'Content-Type: application/json' -d @- -X POST http://localhost:3000/api/validate
 ```
 
+#### Deployment in a Production Environment
+
+To deploy `oydeu/didlint` in a production setting use the following environment variables:
+
+*Recommended settings:*  
+
+* `RAILS_ENV`: `production`
+* `RAILS_LOG_TO_STDOUT`: `TRUE`
+* `LANG`: `C.UTF-8`  
+
+*Site-specific Configuration:*  
+
+* `allowed_hosts`: hostname (example: didlint.onwyourdata.eu)
+* `SECRET_KEY_BASE`: randomized hexadecimal number (minimum 32 bytes)
+* `SOYA_DID_DRI`: specify the DID SOyA structure to be used for validation
+
+*External Services:*  
+* `SOYA_REPO`: repository to resolve `SOYA_DID_DRI` (default: https://soya.ownyourdata.eu)
+* `SOYA_WEB_CLI`: validation service for SOyA structures (default: https://soya-web-cli.ownyourdata.eu)
+* `UNIRESOLVER_URL`: Uniresolver instance for resolving DIDs (default: https://dev.uniresolver.io)
+
+#### Testing a Deployment
+
+The Docker image includes a set of test cases to validate a deployed instance. Run the test cases with:  
+
+ ```bash
+docker run -it --rm -w /usr/src/app/docker/pytest oydeu/didlint bash -c "export URL=https://your.deployment.com && pytest"
+ ```
+
 ### Online Service
 
 The DID Lint service is also available publicly here: https://didlint.ownyourdata.eu    

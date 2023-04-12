@@ -6,7 +6,7 @@ import requests
 import subprocess
 from pathlib import Path
 
-url = "https://didlint.ownyourdata.eu"
+url = os.getenv('URL') or "https://didlint.ownyourdata.eu"
 
 # structure
 # 00 - admin

@@ -1,6 +1,7 @@
 module ContextHelper
     def getVerificationMethodTypes(soya_dri)
-        soya_doc = HTTParty.get("https://soya.ownyourdata.eu/" + soya_dri)
+        soya_repo = ENV["SOYA_REPO"] || SOYA_REPO
+        soya_doc = HTTParty.get(soya_repo + "/" + soya_dri)
         vmts = nil
         soya_doc["@graph"].each do |doc|
             if doc["@type"] == "OverlayDidContextValidation"
@@ -9,13 +10,6 @@ module ContextHelper
             end
         end
         return vmts["constraints"]
-
-        # retVal = []
-        # vmt = {"type": "JsonWebKey2020", "context": "https://w3id.org/security/suites/jws-2020/v1"}.stringify_keys
-        # retVal << vmt
-        # vmt = {"type": "Ed25519VerificationKey2020", "context": "https://w3id.org/security/suites/ed25519-2020/v1"}.stringify_keys
-        # retVal << vmt
-        # return retVal
     end
 
     def deep_find(key, object=self, found=[])

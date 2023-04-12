@@ -1,0 +1,18 @@
+{
+  "id": "did:kilt:light:014pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy",
+  "verificationMethod": [
+    {
+      "id": "did:kilt:light:014pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy#authentication",
+      "controller": "did:kilt:light:014pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy",
+      "type": "Ed25519VerificationKey2018",
+      "publicKeyBase58": "6hwLkCsxFQWcZ2vrmDhyHXjFYJNZPfUqVdkbidW1Sts8"
+    }
+  ],
+  "authentication": [
+    "did:kilt:light:014pqDzaWi3w7TzYzGnQDyrasK6UnyNnW6JQvWRrq6r8HzNNGy#authentication"
+  ],
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://ipfs.io/ipfs/QmU7QkuTCPz7NmD5bD7Z7mQVz2UsSPaEK58B5sYnjnPRNW"
+  ]
+}
