@@ -69,22 +69,23 @@ module ApplicationHelper
         soya_validation_url = soya_web_cli + "/api/v1/validate/" + soya_did_dri.to_s
         jsonld_validation_url = soya_web_cli + "/api/v1/validate/jsonld"
 
-        at_context = JSON.parse(orig_ddo)["@context"] rescue nil
-        if !at_context.nil?
-            timeout = false
-            begin
-                jld_response = HTTParty.post(jsonld_validation_url, 
-                    timeout: 10,
-                    headers: { 'Content-Type' => 'application/json' },
-                    body: orig_ddo)
-            rescue
-                timeout = true
-            end
-            if jld_response.code != 200
-                error_message = jld_response.parsed_response["message"] rescue "invalid JSON-LD"
-                return {"valid": false, "errors": [{"value":"jsonld-validation", "error": error_message}]}
-            end
-        end
+        # skip JSON-LD validation for now
+        # at_context = JSON.parse(orig_ddo)["@context"] rescue nil
+        # if !at_context.nil?
+        #     timeout = false
+        #     begin
+        #         jld_response = HTTParty.post(jsonld_validation_url, 
+        #             timeout: 10,
+        #             headers: { 'Content-Type' => 'application/json' },
+        #             body: orig_ddo)
+        #     rescue
+        #         timeout = true
+        #     end
+        #     if jld_response.code != 200
+        #         error_message = jld_response.parsed_response["message"] rescue "invalid JSON-LD"
+        #         return {"valid": false, "errors": [{"value":"jsonld-validation", "error": error_message}]}
+        #     end
+        # end
 
         timeout = false
         begin

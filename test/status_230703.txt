@@ -1,0 +1,48 @@
+Statistics:
+
+Matching results: 79/104
+- SHACL false & JSON-Schema false: 33
+- SHACL true & JSON-Schema true: 46
+
+False positives: 19/104
+- SHACL false & JSON-Schema true: 19
+    did:web:did.actor:bob
+    did:web:did.actor:carol
+    did:ens:vitalik.eth
+    did:ens:goerli:whatever.eth
+    did:eosio:eos:eoscanadacom
+    did:eosio:4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11:caleosblocks
+    did:io:0x476c81C27036D05cB5ebfe30ae58C23351a61C4A
+    did:bba:47ef0798566073ea302b8178943aaa83f227614d6f36a4d2bcd92993bbed6044
+    did:schema:evan-ipfs:json-schema:Qma2beXKwZeiUXcaRaQKwbBV1TqyiJnsMTYExUTdQue43J
+    did:ace:0xf81c16a78b257c10fddf87ed4324d433317169a005ddf36a3a1ba937ba9788e3
+    did:vaa:3wJVWDQWtDFx27FqvSqyo5xsTsxC
+    did:unisot:test:n1aAmTXAg4o44Z9k8YCQncEY91r3TV7WU4
+    did:emtrust:0x242a5ac36676462bd58a
+    did:meta:0000000000000000000000000000000000000000000000000000000000005e65
+    did:dns:danubetech.com
+    did:kscirc:k12NqvVM9BX6AaMjPK1hUTUkKBWPBAUXAszTxdx7jDZPv4iqCZ1D
+    did:kscirc:k17qQYbApdfTdxsrS77k3sbFmJCWfJf7QrvZSfMaAmq6MWpbeGs
+    did:evan:testcore:0x126E901F6F408f5E2Power Trace60d95c62E7c73D9B60fd734
+    did:tys:4B4AbVzzcJSnCZsdX4VaKyQgHRnC
+
+Stricter than SHACL: 6/104
+- SHACL true & JSON-Schema false: 6
+    did:bba:t:45e6df15dc0a7d91dcccd24fda3b52c3983a214fb0eed0938321c11ec99403cf
+    did:sol:devnet:2eK2DKs6vdzTEoj842Gfcs6DdtffPpw1iF6JbzQL4TuK
+    did:mydata:z6MktaWPDXK7qwt9YgcGVuCFAXBvrEP3WPtxJQg37jnULXWL
+    did:mydata:z6MkjgVfx2YE7SUBZBej65E7UHSjAyMLukPvdPjPytpTy1ZM
+    did:cheqd:testnet:55dbc8bf-fba3-4117-855c-1e0dc1d3bb47
+    did:polygonid:polygon:mumbai:2qDj9EDytmvtQP1or3FxykXGEaqSA1ss479MYHDMJc
+
+https://didlint.ownyourdata.eu/api/validate_json-schema/did:mydata:z6MktaWPDXK7qwt9YgcGVuCFAXBvrEP3WPtxJQg37jnULXWL
+-> must every Verification Method be an array?
+
+JSON-LD: none passed (plain did:oyd passes)
+    https://didlint.ownyourdata.eu/api/validate_jsonld/did:oyd:zQmYc4PjcDZde9NmAb2WPFHZqt6WFdY4tSA37moJgtR3agj
+
+https://didlint.ownyourdata.eu/api/validate_jsonld/did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh
+
+https://didlint.ownyourdata.eu/api/validate_shacl/did:oyd:zQmYc4PjcDZde9NmAb2WPFHZqt6WFdY4tSA37moJgtR3agj
+https://didlint.ownyourdata.eu/api/validate_jsonld/did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82
+https://didlint.ownyourdata.eu/api/validate_json-schema/did:oyd:zQmYc4PjcDZde9NmAb2WPFHZqt6WFdY4tSA37moJgtR3agj

@@ -9,14 +9,13 @@ Rails.application.routes.draw do
             match 'validate',      to: 'validations#document', via: 'post'
             match 'resolve/:did',  to: 'validations#resolve',  via: 'get', constraints: {did: /.*/}
 
+            match '/validate_shacl/:did',       to: 'validations#did',         via: 'get', constraints: {did: /.*/}
+            match '/validate_jsonld/:did',      to: 'validations#did_jsonld',  via: 'get', constraints: {did: /.*/}
+            match '/validate_jschema/:did',     to: 'validations#did_jschema', via: 'get', constraints: {did: /.*/}
+            match '/validate_json-schema/:did', to: 'validations#did_jschema', via: 'get', constraints: {did: /.*/}
+
+
         end
-        # template for multiple versions
-        # scope "v1", module: :v1 do
-        #     match 'active',             to: 'resources#active',       via: 'get'
-        # end
-        # scope "(:version)", :version => /v2/, module: :v2 do    # default version
-        #     match 'active',             to: 'resources#active2',       via: 'get'
-        # end
     end
 
     # UI

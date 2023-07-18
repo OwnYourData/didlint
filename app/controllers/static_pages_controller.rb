@@ -329,4 +329,5 @@ class StaticPagesController < ApplicationController
         render "home"
 
     end
+
 end

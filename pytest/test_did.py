@@ -10,7 +10,7 @@ url = os.getenv('URL') or "https://didlint.ownyourdata.eu"
 
 # structure
 # 00 - admin
-# 01 - DIDs
+# 01 - DIDs <- current
 # 02 - DID Documents
 
 # 01 - validate DIDs
