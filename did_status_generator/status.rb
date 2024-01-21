@@ -15,7 +15,7 @@ did_linter = ENV["DID_LINTER"] || "https://didlint.ownyourdata.eu/api/validate/"
 did_jschema_linter = ENV["DID_JSON_SCHEMA_LINTER"] || "https://didlint.ownyourdata.eu/api/validate_json-schema/" # "http://localhost:3200/api/validate_json-schema/"
 did_jsonld_linter = ENV["DID_JSONLD_LINTER"] || "https://didlint.ownyourdata.eu/api/validate_jsonld/" # "http://localhost:3200/api/validate_jsonld/"
 did_resolver = ENV["DID_RESOLVER"] || "https://dev.uniresolver.io/1.0/identifiers/"
-http_timeout = ENV["HTTP_TIMEOUT"] || 5 rescue 5
+http_timeout = ENV["HTTP_TIMEOUT"] || 10 rescue 10
 
 input = YAML.load(HTTParty.get(did_source)) rescue nil
 if input.nil?
@@ -30,7 +30,12 @@ if dids.nil?
 end
 
 retVal = {}
+
+cnt = 0
 dids.each do |did|
+    cnt += 1
+    STDERR.puts "processing Did (" + cnt.to_s + "/" + dids.count.to_s + "): " + did.to_s + " ===================="
+    response_output = true
     ts_start = Time.now
     did_method = did.split(":")[0..1].join(":")
     begin
@@ -42,6 +47,10 @@ dids.each do |did|
         end
     rescue
         did_status = nil
+    end
+    if did_status.nil?
+        STDERR.puts " X> invalid SHACL validation response"
+        response_output = false
     end
 
     # JSON Schema Validation
@@ -55,6 +64,12 @@ dids.each do |did|
     rescue
         did_jschema_status = nil
     end
+    if did_jschema_status.nil?
+        if response_output
+            STDERR.puts " X> invalid JSON-Schema validation response"
+        end
+        response_output = false
+    end
 
     # JSON-LD Validation
     begin
@@ -67,11 +82,12 @@ dids.each do |did|
     rescue
         did_jsonld_status = nil
     end
-
-puts "Did: " + did.to_s
-puts "- SHACL: " + did_status["valid"].to_s rescue "- SHACL: null"
-puts "- JSHMA: " + did_jschema_status["valid"].to_s rescue "- JSHMA: null"
-puts "- JSNLD: " + did_jsonld_status["valid"].to_s rescue "- JSHMA: null"
+    if did_jsonld_status.nil?
+        if response_output
+            STDERR.puts " X> invalid JSON-LD validation response"
+        end
+        response_output = false
+    end
 
     identifier = {}
     if did_status.nil?
@@ -96,11 +112,14 @@ puts "- JSNLD: " + did_jsonld_status["valid"].to_s rescue "- JSHMA: null"
         end
     else
         if did_status["valid"]
+            STDERR.puts " -> OK"
+            did_jschema_status_valid = did_jschema_status["valid"] rescue false
+            did_jsonld_status_valid = did_jsonld_status["valid"] rescue false
             identifier[did] = {
                 "valid": true,
                 "valid_shacl": true,
-                "valid_json-schema": did_jschema_status["valid"],
-                "valid_jsonld": did_jsonld_status["valid"],
+                "valid_json-schema": did_jschema_status_valid,
+                "valid_jsonld": did_jsonld_status_valid,
                 "duration": Time.now - ts_start
             }
             if retVal[did_method].nil?
@@ -120,15 +139,31 @@ puts "- JSNLD: " + did_jsonld_status["valid"].to_s rescue "- JSHMA: null"
                 end
             end
         else
+            STDERR.puts " X> validation failed"
+            if !did_status["error"].nil?
+                STDERR.puts "    " + did_status["error"].to_s
+            else
+                if !did_status["errors"].nil?
+                    STDERR.puts "    " + did_status["errors"].to_json
+                end
+            end
+
             identifier[did] = did_status
             identifier[did]["duration"] = Time.now - ts_start
             identifier[did]["valid_json-schema"] = did_jschema_status["valid"] rescue false
             identifier[did]["valid_jsonld"] = did_jsonld_status["valid"] rescue false
             begin
-                resolver_response = HTTParty.get(did_resolver + did, timeout: http_timeout).code
+                resolver_response_all = HTTParty.get(did_resolver + did, timeout: http_timeout)
+                STDERR.puts " -> UniResolver Response ----------"
+                STDERR.puts "    " + resolver_response_all.to_s
+                STDERR.puts "    -------------------------------"
+
+                resolver_response = resolver_response_all.code rescue 500
             rescue
                 resolver_response = 500
+                STDERR.puts " X> no UniResolver response"
             end
+
             if retVal[did_method].nil?
                 if resolver_response == 200
                     # non compliant

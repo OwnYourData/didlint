@@ -103,11 +103,10 @@ If you want to contribute pull requests, please follow these steps:
 
 ## About  
 
-<img align="right" src="https://raw.githubusercontent.com/OwnYourData/didlint/main/app/assets/images/logo-ngi-ontochain-positive.png" height="150">This project has received funding from the European Union’s Horizon 2020 research and innovation program through the [NGI ONTOCHAIN program](https://ontochain.ngi.eu/) under cascade funding agreement No 957338.
-
+<img align="right" src="https://raw.githubusercontent.com/OwnYourData/dc-intermediary/main/res/logo-ngi-trustchain-positive.png" height="100">This project has received funding from the European Union’s Horizon 2020 research and innovation program through the [NGI ONTOCHAIN program](https://ontochain.ngi.eu/) under cascade funding agreement No 957338 and the [NGI TRUSTCHAIN program](https://trustchain.ngi.eu/) under cascade funding agreement No 101093274.
 
 <br clear="both" />
 
 ## License
 
-[MIT License 2023 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/didlint/main/LICENSE)
+[MIT License 2024 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/didlint/main/LICENSE)

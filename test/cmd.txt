@@ -1,2 +1,8 @@
 docker run -d --name didlint -p 3200:3000 -e SOYA_DID_DRI=zQmc76XfAkKxjFhHUANsq2yLxvt1FNkwHULChENskd9PJ9T oydeu/didlint
 
+
+# in didlint directory
+docker run -d --name didlint -p 3200:3000 oydeu/didlint
+cd pytest
+export URL="http://localhost:3200"
+pytest

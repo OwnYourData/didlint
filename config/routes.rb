@@ -13,8 +13,6 @@ Rails.application.routes.draw do
             match '/validate_jsonld/:did',      to: 'validations#did_jsonld',  via: 'get', constraints: {did: /.*/}
             match '/validate_jschema/:did',     to: 'validations#did_jschema', via: 'get', constraints: {did: /.*/}
             match '/validate_json-schema/:did', to: 'validations#did_jschema', via: 'get', constraints: {did: /.*/}
-
-
         end
     end
 

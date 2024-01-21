@@ -31,7 +31,7 @@ module ApplicationHelper
             rescue
                 return nil, "invalid Uniresolver response"
             end
-            ddo = JSON.parse(uniresolver_response)["didDocument"] rescue nil?
+            ddo = JSON.parse(uniresolver_response)["didDocument"] rescue nil
             if ddo.nil?
                 err = JSON.parse(uniresolver_response)["didResolutionMetadata"]["error"] rescue nil
                 if err.nil?

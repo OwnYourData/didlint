@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: didlint
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    certmanager.io/issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - didlint.ownyourdata.eu
+    secretName: didlint-tls
+  rules:
+  - host: didlint.ownyourdata.eu
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: didlint
+            port:
+              number: 80
