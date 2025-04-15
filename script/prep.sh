@@ -19,4 +19,5 @@ echo $did_context "$(cat -)" | \
 	# build basic structure with @context and @graph
 	jq -s '{ "@context": .[0], "@graph":[ .[1] ] } | del(."@graph"[0]."@context")' | \
 	# add @type information in @graph
-	jq --arg soya_struct "$soya_struct" ".\"@graph\"[0] |= {\"@type\":\"$soya_struct\"} + ."
+	# jq --arg soya_struct "$soya_struct" ".\"@graph\"[0] |= {\"@type\":\"$soya_struct\"} + ."
+	jq --arg soya_struct "$soya_struct" ".\"@graph\"[0] |= {\"@type\":\"Did\"} + ."

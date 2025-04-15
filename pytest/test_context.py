@@ -6,7 +6,7 @@ import requests
 import subprocess
 from pathlib import Path
 
-# $ URL="http://localhost:3000" pytest test_context.py
+# $ URL="http://localhost:3200" pytest test_context.py
 url = os.getenv('URL') or "https://didlint.ownyourdata.eu"
 
 # structure

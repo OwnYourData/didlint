@@ -31,10 +31,19 @@ end
 
 retVal = {}
 
+STDERR.puts "=== DID Lint Configuration"
+STDERR.puts "DID_SOURCE: " + did_source.to_s
+STDERR.puts "DID_LINTER: " + did_linter.to_s
+STDERR.puts "DID_JSON_SCHEMA_LINTER: " + did_jschema_linter.to_s
+STDERR.puts "DID_RESOLVER: " + did_resolver.to_s
+STDERR.puts "HTTP_TIMEOUT: " + http_timeout.to_s + "s"
+STDERR.puts "=========================="
+
 cnt = 0
 dids.each do |did|
     cnt += 1
     STDERR.puts "processing Did (" + cnt.to_s + "/" + dids.count.to_s + "): " + did.to_s + " ===================="
+    STDERR.puts " request: " + did_linter + did
     response_output = true
     ts_start = Time.now
     did_method = did.split(":")[0..1].join(":")

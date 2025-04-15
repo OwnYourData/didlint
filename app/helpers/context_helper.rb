@@ -29,13 +29,14 @@ module ContextHelper
         if jld_context.is_a?(String)
             jld_context = [jld_context]
         end
+        clean_context = jld_context.reject { |el| el.is_a?(Hash) && (el["@base"] || el[:"@base"]) } rescue nil
         vmts = getVerificationMethodTypes(soya_did_dri)
         vmts.each do |vmt|
             key = (vmt.keys - ["context"]).first
             vals = deep_find(key, did_document)
             if vals.count > 0
                 if vals.include?(vmt[key]) || vmt[key] == "*"
-                    if jld_context.nil? || !jld_context.any? { |c| c.include?(vmt["context"].gsub("https://", "").gsub("http://", "").gsub("www.", "")) }
+                    if clean_context.nil? || !clean_context.any? { |c| c.include?(vmt["context"].gsub("https://", "").gsub("http://", "").gsub("www.", "")) }
                         violations << {"value":"@context", "error": "add '" + vmt["context"].to_s + "'"}
                     end
                 end

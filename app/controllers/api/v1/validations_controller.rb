@@ -49,6 +49,7 @@ module Api
                         soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
                         vmts = getVerificationMethodTypes(soya_did_dri).map{|i| i["context"]}
                         not_standard_vmts = input["@context"] - vmts rescue []
+                        not_standard_vmts.delete_if { |el| el.is_a?(Hash) && (el["@base"] || el[:"@base"]) }
                         if not_standard_vmts.count > 0
                             if retVal["infos"].nil?
                                 retVal["infos"] = []
@@ -243,6 +244,7 @@ module Api
                         soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
                         vmts = getVerificationMethodTypes(soya_did_dri).map{|i| i["context"]}
                         not_standard_vmts = input["@context"] - vmts rescue []
+                        not_standard_vmts.delete_if { |el| el.is_a?(Hash) && (el["@base"] || el[:"@base"]) }
                         if not_standard_vmts.count > 0
                             if retVal["infos"].nil?
                                 retVal["infos"] = []

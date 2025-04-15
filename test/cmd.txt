@@ -1,8 +1,13 @@
 docker run -d --name didlint -p 3200:3000 -e SOYA_DID_DRI=zQmc76XfAkKxjFhHUANsq2yLxvt1FNkwHULChENskd9PJ9T oydeu/didlint
 
+docker run -d --name didlint -p 3200:3000 -e SOYA_DID_DRI=zBQc1QCUc8TDcB8SRWoHLBijbyr2ks4DaJcKiaWjE4unK oydeu/didlint
+
 
 # in didlint directory
 docker run -d --name didlint -p 3200:3000 oydeu/didlint
 cd pytest
 export URL="http://localhost:3200"
 pytest
+
+# run in ./script
+curl -s "https://dev.uniresolver.io/1.0/identifiers/did:web:mediator-nlb.storm.ws:mediator:v1:.well-known" | jq '.didDocument' | ./prep.sh | soya validate Did 

@@ -2,6 +2,7 @@
 
 CONTAINER="didlint"
 REPOSITORY="oydeu"
+TAG="latest"
 
 # read commandline options
 BUILD_CLEAN=false
@@ -38,12 +39,12 @@ done
 # docker build -f ./docker/Dockerfile.java -t oydeu/soya-cli:java .
 
 if $BUILD_CLEAN; then
-    docker build --platform linux/amd64 --no-cache -f $DOCKERFILE -t $REPOSITORY/$CONTAINER .
+    docker build --platform linux/amd64 --no-cache -f $DOCKERFILE -t $REPOSITORY/$CONTAINER:$TAG .
 else
-    docker build --platform linux/amd64 -f $DOCKERFILE -t $REPOSITORY/$CONTAINER .
+    docker build --platform linux/amd64 -f $DOCKERFILE -t $REPOSITORY/$CONTAINER:$TAG .
 fi
 
 
 if $DOCKER_UPDATE; then
-    docker push $REPOSITORY/$CONTAINER
+    docker push $REPOSITORY/$CONTAINER:$TAG
 fi
