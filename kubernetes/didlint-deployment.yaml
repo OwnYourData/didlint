@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: didlint
-        image: oydeu/didlint:250624
+        image: oydeu/didlint:261025
         ports:
         - containerPort: 3000
         env:
@@ -42,8 +42,6 @@ spec:
               secretKeyRef:
                 name: didlint-skb
                 key: SECRET_KEY_BASE
-          - name: GOOGLE_TAG
-            value: "G-NBNEMT3ZCK"
 ---
 kind: Service
 apiVersion: v1
