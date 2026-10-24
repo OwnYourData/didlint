@@ -55,7 +55,7 @@ module Api
                                 retVal["infos"] = []
                             end
                             not_standard_vmts.each do |item|
-                                el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the <a href='https://www.w3.org/TR/did-spec-registries/#verification-method-types'>DID Specification Registries</a>"}
+                                el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
                                 retVal["infos"] << el
                             end
                             # if there are non-standard verification methods, ignore "invalid '" error messages
@@ -250,7 +250,7 @@ module Api
                                 retVal["infos"] = []
                             end
                             not_standard_vmts.each do |item|
-                                el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the <a href='https://www.w3.org/TR/did-spec-registries/#verification-method-types'>DID Specification Registries</a>"}
+                                el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
                                 retVal["infos"] << el
                             end
                             # if there are non-standard verification methods, ignore "invalid '" error messages

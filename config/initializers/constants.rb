@@ -1,5 +1,6 @@
-VERSION = "0.6.0"
+VERSION = "0.6.1"
 SOYA_DID_DRI = "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE"
 SOYA_REPO = "https://soya.ownyourdata.eu"
 SOYA_WEB_CLI = "https://soya-web-cli.ownyourdata.eu"
 UNIRESOLVER_URL = "https://dev.uniresolver.io"
+DID_REGISTRY_LINK = "<a href='https://www.w3.org/TR/did-spec-registries/#verification-method-types'>DID Specification Registries</a>"

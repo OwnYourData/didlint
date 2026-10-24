@@ -47,7 +47,7 @@
             <div class="col-md-12">
                 <h3>Result</h3>
                 <% flash.each do |message_type, message| %>
-                    <div class="alert alert-<%= message_type %>"><%= message.html_safe %></div>
+                    <div class="alert alert-<%= message_type %>"><%= message %></div>
                 <% end %>
             </div>
         </div>

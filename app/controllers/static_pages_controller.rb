@@ -1,3 +1,5 @@
+require "cgi"
+
 class StaticPagesController < ApplicationController
     include ApplicationHelper
     include ContextHelper
@@ -78,7 +80,7 @@ class StaticPagesController < ApplicationController
                         retVal["infos"] = []
                     end
                     not_standard_vmts.each do |item|
-                        el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the <a href='https://www.w3.org/TR/did-spec-registries/#verification-method-types'>DID Specification Registries</a>"}
+                        el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
                         retVal["infos"] << el
                     end
                     # if there are non-standard verification methods, ignore "invalid '" error messages
@@ -139,36 +141,24 @@ class StaticPagesController < ApplicationController
             if valid
                 flash.now[:success] = "Conforms to W3C DID Spec v1.0"
             else
-                error_text = "Error in validating DID Document:<ul>"
-                retVal.stringify_keys["errors"].each do |e|
-                    error_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
-                end unless retVal.stringify_keys["errors"].nil?
-                error_text += "</ul>"
-                flash.now[:danger] = error_text
+                entries = (retVal.stringify_keys["errors"] || []).map do |e|
+                    e = e.stringify_keys
+                    flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s)
+                end
+                flash.now[:danger] = flash_list("Error in validating DID Document:", entries)
             end
 
             if !retVal["infos"].nil? && retVal["infos"].count > 0
                 if retVal["infos"].first.is_a?(String)
                     info_text = retVal["infos"].first.to_s
                 else
-                    error_text = false
-                    retVal.stringify_keys["infos"].each do |e|
-                        if e.stringify_keys["error"].to_s != ""
-                            error_text = true
-                        end
-                    end
-                    if error_text
-                        info_text = "Consider JSON-LD representation by adding a JSON-LD Context:<ul>"
-                        retVal.stringify_keys["infos"].each do |e|
-                            info_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
-                        end unless retVal.stringify_keys["infos"].nil?
-                        info_text += "</ul>"
+                    infos = retVal.stringify_keys["infos"].map(&:stringify_keys)
+                    if infos.any? { |e| e["error"].to_s != "" }
+                        entries = infos.map { |e| flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s) }
+                        info_text = flash_list("Consider JSON-LD representation by adding a JSON-LD Context:", entries)
                     else
-                        info_text = "Notes on JSON-LD Context:<ul>"
-                        retVal.stringify_keys["infos"].each do |e|
-                            info_text += "<li>" + e.stringify_keys["message"].to_s + "</li>"
-                        end unless retVal.stringify_keys["infos"].nil?
-                        info_text += "</ul>"
+                        entries = infos.map { |e| flash_message(e["message"]) }
+                        info_text = flash_list("Notes on JSON-LD Context:", entries)
                     end
                 end
                 flash.now[:info] = info_text
@@ -230,7 +220,7 @@ class StaticPagesController < ApplicationController
                         retVal["infos"] = []
                     end
                     not_standard_vmts.each do |item|
-                        el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the <a href='https://www.w3.org/TR/did-spec-registries/#verification-method-types'>DID Specification Registries</a>"}
+                        el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
                         retVal["infos"] << el
                     end
                     # if there are non-standard verification methods, ignore "invalid '" error messages
@@ -291,36 +281,24 @@ class StaticPagesController < ApplicationController
             if valid
                 flash.now[:success] = "Conforms to W3C DID Spec v1.0"
             else
-                error_text = "Error in validating DID Document:<ul>"
-                retVal.stringify_keys["errors"].each do |e|
-                    error_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
-                end unless retVal.stringify_keys["errors"].nil?
-                error_text += "</ul>"
-                flash.now[:danger] = error_text
+                entries = (retVal.stringify_keys["errors"] || []).map do |e|
+                    e = e.stringify_keys
+                    flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s)
+                end
+                flash.now[:danger] = flash_list("Error in validating DID Document:", entries)
             end
 
             if !retVal["infos"].nil? && retVal["infos"].count > 0
                 if retVal["infos"].first.is_a?(String)
                     info_text = retVal["infos"].first.to_s
                 else
-                    error_text = false
-                    retVal.stringify_keys["infos"].each do |e|
-                        if e.stringify_keys["error"].to_s != ""
-                            error_text = true
-                        end
-                    end
-                    if error_text
-                        info_text = "Consider JSON-LD representation by adding a JSON-LD Context:<ul>"
-                        retVal.stringify_keys["infos"].each do |e|
-                            info_text += "<li>" + e.stringify_keys["value"].to_s.split("/").last.to_s + ": " + e.stringify_keys["error"].to_s + "</li>"
-                        end unless retVal.stringify_keys["infos"].nil?
-                        info_text += "</ul>"
+                    infos = retVal.stringify_keys["infos"].map(&:stringify_keys)
+                    if infos.any? { |e| e["error"].to_s != "" }
+                        entries = infos.map { |e| flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s) }
+                        info_text = flash_list("Consider JSON-LD representation by adding a JSON-LD Context:", entries)
                     else
-                        info_text = "Notes on JSON-LD Context:<ul>"
-                        retVal.stringify_keys["infos"].each do |e|
-                            info_text += "<li>" + e.stringify_keys["message"].to_s + "</li>"
-                        end unless retVal.stringify_keys["infos"].nil?
-                        info_text += "</ul>"
+                        entries = infos.map { |e| flash_message(e["message"]) }
+                        info_text = flash_list("Notes on JSON-LD Context:", entries)
                     end
                 end
                 flash.now[:info] = info_text
@@ -330,6 +308,26 @@ class StaticPagesController < ApplicationController
         @did_document = JSON.pretty_generate(@did_document) rescue nil?
         render "home"
 
+    end
+
+
+    private
+
+    # Flash messages are rendered as HTML. Every value that stems from the
+    # validated document or from a remote service is escaped; only the list
+    # markup and the fixed link to the DID Specification Registries are
+    # emitted as markup. Plain strings put into the flash are escaped by the
+    # view.
+    def flash_escape(text)
+        CGI.escapeHTML(text.to_s)
+    end
+
+    def flash_message(text)
+        flash_escape(text).gsub(flash_escape(DID_REGISTRY_LINK), DID_REGISTRY_LINK)
+    end
+
+    def flash_list(title, entries)
+        (flash_escape(title) + "<ul>" + entries.map { |e| "<li>" + e + "</li>" }.join + "</ul>").html_safe
     end
 
 end
