@@ -31,4 +31,7 @@ spec:
           - name: allowed_hosts
             value: "didlint.ownyourdata.eu"
           - name: SECRET_KEY_BASE
-            value: "secret"
+            valueFrom:
+              secretKeyRef:
+                name: didlint-skb
+                key: SECRET_KEY_BASE

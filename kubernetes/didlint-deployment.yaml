@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: soya
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: didlint
+  namespace: soya
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: didlint
+  template:
+    metadata:
+      name: didlint
+      labels:
+        app: didlint
+    spec:
+      containers:
+      - name: didlint
+        image: oydeu/didlint:250624
+        ports:
+        - containerPort: 3000
+        env:
+          - name: LANG
+            value: C.UTF-8
+          - name: RAILS_LOG_TO_STDOUT
+            value: "TRUE"
+          - name: RAILS_SERVE_STATIC_FILES
+            value: "TRUE"
+          - name: RAILS_ENV
+            value: production
+          - name: SOYA_DID_DRI
+            value: z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE
+          - name: allowed_hosts
+            value: "didlint.ownyourdata.eu"
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: didlint-skb
+                key: SECRET_KEY_BASE
+          - name: GOOGLE_TAG
+            value: "G-NBNEMT3ZCK"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: didlint
+  namespace: soya
+spec:
+  selector:
+    app: didlint
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: didlint
+  namespace: soya
+  annotations:
+    certmanager.io/issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - didlint.ownyourdata.eu
+    secretName: didlint-tls
+  rules:
+  - host: didlint.ownyourdata.eu
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: didlint
+            port:
+              number: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: didlint-tls
+  namespace: soya
+  annotations:
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  secretName: didlint-tls
+  issuerRef:
+    group: cert-manager.io
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - 'didlint.ownyourdata.eu'
+  privateKey:
+    rotationPolicy: Always
