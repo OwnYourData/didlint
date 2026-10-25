@@ -44,6 +44,9 @@ def http(method, url, body=None, headers=None):
             return resp.status, resp.headers, resp.read().decode("utf-8")
     except urllib.error.HTTPError as err:
         return err.code, err.headers, err.read().decode("utf-8")
+    except (urllib.error.URLError, OSError) as err:
+        # not reachable: status 0, the reason as body
+        return 0, None, str(getattr(err, "reason", err))
 
 
 def constant(name):
@@ -103,6 +106,9 @@ def check_instance(base, allow_any_dri):
         version = json.loads(body)
     except ValueError:
         version = {}
+    if status == 0:
+        rep.fail("/version", "instance not reachable: %s" % body)
+        return rep.summary()
     if status != 200 or not version:
         rep.fail("/version", "HTTP %s" % status)
     else:
