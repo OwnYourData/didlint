@@ -143,7 +143,10 @@ module Api
                 rescue
                     timeout = true
                 end
-                if jld_response.code == 200
+                if timeout
+                    render json: {"valid": false, "error": "JSON-LD validation service not reachable"},
+                           status: 502
+                elsif jld_response.code == 200
                     render json: {"valid": true},
                            status: 200
                 else

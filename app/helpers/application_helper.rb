@@ -142,7 +142,7 @@ module ApplicationHelper
         rescue
             timeout = true
         end
-        if timeout or response.nil? or response.code != 200
+        if timeout || response.code != 200
             return parse_soya_output({})
         else
             return parse_soya_output(response.to_json)

@@ -1,40 +1,25 @@
 source "https://rubygems.org"
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.8"
+ruby "3.4.12"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2"
-
-# Use sqlite3 as the database for Active Record
-# gem "sqlite3", "~> 1.4"
-gem "pg"
-gem "puma", "~> 5.0"
+gem "rails", "~> 8.1.0"
+gem "puma", "~> 8.0"
 gem "rack-cors"
 gem "oydid", "~> 0.9.7"
-gem 'bootsnap'
-gem 'tzinfo-data'
-gem 'rswag'
-gem 'json-schema'
+gem "bootsnap", require: false
+gem "tzinfo-data"
+gem "rswag-api"
+gem "rswag-ui"
+gem "json-schema"
 
 # UI
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
+gem "sprockets-rails"
+gem "sassc-rails"
+gem "jquery-rails"
 gem "bootstrap-sass", ">= 3.4.1"
-gem 'font-awesome-rails'
+gem "font-awesome-rails"
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "rswag-specs"
 end
-
-group :development do
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
-  gem 'derailed'
-  gem "stackprof"
-  gem "sqlite3"
-end
-

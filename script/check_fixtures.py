@@ -25,6 +25,7 @@ import glob
 import json
 import os
 import re
+import signal
 import sys
 import urllib.error
 import urllib.request
@@ -111,6 +112,8 @@ def check_instance(base, allow_any_dri):
         else:
             rep.fail("/version", "did-dri %s differs from the pinned %s" % (version.get("did-dri"), pinned))
 
+    check_web(base, rep)
+
     cases = []
     for path in sorted(glob.glob(os.path.join(FIXTURES, "01_input", "*.doc"))):
         did = read(path).strip()
@@ -149,6 +152,34 @@ def check_instance(base, allow_any_dri):
             rep.fail("resolve " + did, "HTTP %s, id %s, via %s" % (status, got, via))
 
     return rep.summary()
+
+
+def check_web(base, rep):
+    # the web frontend and its precompiled assets, and the API documentation
+    status, _, body = http("GET", base + "/")
+    if status != 200:
+        rep.fail("web /", "HTTP %s" % status)
+        return
+    rep.ok("web /")
+    assets = []
+    for tag in re.findall(r"<link\b[^>]*>", body):
+        href = re.search(r'href="([^"]+)"', tag)
+        if 'rel="stylesheet"' in tag and href and href.group(1).startswith("/"):
+            assets.append(href.group(1))
+    assets += [src for src in re.findall(r'<script\b[^>]*src="([^"]+)"', body) if src.startswith("/")]
+    if not assets:
+        rep.fail("web assets", "the start page references no local stylesheet or script")
+    for asset in assets:
+        status, _, _ = http("GET", base + asset)
+        if status == 200:
+            rep.ok("web " + asset)
+        else:
+            rep.fail("web " + asset, "HTTP %s" % status)
+    status, _, _ = http("GET", base + "/api-docs/index.html")
+    if status == 200:
+        rep.ok("web /api-docs")
+    else:
+        rep.fail("web /api-docs", "HTTP %s" % status)
 
 
 def set_attributes(repo, dri):
@@ -212,6 +243,8 @@ def check_structure(dri, encoding, soya_web_cli, repo):
 
 
 def main():
+    if hasattr(signal, "SIGPIPE"):
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--url", help="base URL of a DID Lint instance")
     parser.add_argument("--allow-any-dri", action="store_true",
