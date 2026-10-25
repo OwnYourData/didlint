@@ -86,6 +86,22 @@ The DID Lint service is also available publicly here: https://didlint.ownyourdat
 Use either the web frontend or the provided REST API to resolve DIDs and validate DID Documents.
 
 
+## Regression Checks
+
+`script/check_fixtures.py` (Python 3, standard library only) runs the fixtures in `pytest/` and compares the results with `pytest/expectations.json`:
+
+```bash
+python3 script/check_fixtures.py --url http://localhost:3000
+python3 script/check_fixtures.py --structure
+python3 script/check_fixtures.py --structure <DRI> --encoding list
+```
+
+`--url` checks a running instance: every response against `pytest/NN_output/`, that `/version` reports the structure pinned in `config/initializers/constants.rb`, and that `did:oyd` resolution returns the requested DID as `id`. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby.
+
+**Before `SOYA_DID_DRI` is switched to a new structure, `--structure <new DRI>` must pass.** Intended changes in the verdicts are recorded in `pytest/expectations.json` and the affected `NN_output/` files in the same commit as the new DRI.
+
+The GitHub workflow `regression` runs the structure check and a container built from the commit on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
+
 ## Improve DID Lint
 
 This service is a Proof-of-Concept to demonstrate the validation overlay capabilities of SOyA, i.e., show-case an easy to understand but still machine-readable format to describe DID Documents and use the built-in mechanisms of SOyA to either validate conformance or list identified violations.

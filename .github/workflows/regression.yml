@@ -1,0 +1,70 @@
+name: regression
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+    inputs:
+      dri:
+        description: "SOyA structure (DRI) to check; empty means the pinned structure"
+        required: false
+        default: ""
+      encoding:
+        description: "Encoding of set values"
+        required: false
+        default: "flat"
+        type: choice
+        options: [flat, list]
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    name: SOyA structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate the fixtures against the structure
+        env:
+          DRI: ${{ inputs.dri }}
+          ENCODING: ${{ inputs.encoding || 'flat' }}
+        run: python3 script/check_fixtures.py --structure "$DRI" --encoding "$ENCODING"
+
+  instance:
+    name: Container built from this commit
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build the image
+        run: docker build -f docker/Dockerfile -t didlint:ci .
+      - name: Start the container
+        run: |
+          docker run -d --name didlint -p 3000:3000 \
+            -e RAILS_ENV=production -e RAILS_LOG_TO_STDOUT=TRUE -e RAILS_SERVE_STATIC_FILES=TRUE \
+            -e LANG=C.UTF-8 -e allowed_hosts=localhost -e SECRET_KEY_BASE="$(openssl rand -hex 64)" \
+            didlint:ci
+          for i in $(seq 1 60); do
+            curl -sf -o /dev/null http://localhost:3000/version && exit 0
+            sleep 2
+          done
+          docker logs didlint
+          exit 1
+      - name: Run the fixtures
+        run: python3 script/check_fixtures.py --url http://localhost:3000
+      - name: Container log
+        if: failure()
+        run: docker logs didlint
+
+  live:
+    name: didlint.ownyourdata.eu
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run the fixtures against the public instance
+        run: python3 script/check_fixtures.py --url https://didlint.ownyourdata.eu

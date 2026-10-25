@@ -1,0 +1,49 @@
+{
+  "description": "Expectations for script/check_fixtures.py. 'instance' compares the full response of a running DID Lint instance with the files in NN_output/. 'structure' records, per fixture, whether the SOyA structure alone (SHACL, without the context checks done in Ruby) accepts the document. 'resolve' lists DIDs whose resolved document must carry exactly the requested DID as id.",
+  "instance": {
+    "known_failures": {
+      "03_input/gh_3_invalid.json": "expects a JSON-LD validation error; the JSON-LD step in soya_validate is disabled"
+    }
+  },
+  "structure": {
+    "dri": "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE",
+    "encoding": "flat",
+    "valid": {
+      "02_input/gh_1_invalid.json": false,
+      "02_input/gh_1_valid.json": true,
+      "02_input/invalid_did-self.json": false,
+      "02_input/invalid_missing_context.json": true,
+      "02_input/invalid_missing_id.json": false,
+      "02_input/invalid_missing_verificationMethod.json": false,
+      "02_input/invalid_only_relative.json": false,
+      "02_input/invalid_wrongVMtype.json": false,
+      "02_input/invalid_wrongVMtypeAttribute.json": false,
+      "02_input/valid_did-self.json": true,
+      "02_input/valid_example_9.json": true,
+      "02_input/valid_oyd.json": true,
+      "03_input/01_ldc.json": true,
+      "03_input/02_ldc.json": true,
+      "03_input/03_ldc.json": true,
+      "03_input/04_ldc.json": false,
+      "03_input/05_ldc.json": false,
+      "03_input/06_ldc.json": false,
+      "03_input/did_polygonid.json": false,
+      "03_input/gh_3_invalid.json": true,
+      "03_input/gh_3_valid.json": true
+    },
+    "planned_changes": {
+      "reason": "DID Core 1.0 does not require a verification method or verification relationship. The next structure relaxes this; these fixtures then become valid and their entries above and in 02_output/ / 03_output/ change in the same commit as SOYA_DID_DRI.",
+      "become_valid": [
+        "02_input/gh_1_invalid.json",
+        "02_input/invalid_missing_verificationMethod.json",
+        "02_input/invalid_only_relative.json",
+        "03_input/06_ldc.json"
+      ]
+    }
+  },
+  "resolve": [
+    "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1",
+    "did:oyd:zQmSE1hzumtZ7AoK1qhHf4t5kiKsujMsJSHqoXtWrdd7K7W",
+    "did:oyd:zAkqfwgrNyMvhUP2qJvyrnwDUFAb"
+  ]
+}
