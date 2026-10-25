@@ -15,13 +15,25 @@ module ApplicationHelper
         end
     end
 
+    # did:oyd is resolved through the OYDID resolver over HTTP, so that DID
+    # Lint validates exactly what relying parties receive. Only when the
+    # resolver cannot give an answer (unreachable, timeout, 5xx, unparsable
+    # response) the bundled oydid gem resolves locally. A definite answer -
+    # found, not found, deactivated - is never overridden by the fallback.
+    # The path taken is reported in the X-DID-Resolved-Via response header.
     def did_resolve(did)
         uniresolver_url = ENV["UNIRESOLVER_URL"] || UNIRESOLVER_URL
         msg = ""
         if did.start_with?("did:oyd:")
+            ddo, msg, definite = oydid_resolve_http(did)
+            if definite
+                set_resolved_via("http") unless ddo.nil?
+                return ddo, msg
+            end
             ddo, msg = Oydid.read(did, {})
             if !ddo.nil?
                 ddo = Oydid.w3c(ddo, {})
+                set_resolved_via("gem")
             end
         else
             begin
@@ -45,6 +57,40 @@ module ApplicationHelper
             end
         end
         return ddo, msg
+    end
+
+    # Returns [document, message, definite]. definite is true when the OYDID
+    # resolver answered authoritatively, false when the gem should take over.
+    def oydid_resolve_http(did)
+        resolver_url = ENV["OYDID_RESOLVER_URL"] || OYDID_RESOLVER_URL
+        begin
+            response = HTTParty.get(resolver_url + "/1.0/identifiers/" + did, timeout: 10)
+        rescue StandardError
+            return nil, "OYDID resolver not reachable", false
+        end
+        case response.code
+        when 200
+            body = JSON.parse(response.body.to_s) rescue nil
+            return nil, "invalid OYDID resolver response", false unless body.is_a?(Hash)
+            if body.key?("didDocument") || body.key?("didDocumentMetadata")
+                if body.dig("didDocumentMetadata", "deactivated") == true
+                    return nil, "DID deactivated", true
+                end
+                return nil, "invalid OYDID resolver response", false unless body["didDocument"].is_a?(Hash)
+                return body["didDocument"], "", true
+            end
+            return body, "", true
+        when 404
+            return nil, "did not found", true
+        when 410
+            return nil, "DID deactivated", true
+        else
+            return nil, "OYDID resolver error " + response.code.to_s, false
+        end
+    end
+
+    def set_resolved_via(path)
+        response.set_header("X-DID-Resolved-Via", path) if respond_to?(:response, true) && response
     end
 
     def soya_prep(document)

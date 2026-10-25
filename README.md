@@ -70,6 +70,7 @@ To deploy `oydeu/didlint` in a production setting use the following environment 
 * `SOYA_REPO`: repository to resolve `SOYA_DID_DRI` (default: https://soya.ownyourdata.eu)
 * `SOYA_WEB_CLI`: validation service for SOyA structures (default: https://soya-web-cli.ownyourdata.eu)
 * `UNIRESOLVER_URL`: Uniresolver instance for resolving DIDs (default: https://dev.uniresolver.io)
+* `OYDID_RESOLVER_URL`: resolver for `did:oyd` (default: https://resolver.ownyourdata.eu); if it cannot be reached, the bundled oydid gem resolves locally. The response header `X-DID-Resolved-Via` (`http` or `gem`) shows which path answered.
 
 #### Testing a Deployment
 

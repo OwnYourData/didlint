@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
             retVal["soya-cli_version"] = web_cli_version
         end
         retVal["did-dri"] = soya_did_dri
+        retVal["oydid-gem"] = Gem.loaded_specs["oydid"]&.version.to_s
+        retVal["oydid-resolver"] = ENV["OYDID_RESOLVER_URL"] || OYDID_RESOLVER_URL
         render json: retVal.to_json,
                status: 200
     end    
