@@ -1,21 +1,17 @@
-FROM oydeu/soya-cli:alpha
-MAINTAINER "Christoph Fabianek" christoph@ownyourdata.eu
+FROM ruby:3.2.8-alpine3.22@sha256:169f61723c11c0af45ebc3fae53ca323e507eaaebbd3680ae8c492ebe69fff2e
+LABEL org.opencontainers.image.authors="Christoph Fabianek <christoph@ownyourdata.eu>"
 
-USER root
-RUN mkdir -p /usr/src/app && \
-	apk add --no-cache libsodium-dev build-base git make gcc musl-dev jq npm openjdk8 bash curl libpq-dev sqlite-dev
+RUN apk add --no-cache build-base git bash curl nodejs libsodium-dev libpq-dev sqlite-dev yaml-dev
 WORKDIR /usr/src/app
+ENV RAILS_ROOT=/usr/src/app/
+ENV BUNDLE_FROZEN=true
 
-COPY Gemfile $WORKDIR
-RUN git config --global url."https://".insteadOf git:// && \
-	bundle install && \
-	bundle update
+COPY Gemfile Gemfile.lock $RAILS_ROOT
+RUN gem install bundler -v 2.6.9 && \
+	bundle install
 
 COPY . .
-RUN bundle install
-
-ENV allowed_hosts=${allowed_hosts}
 
 CMD ["./docker/init.sh"]
 
-EXPOSE 3000 3000
+EXPOSE 3000

@@ -11,7 +11,7 @@ gem "rails", "~> 7.2"
 gem "pg"
 gem "puma", "~> 5.0"
 gem "rack-cors"
-gem "oydid"
+gem "oydid", "~> 0.9.7"
 gem 'bootsnap'
 gem 'tzinfo-data'
 gem 'rswag'
