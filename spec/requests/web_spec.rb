@@ -13,6 +13,12 @@ RSpec.describe "Web frontend", type: :request do
     expect(response.body).not_to include("googletagmanager")
   end
 
+  it "loads no stylesheet, script or image from another host" do
+    get "/"
+    external = response.body.scan(/<(?:link|script|img)\b[^>]*(?:href|src)="(https?:[^"]*)"/).flatten
+    expect(external).to eq([])
+  end
+
   it "escapes values from the validated document in the result" do
     document = { "@context" => ["https://www.w3.org/ns/did/v1", "<b>probe</b>"], "id" => "did:example:123" }
     post "/validate", params: { did_document: document.to_json, commit: "Validate" }
@@ -31,8 +37,9 @@ RSpec.describe "Web frontend", type: :request do
   end
 
   it "tells the user when the SOyA structure is not available" do
-    stub_request(:get, "#{SOYA_REPO}/#{SOYA_DID_DRI}").to_return(status: 503)
-    post "/validate", params: { did_document: { "id" => "did:example:123" }.to_json, commit: "Validate" }
+    without_any_structure do
+      post "/validate", params: { did_document: { "id" => "did:example:123" }.to_json, commit: "Validate" }
+    end
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("The SOyA structure used for validation is not available")
   end

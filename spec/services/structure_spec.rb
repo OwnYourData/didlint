@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe DidLint::Structure do
   let(:dri) { SOYA_DID_DRI }
+  let(:unknown) { "z1111111111111111111111111111111111111111111" }
 
   it "loads the context constraints once per TTL" do
     stub = stub_soya_structure
@@ -12,9 +13,14 @@ RSpec.describe DidLint::Structure do
     expect(stub).to have_been_requested.once
   end
 
-  it "raises StructureUnavailable without a cached copy" do
+  it "falls back to the local copy when the repository is not reachable" do
     stub_request(:get, "#{SOYA_REPO}/#{dri}").to_return(status: 503)
-    expect { described_class.context_constraints(dri) }.to raise_error(DidLint::StructureUnavailable)
+    expect(described_class.document(dri)).to eq(JSON.parse(Rails.root.join("soya/#{dri}.json").read))
+  end
+
+  it "raises StructureUnavailable without repository and local copy" do
+    stub_request(:get, "#{SOYA_REPO}/#{unknown}").to_return(status: 503)
+    expect { described_class.context_constraints(unknown) }.to raise_error(DidLint::StructureUnavailable)
   end
 
   it "keeps serving the last copy when a refresh fails" do
@@ -22,5 +28,28 @@ RSpec.describe DidLint::Structure do
     stub_soya_structure.then.to_raise(Errno::ECONNREFUSED)
     first = described_class.context_constraints(dri)
     expect(described_class.context_constraints(dri)).to eq(first)
+  end
+
+  it "uses only the local copy in offline mode" do
+    with_offline_mode do
+      expect(described_class.context_constraints(dri)).to include({ "id" => "*", "context" => "https://www.w3.org/ns/did/v1" })
+      expect { described_class.document(unknown) }.to raise_error(DidLint::StructureUnavailable)
+    end
+    expect(a_request(:any, /.*/)).not_to have_been_made
+  end
+
+  it "inlines the imported SOyA context" do
+    stub_soya_structure
+    structure = described_class.self_contained(dri)
+    expect(structure["@context"]).not_to have_key("@import")
+    expect(structure["@context"]).to include("sh" => "http://www.w3.org/ns/shacl#", "@base" => "https://soya.ownyourdata.eu/#{dri}/")
+    expect(structure["@graph"]).to eq(JSON.parse(Rails.root.join("soya/#{dri}.json").read)["@graph"])
+  end
+
+  it "keeps the local copy of the pinned structure" do
+    copy = JSON.parse(Rails.root.join("soya/#{dri}.json").read)
+    expect(copy["@context"]["@import"]).to eq(described_class::CONTEXT_URL)
+    expect(copy["@graph"].map { |node| node["@type"] }).to include("OverlayValidation", "OverlayDidContextValidation")
+    expect(JSON.parse(Rails.root.join("soya/soya-context.json").read)).to have_key("@context")
   end
 end

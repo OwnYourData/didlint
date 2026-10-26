@@ -41,10 +41,19 @@ RSpec.describe "API", type: :request do
     expect(response.body).to eq(pytest.join("02_output/valid_oyd.json").read.strip)
   end
 
-  it "answers 502 when the SOyA structure is not available" do
+  it "keeps validating with the local copy when the SOyA repository is down" do
     stub_request(:get, "#{SOYA_REPO}/#{SOYA_DID_DRI}").to_return(status: 503)
     post "/api/validate", params: pytest.join("02_input/valid_oyd.json").read,
                           headers: { "Content-Type" => "application/json" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(pytest.join("02_output/valid_oyd.json").read.strip)
+  end
+
+  it "answers 502 when the SOyA structure is not available at all" do
+    without_any_structure do
+      post "/api/validate", params: pytest.join("02_input/valid_oyd.json").read,
+                            headers: { "Content-Type" => "application/json" }
+    end
     expect(response).to have_http_status(:bad_gateway)
     expect(JSON.parse(response.body)).to eq("valid" => false, "error" => "SOyA structure not available")
   end

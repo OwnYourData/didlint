@@ -35,7 +35,7 @@ jobs:
         run: python3 script/check_fixtures.py --structure "$DRI" --encoding "$ENCODING"
 
   instance:
-    name: Unit tests and container built from this commit
+    name: Unit tests and container built from this commit, online and offline
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
@@ -58,9 +58,24 @@ jobs:
           exit 1
       - name: Run the fixtures
         run: python3 script/check_fixtures.py --url http://localhost:3000
+      - name: Start the container in offline mode, in a network without internet access
+        run: |
+          docker network create --internal offline
+          docker run -d --name didlint-offline --network offline \
+            -e RAILS_ENV=production -e RAILS_LOG_TO_STDOUT=TRUE -e RAILS_SERVE_STATIC_FILES=TRUE \
+            -e LANG=C.UTF-8 -e allowed_hosts=didlint-offline -e DIDLINT_OFFLINE=true \
+            -e SECRET_KEY_BASE="$(openssl rand -hex 64)" \
+            didlint:ci
+      - name: Run the fixtures in offline mode from the same network
+        run: |
+          docker run --rm --network offline -v "$PWD:/src:ro" -w /src \
+            python:3.13-alpine@sha256:83057c121ebd0ccd12511f81aeb7e3b36a36f81b9d0687f7b8fcc93935497768 \
+            sh -c 'for i in $(seq 1 60); do wget -q -O /dev/null http://didlint-offline:3000/version && break; sleep 2; done; python3 script/check_fixtures.py --url http://didlint-offline:3000 --offline'
       - name: Container log
         if: failure()
-        run: docker logs didlint
+        run: |
+          docker logs didlint || true
+          docker logs didlint-offline || true
 
   live:
     name: didlint.ownyourdata.eu

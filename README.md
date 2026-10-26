@@ -74,6 +74,27 @@ To build the image yourself: `docker build -f docker/Dockerfile -t didlint .`
 | `OYDID_RESOLVER_URL` | resolver for `did:oyd` | https://resolver.ownyourdata.eu |
 | `UNIRESOLVER_URL` | Universal Resolver for all other methods | https://dev.uniresolver.io |
 | `JSON_SCHEMA_SOURCE` | JSON Schema for `/api/validate_jschema` | `core.schema.json` of the DID Specification Registries |
+| `DIDLINT_OFFLINE` | `true` for the [offline mode](#offline-mode) | |
+| `SOYA_STRUCTURE_DIR` | directory with the local copy of the SOyA structure | `soya/` |
+| `SOYA_JS` | soya-js package for SHACL validation in offline mode | `/opt/soya-js` in the image |
+
+### Offline Mode
+
+With `DIDLINT_OFFLINE=true` an instance makes no outgoing connections at all:
+
+- The SOyA structure comes from the local copy in `soya/` (`<DRI>.json` as published, plus `soya-context.json`, which the structure imports).
+- SHACL runs locally through soya-js, the same library soya-web-cli uses; the image contains it under `/opt/soya-js`. The unit tests check that it decides every recorded fixture exactly like soya-web-cli.
+- `POST /api/validate` and the form for DID documents work as online. Everything that has to resolve a DID answers with HTTP 503 and `resolving DIDs is not available in offline mode`.
+- `GET /version` reports `"mode": "offline"`.
+
+```bash
+docker run -d --name didlint --network none \
+  -e RAILS_ENV=production -e RAILS_LOG_TO_STDOUT=TRUE -e RAILS_SERVE_STATIC_FILES=TRUE -e LANG=C.UTF-8 \
+  -e allowed_hosts=localhost -e SECRET_KEY_BASE="$(openssl rand -hex 64)" -e DIDLINT_OFFLINE=true \
+  oydeu/didlint:<tag>
+```
+
+`--network none` leaves the container without any network, so this example can only be checked from inside, e.g. with `docker exec didlint curl -s http://localhost:3000/version`. Online, the local copy is the fallback when the SOyA repository cannot be reached.
 
 ### Kubernetes
 
@@ -99,7 +120,7 @@ Inside the image, which leaves the test gems out:
 docker run --rm -e RAILS_ENV=test -e BUNDLE_WITHOUT= oydeu/didlint:<tag> sh -c 'bundle install --quiet && bundle exec rspec'
 ```
 
-After `SOYA_DID_DRI` changes, record the exchanges again with `bundle exec rails runner script/record_soya_fixtures.rb` and review the diff of `spec/fixtures/`.
+After `SOYA_DID_DRI` changes, record the exchanges again with `bundle exec rails runner script/record_soya_fixtures.rb` and review the diff of `spec/fixtures/` and `soya/`. The tests of the offline validator run where `node` and soya-js are available (`SOYA_JS`), as in the image; elsewhere they are skipped.
 
 ### Regression Checks
 
@@ -111,11 +132,11 @@ python3 script/check_fixtures.py --structure
 python3 script/check_fixtures.py --structure <DRI> --encoding list
 ```
 
-`--url` checks a running instance: the web frontend, its assets and the API documentation; every response against `pytest/NN_output/`; that `/version` reports the structure pinned in `config/initializers/constants.rb`; and that `did:oyd` resolution returns the requested DID as `id`. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby.
+`--url` checks a running instance: the web frontend, its assets and the API documentation; every response against `pytest/NN_output/`; that `/version` reports the structure pinned in `config/initializers/constants.rb`; and that `did:oyd` resolution returns the requested DID as `id`. With `--offline` it expects the instance in offline mode and every request that resolves a DID to be rejected. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby, and checks that the local copy in `soya/` equals the published structure.
 
 **Before `SOYA_DID_DRI` is switched to a new structure, `--structure <new DRI>` must pass.** Intended changes in the verdicts are recorded in `pytest/expectations.json` and the affected `NN_output/` files in the same commit as the new DRI.
 
-The GitHub workflow `regression` runs the structure check, the unit tests and a container built from the commit on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
+The GitHub workflow `regression` runs the structure check, the unit tests, a container built from the commit and the same container in offline mode inside a Docker network without internet access on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
 
 ## Improve DID Lint
 

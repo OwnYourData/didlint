@@ -7,6 +7,7 @@ module DidLint
         # found, not found, deactivated - is never overridden by the fallback.
         # Returns [document, message, via]; via is "http" or "gem" for did:oyd.
         def resolve(did)
+            return nil, "resolving DIDs is " + DidLint::OFFLINE_MESSAGE, nil if DidLint.offline?
             uniresolver_url = ENV["UNIRESOLVER_URL"] || UNIRESOLVER_URL
             msg = ""
             via = nil

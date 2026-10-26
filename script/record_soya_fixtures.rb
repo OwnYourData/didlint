@@ -1,6 +1,8 @@
-# Records the HTTP exchanges the unit tests replay: the SOyA structure, the
-# soya-web-cli verdict for every fixture in pytest/ and two resolver results.
-# Run after SOYA_DID_DRI changes, then review the diff of spec/fixtures/:
+# Records the HTTP exchanges the unit tests replay: the soya-web-cli verdict
+# for every fixture in pytest/ and two resolver results. Also stores the SOyA
+# structure and the SOyA context it imports in soya/, the local copy used as
+# fallback and in offline mode.
+# Run after SOYA_DID_DRI changes, then review the diff of spec/fixtures/ and soya/:
 #
 #   bundle exec rails runner script/record_soya_fixtures.rb
 #
@@ -48,7 +50,8 @@ docs.each do |name, doc|
       save(out.join("soya/validate/#{name}.json"), req, res)
     elsif req.method == :get && !structure_saved
       dri = req.uri.path.split("/").last
-      File.write(out.join("soya/structure_#{dri}.json"), res.body.to_s)
+      File.write(root.join("soya/#{dri}.json"), res.body.to_s)
+      File.write(root.join("soya", DidLint::Structure::CONTEXT_FILE), HTTParty.get(DidLint::Structure::CONTEXT_URL).body.to_s)
       structure_saved = true
     end
   end

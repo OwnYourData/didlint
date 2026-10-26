@@ -1,6 +1,8 @@
 module Api
     module V1
         class ValidationsController < ApiController
+            before_action :reject_offline, only: [:did, :did_jsonld, :did_jschema, :resolve]
+
             def did
                 did = params[:did].to_s
                 if did == ""
@@ -142,6 +144,15 @@ module Api
 
                 render json: input,
                        status: 200
+            end
+
+            private
+
+            # every operation that has to resolve a DID needs the network
+            def reject_offline
+                return unless DidLint.offline?
+                render json: {"valid": false, "error": "resolving DIDs is " + DidLint::OFFLINE_MESSAGE},
+                       status: 503
             end
         end
     end

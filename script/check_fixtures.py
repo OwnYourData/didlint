@@ -9,12 +9,17 @@ expectations in pytest/expectations.json:
                      that /version reports the structure pinned in
                      config/initializers/constants.rb and that did:oyd
                      resolution returns the requested DID as id.
+                     With --offline the instance must run in offline mode:
+                     every request that has to resolve a DID is expected to
+                     be rejected with HTTP 503.
 
   --structure [DRI]  Validates the fixtures directly against a SOyA
                      structure through soya-web-cli and compares the
                      verdict with expectations.json. Run this for a
                      candidate structure before switching SOYA_DID_DRI.
-                     Without DRI the pinned structure is checked.
+                     Without DRI the pinned structure is checked. If soya/
+                     holds a local copy of the structure, it must equal the
+                     published one.
 
 Exit code 0 if everything matches, 1 on any mismatch, 2 on usage errors.
 Only the Python standard library is used.
@@ -33,6 +38,8 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIXTURES = os.path.join(ROOT, "pytest")
 CONSTANTS = os.path.join(ROOT, "config", "initializers", "constants.rb")
+STRUCTURES = os.path.join(ROOT, "soya")
+OFFLINE_ERROR = "resolving DIDs is not available in offline mode"
 TIMEOUT = 60
 
 
@@ -95,7 +102,18 @@ class Report:
         return self.failed == 0
 
 
-def check_instance(base, allow_any_dri):
+def check_offline_rejection(rep, name, status, body):
+    try:
+        error = json.loads(body).get("error")
+    except (ValueError, AttributeError):
+        error = None
+    if status == 503 and error == OFFLINE_ERROR:
+        rep.ok(name, "rejected offline")
+    else:
+        rep.fail(name, "expected HTTP 503 '%s', got HTTP %s %s" % (OFFLINE_ERROR, status, body.strip()[:120]))
+
+
+def check_instance(base, allow_any_dri, offline=False):
     base = base.rstrip("/")
     exp = load_expectations()
     known = exp.get("instance", {}).get("known_failures", {})
@@ -113,8 +131,11 @@ def check_instance(base, allow_any_dri):
         rep.fail("/version", "HTTP %s" % status)
     else:
         pinned = constant("SOYA_DID_DRI")
-        if version.get("did-dri") == pinned or allow_any_dri:
-            rep.ok("/version", "version %s, did-dri %s" % (version.get("version"), version.get("did-dri")))
+        mode = "offline" if offline else "online"
+        if version.get("mode", "online") != mode:
+            rep.fail("/version", "mode %s, expected %s" % (version.get("mode", "online"), mode))
+        elif version.get("did-dri") == pinned or allow_any_dri:
+            rep.ok("/version", "version %s, %s, did-dri %s" % (version.get("version"), mode, version.get("did-dri")))
         else:
             rep.fail("/version", "did-dri %s differs from the pinned %s" % (version.get("did-dri"), pinned))
 
@@ -123,6 +144,10 @@ def check_instance(base, allow_any_dri):
     cases = []
     for path in sorted(glob.glob(os.path.join(FIXTURES, "01_input", "*.doc"))):
         did = read(path).strip()
+        if offline:
+            status, _, body = http("GET", base + "/api/validate/" + did)
+            check_offline_rejection(rep, fixture_name(path), status, body)
+            continue
         cases.append((path, lambda did=did: http("GET", base + "/api/validate/" + did)))
     for group in ("02_input", "03_input"):
         for path in sorted(glob.glob(os.path.join(FIXTURES, group, "*.json"))):
@@ -147,6 +172,9 @@ def check_instance(base, allow_any_dri):
 
     for did in exp.get("resolve", []):
         status, headers, body = http("GET", base + "/api/resolve/" + did)
+        if offline:
+            check_offline_rejection(rep, "resolve " + did, status, body)
+            continue
         via = headers.get("X-DID-Resolved-Via", "-") if headers else "-"
         try:
             got = json.loads(body).get("id")
@@ -218,6 +246,26 @@ def prepare(document, repo, dri, list_attrs):
     return {"@context": context, "@graph": [doc]}
 
 
+def check_local_copy(rep, repo, dri):
+    # the copy in soya/ (fallback and offline mode) must be the published structure
+    path = os.path.join(STRUCTURES, dri + ".json")
+    if not os.path.exists(path):
+        if dri == constant("SOYA_DID_DRI"):
+            rep.fail("soya/" + dri + ".json", "no local copy of the pinned structure")
+        else:
+            print("NOTE  no local copy of %s in soya/" % dri)
+        return
+    status, _, body = http("GET", repo.rstrip("/") + "/" + dri)
+    try:
+        same = status == 200 and json.loads(body) == json.loads(read(path))
+    except ValueError:
+        same = False
+    if same:
+        rep.ok("soya/" + dri + ".json", "equals the published structure")
+    else:
+        rep.fail("soya/" + dri + ".json", "differs from the published structure (HTTP %s)" % status)
+
+
 def check_structure(dri, encoding, soya_web_cli, repo):
     exp = load_expectations()["structure"]
     expected = exp["valid"]
@@ -225,6 +273,7 @@ def check_structure(dri, encoding, soya_web_cli, repo):
     rep = Report("structure %s (%s encoding)" % (dri, encoding))
     if dri != exp.get("dri"):
         print("NOTE  expectations were recorded for %s" % exp.get("dri"))
+    check_local_copy(rep, repo, dri)
     list_attrs = set_attributes(repo, dri) if encoding == "list" else []
 
     on_disk = sorted(fixture_name(p) for g in ("02_input", "03_input")
@@ -260,6 +309,8 @@ def main():
     parser.add_argument("--url", help="base URL of a DID Lint instance")
     parser.add_argument("--allow-any-dri", action="store_true",
                         help="do not require the instance to run the pinned structure")
+    parser.add_argument("--offline", action="store_true",
+                        help="the instance runs with DIDLINT_OFFLINE=true")
     parser.add_argument("--structure", nargs="?", const="", default=None, metavar="DRI",
                         help="check a SOyA structure; default is the pinned one")
     parser.add_argument("--encoding", choices=("flat", "list"), default=None,
@@ -276,7 +327,7 @@ def main():
         encoding = args.encoding or load_expectations()["structure"].get("encoding", "flat")
         ok = check_structure(args.structure, encoding, args.soya_web_cli, args.soya_repo) and ok
     if args.url is not None:
-        ok = check_instance(args.url, args.allow_any_dri) and ok
+        ok = check_instance(args.url, args.allow_any_dri, args.offline) and ok
     return 0 if ok else 1
 
 

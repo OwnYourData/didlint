@@ -4,7 +4,7 @@ module RecordedHttp
 
   def stub_soya_structure(dri = SOYA_DID_DRI)
     stub_request(:get, "#{SOYA_REPO}/#{dri}")
-      .to_return(status: 200, body: FIXTURES.join("soya/structure_#{dri}.json").read,
+      .to_return(status: 200, body: Rails.root.join("soya/#{dri}.json").read,
                  headers: { "Content-Type" => "application/json" })
   end
 
@@ -23,6 +23,41 @@ module RecordedHttp
     stub_request(:get, "#{OYDID_RESOLVER_URL}/1.0/identifiers/#{did}")
       .to_return(status: recording["status"], body: recording["response"],
                  headers: { "Content-Type" => recording["content_type"] })
+  end
+
+  # the recorded soya-web-cli exchanges as [request body, response body]
+  def recorded_soya_validations
+    Dir[FIXTURES.join("soya/validate/*.json")].sort.map do |file|
+      recording = JSON.parse(File.read(file))
+      [File.basename(file, ".json"), recording["request"], recording["response"]]
+    end
+  end
+
+  # SHACL results without blank node ids, for comparing two validators
+  def comparable_soya_result(result)
+    result = JSON.parse(result) if result.is_a?(String)
+    results = result["results"].map do |r|
+      [r["message"].to_a.map { |m| m["value"] }.sort, r["value"], r.dig("severity", "value")]
+    end
+    [result["isValid"], results.sort_by(&:to_s), result["classChecks"].to_a.size]
+  end
+
+  # neither the SOyA repository nor a local copy of the structure
+  def without_any_structure(dri = SOYA_DID_DRI)
+    stub_request(:get, "#{SOYA_REPO}/#{dri}").to_return(status: 503)
+    Dir.mktmpdir do |empty|
+      ENV["SOYA_STRUCTURE_DIR"] = empty
+      yield
+    ensure
+      ENV.delete("SOYA_STRUCTURE_DIR")
+    end
+  end
+
+  def with_offline_mode
+    ENV["DIDLINT_OFFLINE"] = "true"
+    yield
+  ensure
+    ENV.delete("DIDLINT_OFFLINE")
   end
 
   def stub_soya_web_cli_version

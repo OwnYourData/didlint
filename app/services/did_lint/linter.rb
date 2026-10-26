@@ -129,6 +129,17 @@ module DidLint
             #     end
             # end
 
+            # offline: SHACL in a local soya-js process against the local copy
+            if DidLint.offline?
+                begin
+                    result = LocalValidator.new.validate(Structure.self_contained(soya_did_dri), JSON.parse(json_input))
+                rescue LocalValidator::Failed => e
+                    Rails.logger.warn("local SHACL validation failed: " + e.message)
+                    return parse_soya_output({})
+                end
+                return parse_soya_output(result.to_json)
+            end
+
             timeout = false
             begin
                 response = HTTParty.post(soya_validation_url, 

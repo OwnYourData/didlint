@@ -8,9 +8,12 @@ class ApplicationController < ActionController::Base
         retVal = {}
         retVal["service"] = "DID Linter"
         retVal["version"] = VERSION.to_s
-        web_cli_version = HTTParty.get(soya_web_cli + "/api/v1/version", timeout: 10).parsed_response["version"] rescue nil
-        if !web_cli_version.nil?
-            retVal["soya-cli_version"] = web_cli_version
+        retVal["mode"] = DidLint.offline? ? "offline" : "online"
+        if !DidLint.offline?
+            web_cli_version = HTTParty.get(soya_web_cli + "/api/v1/version", timeout: 10).parsed_response["version"] rescue nil
+            if !web_cli_version.nil?
+                retVal["soya-cli_version"] = web_cli_version
+            end
         end
         retVal["did-dri"] = soya_did_dri
         retVal["oydid-gem"] = Gem.loaded_specs["oydid"]&.version.to_s

@@ -11,6 +11,11 @@ info:
     Every path below `/api/` is also available below `/api/v1/`.
 
 
+    With `DIDLINT_OFFLINE=true` an instance makes no outgoing connections: it
+    validates posted DID documents against its local copy of the SOyA
+    structure and answers every request that has to resolve a DID with 503.
+
+
     `did:oyd` is resolved through the OYDID resolver; if it cannot be reached,
     the bundled oydid gem resolves locally. The response header
     `X-DID-Resolved-Via` shows which path answered. All other DID methods are
@@ -47,6 +52,8 @@ paths:
           $ref: '#/components/responses/NotResolvable'
         '502':
           $ref: '#/components/responses/StructureUnavailable'
+        '503':
+          $ref: '#/components/responses/Offline'
   /api/validate:
     post:
       summary: validate the DID document in the request body
@@ -95,6 +102,8 @@ paths:
           $ref: '#/components/responses/NotResolvable'
         '502':
           $ref: '#/components/responses/StructureUnavailable'
+        '503':
+          $ref: '#/components/responses/Offline'
   /api/validate_jsonld/{did}:
     get:
       summary: resolve a DID and check its DID document as JSON-LD
@@ -143,6 +152,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationResult'
+        '503':
+          $ref: '#/components/responses/Offline'
   /api/validate_jschema/{did}:
     get:
       summary: resolve a DID and validate its DID document against the JSON Schema of the DID Specification Registries
@@ -156,6 +167,8 @@ paths:
           $ref: '#/components/responses/SchemaUnavailable'
         '422':
           $ref: '#/components/responses/NotResolvable'
+        '503':
+          $ref: '#/components/responses/Offline'
   /api/validate_json-schema/{did}:
     get:
       summary: same as GET /api/validate_jschema/{did}
@@ -169,6 +182,8 @@ paths:
           $ref: '#/components/responses/SchemaUnavailable'
         '422':
           $ref: '#/components/responses/NotResolvable'
+        '503':
+          $ref: '#/components/responses/Offline'
   /api/resolve/{did}:
     get:
       summary: resolve a DID and return its DID document
@@ -198,6 +213,8 @@ paths:
                     type: string
               example:
                 error: did not found
+        '503':
+          $ref: '#/components/responses/Offline'
   /version:
     get:
       summary: show version and configuration of the instance
@@ -254,6 +271,15 @@ components:
           example:
             valid: false
             error: did not found
+    Offline:
+      description: the instance runs in offline mode (`DIDLINT_OFFLINE`) and cannot resolve DIDs
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationResult'
+          example:
+            valid: false
+            error: resolving DIDs is not available in offline mode
     StructureUnavailable:
       description: the SOyA structure used for validation cannot be loaded
       content:
@@ -337,10 +363,14 @@ components:
           example: DID Linter
         version:
           type: string
-          example: 0.8.2
+          example: 0.9.0
+        mode:
+          type: string
+          enum: [online, offline]
+          description: '`offline` with `DIDLINT_OFFLINE=true`: no outgoing connections, no DID resolution'
         soya-cli_version:
           type: string
-          description: version reported by soya-web-cli; missing if it is not reachable
+          description: version reported by soya-web-cli; missing offline or if it is not reachable
         did-dri:
           type: string
           description: DRI of the SOyA structure used for validation
