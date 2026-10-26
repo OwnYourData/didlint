@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
         retVal = {}
         retVal["service"] = "DID Linter"
         retVal["version"] = VERSION.to_s
-        web_cli_version = HTTParty.get(soya_web_cli + "/api/v1/version").parsed_response["version"] rescue nil
+        web_cli_version = HTTParty.get(soya_web_cli + "/api/v1/version", timeout: 10).parsed_response["version"] rescue nil
         if !web_cli_version.nil?
             retVal["soya-cli_version"] = web_cli_version
         end
@@ -22,6 +22,19 @@ class ApplicationController < ActionController::Base
     def missing
         render json: {"error": "invalid path"},
                status: 404
+    end
+
+    private
+
+    # resolves a DID and reports the path taken in the X-DID-Resolved-Via header
+    def resolve_did(did)
+        doc, msg, via = DidLint::Resolver.new.resolve(did)
+        response.set_header("X-DID-Resolved-Via", via) if via
+        [doc, msg]
+    end
+
+    def linter
+        @linter ||= DidLint::Linter.new
     end
 
 end

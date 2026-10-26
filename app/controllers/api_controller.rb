@@ -1,5 +1,10 @@
 class ApiController < ApplicationController
     protect_from_forgery with: :null_session
+
+    rescue_from DidLint::StructureUnavailable do
+        render json: {"valid": false, "error": "SOyA structure not available"},
+               status: 502
+    end
     before_action :cors_preflight_check
     after_action :cors_set_access_control_headers
 

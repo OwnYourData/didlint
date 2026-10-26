@@ -1,15 +1,19 @@
 require "cgi"
 
 class StaticPagesController < ApplicationController
-    include ApplicationHelper
-    include ContextHelper
+    rescue_from DidLint::StructureUnavailable do
+        @result = true
+        flash.now[:warning] = "The SOyA structure used for validation is not available, please try again later"
+        @did_document = JSON.pretty_generate(@did_document) if @did_document.is_a?(Hash) || @did_document.is_a?(Array)
+        render "home"
+    end
 
     def home
         @result = false
         @did_document = ""
         @did = params[:did].to_s
         if @did != ""
-            retVal = did_resolve(@did)
+            retVal = resolve_did(@did)
             if retVal.first.nil?
                 @result = true
                 flash.now[:warning] = "Error in resolving DID Document: " + retVal.last.to_s
@@ -31,7 +35,6 @@ class StaticPagesController < ApplicationController
             return
         end
 
-        soya_web_cli = ENV["SOYA_WEB_CLI"] || SOYA_WEB_CLI
         @did_document = JSON.parse(params[:did_document].to_s) rescue nil
         if @did_document.nil?
             @did = params[:did].to_s
@@ -44,126 +47,8 @@ class StaticPagesController < ApplicationController
             @did = @did_document["id"].to_s
         end
 
-        puts "Input DID Document:"
-        puts @did_document.to_json
-
-        # pre-process DID Document
-        ddo = soya_prep(@did_document.dup)
-
-        # validation
-        retVal = soya_validate(ddo.to_json, @did_document.dup.to_json).transform_keys(&:to_s)
-
-        # context validation
-        # - but: skip context validation for invalid jsonld 
-        context_error = retVal["errors"].first.transform_keys(&:to_s)["value"].to_s rescue ""
-        if context_error != "jsonld-validation"
-            context_retVal = validate_DID_context(@did_document.dup)
-
-            # consider JSON vs. JSON-LD representation
-            # https://www.w3.org/TR/did-core/#json
-
-            if @did_document["@context"].nil?
-                # assume JSON representation
-                retVal["infos"] = context_retVal
-
-            else
-                # assume JSON-LD representation
-                # https://www.w3.org/TR/did-core/#json-ld
-
-                # check if context is in the registered verification methods
-                soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
-                vmts = getVerificationMethodTypes(soya_did_dri).map{|i| i["context"]}
-                not_standard_vmts = @did_document["@context"] - vmts rescue []
-                not_standard_vmts.delete_if { |el| el.is_a?(Hash) && (el["@base"] || el[:"@base"]) }
-                if not_standard_vmts.count > 0
-                    if retVal["infos"].nil?
-                        retVal["infos"] = []
-                    end
-                    not_standard_vmts.each do |item|
-                        el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
-                        retVal["infos"] << el
-                    end
-                    # if there are non-standard verification methods, ignore "invalid '" error messages
-                    if !retVal["errors"].nil? && retVal["errors"].count > 0
-                        error_list = retVal["errors"].dup
-                        retVal["errors"] = []
-                        error_list.each do |e|
-                            if !e.transform_keys(&:to_s)["error"].to_s.start_with?("invalid '")
-                                retVal["errors"] << e
-                            end
-                        end
-                        if retVal["errors"].count == 0
-                            retVal["valid"] = true
-                            retVal.delete("errors")
-                        end
-                    end
-                else
-                    # merge responses
-                    if context_retVal != []
-                        if retVal["errors"].nil?
-                            retVal["errors"] = context_retVal
-                        else
-                            retVal["errors"] << context_retVal
-                            retVal["errors"] = retVal["errors"].flatten
-                        end
-                        if !retVal["errors"].nil? && retVal["errors"].count > 0
-                            retVal["valid"] = false
-                        end
-                    end
-                end
-            end
-
-            # post-process retVal
-            if !retVal["errors"].nil? && retVal["errors"].count > 0
-                retVal["errors"].each do |e|
-                    e[:value] = e[:value].to_s.split("/").last.to_s
-                end
-            end
-            if !retVal["infos"].nil? && retVal["infos"].count > 0
-                if retVal["infos"].first.is_a?(String)
-                    retVal["infos"] = ["message": retVal["infos"].first.to_s]
-                else
-                    retVal["infos"].each do |e|
-                        if !e[:error].nil?
-                            e[:message] = e[:error]
-                            e=e.delete(:error)
-                        end
-                    end
-                end
-            end
-        end
-
-        valid = retVal.stringify_keys["valid"] rescue nil
-        if valid.nil?
-            @result = false
-        else
-            @result = true
-            if valid
-                flash.now[:success] = "Conforms to W3C DID Spec v1.0"
-            else
-                entries = (retVal.stringify_keys["errors"] || []).map do |e|
-                    e = e.stringify_keys
-                    flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s)
-                end
-                flash.now[:danger] = flash_list("Error in validating DID Document:", entries)
-            end
-
-            if !retVal["infos"].nil? && retVal["infos"].count > 0
-                if retVal["infos"].first.is_a?(String)
-                    info_text = retVal["infos"].first.to_s
-                else
-                    infos = retVal.stringify_keys["infos"].map(&:stringify_keys)
-                    if infos.any? { |e| e["error"].to_s != "" }
-                        entries = infos.map { |e| flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s) }
-                        info_text = flash_list("Consider JSON-LD representation by adding a JSON-LD Context:", entries)
-                    else
-                        entries = infos.map { |e| flash_message(e["message"]) }
-                        info_text = flash_list("Notes on JSON-LD Context:", entries)
-                    end
-                end
-                flash.now[:info] = info_text
-            end
-        end
+        retVal = linter.validate(@did_document)
+        flash_validation(retVal)
 
         @did_document = JSON.pretty_generate(@did_document) rescue nil?
         render "home"
@@ -172,7 +57,7 @@ class StaticPagesController < ApplicationController
     def resolve_and_validate
         @did = params[:did].to_s
         if @did != ""
-            retVal = did_resolve(@did)
+            retVal = resolve_did(@did)
             if retVal.first.nil?
                 @result = true
                 flash.now[:warning] = "Error in resolving DID Document: " + retVal.last.to_s
@@ -187,123 +72,8 @@ class StaticPagesController < ApplicationController
             return
         end
 
-        # pre-process DID Document
-        ddo = soya_prep(@did_document.dup)
-
-        # validation
-        retVal = soya_validate(ddo.to_json, @did_document.dup.to_json).transform_keys(&:to_s)
-
-        # context validation
-        # - but: skip context validation for invalid jsonld 
-        context_error = retVal["errors"].first.transform_keys(&:to_s)["value"].to_s rescue ""
-        if context_error != "jsonld-validation"
-            context_retVal = validate_DID_context(@did_document.dup)
-
-            # consider JSON vs. JSON-LD representation
-            # https://www.w3.org/TR/did-core/#json
-
-            if @did_document["@context"].nil?
-                # assume JSON representation
-                retVal["infos"] = context_retVal
-
-            else
-                # assume JSON-LD representation
-                # https://www.w3.org/TR/did-core/#json-ld
-
-                # check if context is in the registered verification methods
-                soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
-                vmts = getVerificationMethodTypes(soya_did_dri).map{|i| i["context"]}
-                not_standard_vmts = @did_document["@context"] - vmts rescue []
-                not_standard_vmts.delete_if { |el| el.is_a?(Hash) && (el["@base"] || el[:"@base"]) }
-                if not_standard_vmts.count > 0
-                    if retVal["infos"].nil?
-                        retVal["infos"] = []
-                    end
-                    not_standard_vmts.each do |item|
-                        el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
-                        retVal["infos"] << el
-                    end
-                    # if there are non-standard verification methods, ignore "invalid '" error messages
-                    if !retVal["errors"].nil? && retVal["errors"].count > 0
-                        error_list = retVal["errors"].dup
-                        retVal["errors"] = []
-                        error_list.each do |e|
-                            if !e.transform_keys(&:to_s)["error"].to_s.start_with?("invalid '")
-                                retVal["errors"] << e
-                            end
-                        end
-                        if retVal["errors"].count == 0
-                            retVal["valid"] = true
-                            retVal.delete("errors")
-                        end
-                    end
-                else
-                    # merge responses
-                    if context_retVal != []
-                        if retVal["errors"].nil?
-                            retVal["errors"] = context_retVal
-                        else
-                            retVal["errors"] << context_retVal
-                            retVal["errors"] = retVal["errors"].flatten
-                        end
-                        if !retVal["errors"].nil? && retVal["errors"].count > 0
-                            retVal["valid"] = false
-                        end
-                    end
-                end
-            end
-
-            # post-process retVal
-            if !retVal["errors"].nil? && retVal["errors"].count > 0
-                retVal["errors"].each do |e|
-                    e[:value] = e[:value].to_s.split("/").last.to_s
-                end
-            end
-            if !retVal["infos"].nil? && retVal["infos"].count > 0
-                if retVal["infos"].first.is_a?(String)
-                    retVal["infos"] = ["message": retVal["infos"].first.to_s]
-                else
-                    retVal["infos"].each do |e|
-                        if !e[:error].nil?
-                            e[:message] = e[:error]
-                            e=e.delete(:error)
-                        end
-                    end
-                end
-            end
-        end
-
-        valid = retVal.stringify_keys["valid"] rescue nil
-        if valid.nil?
-            @result = false
-        else
-            @result = true
-            if valid
-                flash.now[:success] = "Conforms to W3C DID Spec v1.0"
-            else
-                entries = (retVal.stringify_keys["errors"] || []).map do |e|
-                    e = e.stringify_keys
-                    flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s)
-                end
-                flash.now[:danger] = flash_list("Error in validating DID Document:", entries)
-            end
-
-            if !retVal["infos"].nil? && retVal["infos"].count > 0
-                if retVal["infos"].first.is_a?(String)
-                    info_text = retVal["infos"].first.to_s
-                else
-                    infos = retVal.stringify_keys["infos"].map(&:stringify_keys)
-                    if infos.any? { |e| e["error"].to_s != "" }
-                        entries = infos.map { |e| flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s) }
-                        info_text = flash_list("Consider JSON-LD representation by adding a JSON-LD Context:", entries)
-                    else
-                        entries = infos.map { |e| flash_message(e["message"]) }
-                        info_text = flash_list("Notes on JSON-LD Context:", entries)
-                    end
-                end
-                flash.now[:info] = info_text
-            end
-        end
+        retVal = linter.validate(@did_document)
+        flash_validation(retVal)
 
         @did_document = JSON.pretty_generate(@did_document) rescue nil?
         render "home"
@@ -312,6 +82,42 @@ class StaticPagesController < ApplicationController
 
 
     private
+
+    # builds the flash messages of the web frontend from a v1 validation result
+    def flash_validation(retVal)
+            valid = retVal.stringify_keys["valid"] rescue nil
+            if valid.nil?
+                @result = false
+            else
+                @result = true
+                if valid
+                    flash.now[:success] = "Conforms to W3C DID Spec v1.0"
+                else
+                    entries = (retVal.stringify_keys["errors"] || []).map do |e|
+                        e = e.stringify_keys
+                        flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s)
+                    end
+                    flash.now[:danger] = flash_list("Error in validating DID Document:", entries)
+                end
+
+                if !retVal["infos"].nil? && retVal["infos"].count > 0
+                    if retVal["infos"].first.is_a?(String)
+                        info_text = retVal["infos"].first.to_s
+                    else
+                        infos = retVal.stringify_keys["infos"].map(&:stringify_keys)
+                        if infos.any? { |e| e["error"].to_s != "" }
+                            entries = infos.map { |e| flash_escape(e["value"].to_s.split("/").last.to_s + ": " + e["error"].to_s) }
+                            info_text = flash_list("Consider JSON-LD representation by adding a JSON-LD Context:", entries)
+                        else
+                            entries = infos.map { |e| flash_message(e["message"]) }
+                            info_text = flash_list("Notes on JSON-LD Context:", entries)
+                        end
+                    end
+                    flash.now[:info] = info_text
+                end
+            end
+
+    end
 
     # Flash messages are rendered as HTML. Every value that stems from the
     # validated document or from a remote service is escaped; only the list
