@@ -49,6 +49,37 @@ RSpec.describe "API", type: :request do
     expect(JSON.parse(response.body)).to eq("valid" => false, "error" => "SOyA structure not available")
   end
 
+  it "answers CORS preflight requests" do
+    options "/api/validate", headers: { "Origin" => "https://example.org",
+                                        "Access-Control-Request-Method" => "POST",
+                                        "Access-Control-Request-Headers" => "content-type" }
+    expect(response).to have_http_status(:ok)
+    expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
+    expect(response.headers["Access-Control-Allow-Methods"]).to include("POST")
+  end
+
+  it "lets browsers read how a did:oyd was resolved" do
+    stub_oydid_resolver(did)
+    get "/api/validate/#{did}", headers: { "Origin" => "https://example.org" }
+    expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
+    expect(response.headers["Access-Control-Expose-Headers"]).to include("X-DID-Resolved-Via")
+  end
+
+  it "accepts posted documents without a CSRF token and logs no CSRF warning" do
+    log = StringIO.new
+    logger = ActionController::Base.logger
+    ActionController::Base.allow_forgery_protection = true
+    ActionController::Base.logger = Logger.new(log)
+    post "/api/validate", params: pytest.join("02_input/valid_oyd.json").read,
+                          headers: { "Content-Type" => "application/json" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(pytest.join("02_output/valid_oyd.json").read.strip)
+    expect(log.string).not_to include("CSRF")
+  ensure
+    ActionController::Base.allow_forgery_protection = false
+    ActionController::Base.logger = logger
+  end
+
   it "answers 404 for unknown paths" do
     get "/no/such/path"
     expect(response).to have_http_status(:not_found)
