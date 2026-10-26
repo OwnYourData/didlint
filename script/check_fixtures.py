@@ -186,6 +186,11 @@ def check_web(base, rep):
         rep.ok("web /api-docs")
     else:
         rep.fail("web /api-docs", "HTTP %s" % status)
+    status, _, body = http("GET", base + "/api-docs/v1/swagger.yaml")
+    if status == 200 and "/api/resolve/{did}" in body:
+        rep.ok("web /api-docs/v1/swagger.yaml")
+    else:
+        rep.fail("web /api-docs/v1/swagger.yaml", "HTTP %s, or the resolve endpoint is not documented" % status)
 
 
 def set_attributes(repo, dri):
@@ -202,7 +207,7 @@ def set_attributes(repo, dri):
 
 
 def prepare(document, repo, dri, list_attrs):
-    # mirrors soya_prep in app/helpers/application_helper.rb
+    # mirrors soya_prep in app/services/did_lint/linter.rb
     base = repo.rstrip("/") + "/" + dri + "/"
     context = {"@version": 1.1, "did": base, "@vocab": base}
     for attr in list_attrs:

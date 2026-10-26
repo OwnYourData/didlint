@@ -1,3 +1,0 @@
-DID sources:
-- https://github.com/decentralized-identity/universal-resolver/blob/main/uni-resolver-web/src/main/resources/application.yml
-- https://w3c.github.io/did-spec-registries/#did-methods

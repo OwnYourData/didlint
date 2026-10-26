@@ -1,81 +1,352 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: DID Lint API
   description: >-
-    The DID Lint service provides an easy to use interface for validating DID Documents.
-     
-     Further information:
-     - Public DID Lint website at [https://didlint.ownyourdata.eu/](https://didlint.ownyourdata.eu/)
-     - view other [OwnYourData Service API's](https://api-docs.ownyourdata.eu)
+    DID Lint validates DID documents against the W3C DID Core specification.
+    The structure of a document is checked with SHACL against a SOyA structure,
+    the JSON-LD context in a separate step. `GET /version` reports the
+    structure (`did-dri`) an instance uses.
+
+
+    Every path below `/api/` is also available below `/api/v1/`.
+
+
+    `did:oyd` is resolved through the OYDID resolver; if it cannot be reached,
+    the bundled oydid gem resolves locally. The response header
+    `X-DID-Resolved-Via` shows which path answered. All other DID methods are
+    resolved through a Universal Resolver.
+
+
+    Further information: [DID Lint website](https://didlint.ownyourdata.eu/),
+    [source code](https://github.com/OwnYourData/didlint),
+    [other OwnYourData APIs](https://api-docs.ownyourdata.eu)
   contact:
     email: office@ownyourdata.eu
   license:
     name: MIT License
-    url: 'https://opensource.org/licenses/MIT'
+    url: https://opensource.org/licenses/MIT
   version: v1
 servers:
-  - url: https://didlint.ownyourdata.eu/
-    description: official version hosted by OwnYourData
+  - url: https://didlint.ownyourdata.eu
+    description: public instance hosted by OwnYourData
+tags:
+  - name: Validation
+  - name: Resolution
+  - name: Administration
 paths:
   /api/validate/{did}:
     get:
-      summary: resolve DID and show validation information
-      tags:
-        - General
+      summary: resolve a DID and validate its DID document
+      tags: [Validation]
       parameters:
-        - name: did
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Did'
+      responses:
+        '200':
+          $ref: '#/components/responses/Validation'
+        '422':
+          $ref: '#/components/responses/NotResolvable'
+        '502':
+          $ref: '#/components/responses/StructureUnavailable'
+  /api/validate:
+    post:
+      summary: validate the DID document in the request body
+      tags: [Validation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: DID document
+            example:
+              '@context': https://www.w3.org/ns/did/v1
+              id: did:example:123456789abcdefghi
+              verificationMethod:
+                - id: did:example:123456789abcdefghi#key-1
+                  type: Multikey
+                  controller: did:example:123456789abcdefghi
+                  publicKeyMultibase: z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK
+              authentication:
+                - did:example:123456789abcdefghi#key-1
+      responses:
+        '200':
+          $ref: '#/components/responses/Validation'
+        '422':
+          description: the request body is not a JSON object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+              example:
+                valid: false
+                error: can't parse input
+        '502':
+          $ref: '#/components/responses/StructureUnavailable'
+  /api/validate_shacl/{did}:
+    get:
+      summary: same as GET /api/validate/{did}
+      tags: [Validation]
+      parameters:
+        - $ref: '#/components/parameters/Did'
+      responses:
+        '200':
+          $ref: '#/components/responses/Validation'
+        '422':
+          $ref: '#/components/responses/NotResolvable'
+        '502':
+          $ref: '#/components/responses/StructureUnavailable'
+  /api/validate_jsonld/{did}:
+    get:
+      summary: resolve a DID and check its DID document as JSON-LD
+      description: >-
+        Expands the document through soya-web-cli in JSON-LD safe mode. The
+        result is not part of the verdict of GET /api/validate/{did}.
+      tags: [Validation]
+      parameters:
+        - $ref: '#/components/parameters/Did'
+      responses:
+        '200':
+          description: >-
+            `valid` is true if the document expands without warnings;
+            otherwise `error` and `message` describe the first problem
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [valid]
+                properties:
+                  valid:
+                    type: boolean
+                  message:
+                    type: string
+                  error:
+                    description: error object of the JSON-LD processor, or a message
+                    oneOf:
+                      - type: string
+                      - type: object
+        '422':
+          description: the DID cannot be resolved or its document has no `@context`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  error:
+                    type: string
+                  info:
+                    type: string
+        '502':
+          description: the JSON-LD validation service is not reachable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+  /api/validate_jschema/{did}:
+    get:
+      summary: resolve a DID and validate its DID document against the JSON Schema of the DID Specification Registries
+      tags: [Validation]
+      parameters:
+        - $ref: '#/components/parameters/Did'
+      responses:
+        '200':
+          $ref: '#/components/responses/JsonSchema'
+        '404':
+          $ref: '#/components/responses/SchemaUnavailable'
+        '422':
+          $ref: '#/components/responses/NotResolvable'
+  /api/validate_json-schema/{did}:
+    get:
+      summary: same as GET /api/validate_jschema/{did}
+      tags: [Validation]
+      parameters:
+        - $ref: '#/components/parameters/Did'
+      responses:
+        '200':
+          $ref: '#/components/responses/JsonSchema'
+        '404':
+          $ref: '#/components/responses/SchemaUnavailable'
+        '422':
+          $ref: '#/components/responses/NotResolvable'
+  /api/resolve/{did}:
+    get:
+      summary: resolve a DID and return its DID document
+      tags: [Resolution]
+      parameters:
+        - $ref: '#/components/parameters/Did'
+      responses:
+        '200':
+          description: the DID document
+          headers:
+            X-DID-Resolved-Via:
+              $ref: '#/components/headers/ResolvedVia'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: DID document
+        '422':
+          description: the DID cannot be resolved
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [error]
+                properties:
+                  error:
+                    type: string
+              example:
+                error: did not found
+  /version:
+    get:
+      summary: show version and configuration of the instance
+      tags: [Administration]
       responses:
         '200':
           description: success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationResponse'
-        '422':
-          description: invalid input
-  /api/validate:
-    post:
-      summary: validate DID document provided in body
-      tags: 
-        - General
-      requestBody:
-        content:
-          application/json:
-            schema: {}
-  /version:
-    get:
-      summary: show information about the DID Lint service
-      tags:
-        - Administration
-      responses:
-        '200':
-          description: success
-
-
+                $ref: '#/components/schemas/VersionInfo'
 
 components:
+  parameters:
+    Did:
+      name: did
+      in: path
+      required: true
+      schema:
+        type: string
+      example: did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1
+  headers:
+    ResolvedVia:
+      description: only for did:oyd - `http` (OYDID resolver) or `gem` (local fallback)
+      schema:
+        type: string
+        enum: [http, gem]
+  responses:
+    Validation:
+      description: validation result
+      headers:
+        X-DID-Resolved-Via:
+          $ref: '#/components/headers/ResolvedVia'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationResult'
+          examples:
+            valid:
+              value:
+                valid: true
+            invalid:
+              value:
+                valid: false
+                errors:
+                  - value: verificationMethod
+                    error: invalid 'verificationMethod'
+    NotResolvable:
+      description: the DID is missing or cannot be resolved
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationResult'
+          example:
+            valid: false
+            error: did not found
+    StructureUnavailable:
+      description: the SOyA structure used for validation cannot be loaded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationResult'
+          example:
+            valid: false
+            error: SOyA structure not available
+    JsonSchema:
+      description: validation result; `errors` lists the messages of the JSON Schema validator
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [valid]
+            properties:
+              valid:
+                type: boolean
+              errors:
+                type: array
+                items:
+                  type: string
+    SchemaUnavailable:
+      description: the JSON Schema cannot be loaded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
   schemas:
-    ValidationResponse:
+    ValidationResult:
+      type: object
+      additionalProperties: false
+      required: [valid]
       properties:
         valid:
           type: boolean
-        error:
-          type: string
         errors:
           type: array
+          description: violations; present only if `valid` is false
           items:
-            type: object
-            properties:
-              value:
-                type: string
-              message:
-                type: string
-  requestBodies:
-    Input:
-      content:
-        application/json:
-          schema: {}
+            $ref: '#/components/schemas/Violation'
+        infos:
+          type: array
+          description: notes that do not affect the verdict
+          items:
+            $ref: '#/components/schemas/Info'
+        error:
+          type: string
+          description: the validation could not be run, e.g. because the DID cannot be resolved
+    Violation:
+      type: object
+      additionalProperties: false
+      required: [value, error]
+      properties:
+        value:
+          type: string
+          description: the attribute or check concerned
+        error:
+          type: string
+    Info:
+      type: object
+      additionalProperties: false
+      required: [message]
+      properties:
+        value:
+          type: string
+          description: the attribute or check concerned
+        message:
+          type: string
+          description: may contain an HTML link to the DID Specification Registries
+    VersionInfo:
+      type: object
+      required: [service, version, did-dri]
+      properties:
+        service:
+          type: string
+          example: DID Linter
+        version:
+          type: string
+          example: 0.8.2
+        soya-cli_version:
+          type: string
+          description: version reported by soya-web-cli; missing if it is not reachable
+        did-dri:
+          type: string
+          description: DRI of the SOyA structure used for validation
+        oydid-gem:
+          type: string
+          description: version of the bundled oydid gem
+        oydid-resolver:
+          type: string
+          description: base URL of the OYDID resolver

@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# input list of DIDs
-# Linux: curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq -o json .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' > dids.list
-# MacOS: curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' > dids.list
+# Validates a list of DIDs (one per line on stdin) with the public DID Lint
+# service and prints one summary line per DID. Example with the test
+# identifiers of the Universal Resolver (needs yq and jq):
+# curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq -o json .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' | script/iterate.sh
 
 while read -r did; do
 	# response=$(curl -s https://didlint.ownyourdata.eu/api/validate/$did | jq '.valid')

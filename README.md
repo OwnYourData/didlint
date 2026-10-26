@@ -1,92 +1,107 @@
 # DID Lint
-DID Lint provides services to validate conformance of DID Documents to the W3C Decentralised Identifier Specification. It uses overlay information from the [SOyA structure on DIDs](https://soya.ownyourdata.eu/Did/yaml) to validate inputs and identify any violations to the standard.
 
-[Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform and also provides functionalities for validation and transformation. It builds on W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and related semantic web technologies to provide a lightweight approach for data integration and exchange.
+DID Lint validates DID documents against the W3C [Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core/) specification. The rules are described in a [SOyA](https://ownyourdata.github.io/soya/) structure: SHACL checks the structure of a document, and a separate step checks its JSON-LD `@context`. DID Lint resolves DIDs itself, or validates a DID document you provide.
 
-At the core of SOyA is a YAML-based data model for describing data structures with bases and optional overlays, which provide additional information and context. The DID Lint service uses the following SOyA structure for validating DID Documents: [click here](https://soya.ownyourdata.eu/Did/yaml).
+[Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform with built-in validation and transformation. It builds on the W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and describes data structures in YAML as bases with optional overlays.
 
-## Usage
+The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE](https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/yaml). The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
 
-### On the Command Line
+## Online Service
 
-To validate DID documents on the command line make sure to have the soya-cli installed: https://github.com/OwnYourData/soya    
+DID Lint is available at https://didlint.ownyourdata.eu, with a web frontend and a REST API.
 
-You can use a pre-built package from npmjs.com:
+```bash
+curl https://didlint.ownyourdata.eu/api/validate/did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1
+cat did_document.json | curl -H 'Content-Type: application/json' -d @- -X POST https://didlint.ownyourdata.eu/api/validate
+```
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/validate/{did}` | resolve a DID and validate its DID document |
+| `POST /api/validate` | validate the DID document in the request body |
+| `GET /api/resolve/{did}` | resolve a DID and return its DID document |
+| `GET /api/validate_jsonld/{did}` | check the DID document as JSON-LD (not part of the verdict) |
+| `GET /api/validate_jschema/{did}` | validate the DID document against the JSON Schema of the DID Specification Registries |
+| `GET /version` | version, SOyA structure and resolver configuration |
+
+All `/api/` paths are also available below `/api/v1/`. The full description is in [Swagger](https://didlint.ownyourdata.eu/api-docs) (source: `swagger/v1/swagger.yaml`).
+
+`did:oyd` is resolved through the [OYDID resolver](https://resolver.ownyourdata.eu); if it cannot be reached, the bundled oydid gem resolves locally. The response header `X-DID-Resolved-Via` (`http` or `gem`) shows which path answered. All other methods are resolved through the [Universal Resolver](https://dev.uniresolver.io).
+
+## On the Command Line
+
+The validation can be reproduced with [soya-cli](https://github.com/OwnYourData/soya) and [jq](https://jqlang.org):
+
 ```bash
 npm install -g soya-cli@latest
+cat did_document.json | script/prep.sh | soya validate z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE
+cat did_document.json | script/verify_context.rb
 ```
 
-The validation includes a pre-processing step (to make the DID Document compliant with SOyA) and is available as a [small script here](https://github.com/OwnYourData/didlint/blob/main/script/prep.sh)    
-example:    
-```bash
-cat did_document.json | ./script/prep.sh
-```
+- `script/prep.sh [DRI]` wraps the DID document the way the service does before SHACL validation (`@graph` with `@type` `Did`, the structure as `@vocab`).
+- `soya validate` prints the SHACL report of the structure.
+- `script/verify_context.rb [DRI]` (Ruby, standard library only) checks the `@context` against the context constraints of the structure, which SHACL cannot see.
 
-The pre-preocessed JSON-LD document can then be validated with the `soya validate` command,    
-complete example (including pre-processing) and using the [ SOyA structure defining `Did`](https://soya.ownyourdata.eu/Did):
-```bash
-cat did_document.json | ./script/prep.sh | soya validate Did
-```
+Without `DRI`, both scripts use the structure pinned in `config/initializers/constants.rb`. `script/iterate.sh` validates a list of DIDs with the public service and prints one line per DID.
 
-The output describes the result of the validation process (using a [SHACL](https://en.wikipedia.org/wiki/SHACL)) and lists any unmet constraints.
+## With Docker
 
-
-### With Docker
-
-The above steps are bundled in an Docker image available here: https://hub.docker.com/r/oydeu/didlint    
-
-Start the image with the following command:
+Images are published as [oydeu/didlint](https://hub.docker.com/r/oydeu/didlint) with dated tags (`YYMMDD`); the tag deployed at didlint.ownyourdata.eu is the one in `kubernetes/didlint-deployment.yaml`.
 
 ```bash
-docker run --name didlint -d -p 3000:3000 oydeu/didlint
+docker run -d --name didlint -p 3000:3000 \
+  -e RAILS_ENV=production -e RAILS_LOG_TO_STDOUT=TRUE -e RAILS_SERVE_STATIC_FILES=TRUE -e LANG=C.UTF-8 \
+  -e allowed_hosts=localhost -e SECRET_KEY_BASE="$(openssl rand -hex 64)" \
+  oydeu/didlint:<tag>
+curl http://localhost:3000/version
 ```
 
-and access validation features through exposed APIs on `http://localhost:3000` as described in the Swagger API documentation here: https://didlint.ownyourdata.eu/api-docs    
+To build the image yourself: `docker build -f docker/Dockerfile -t didlint .`
 
-examples:
+### Configuration
+
+| Variable | Meaning | Default |
+|---|---|---|
+| `RAILS_ENV` | `production` for a deployment | |
+| `RAILS_LOG_TO_STDOUT` | `TRUE` to log to the console | |
+| `RAILS_SERVE_STATIC_FILES` | `TRUE` unless a web server in front serves `public/` | |
+| `LANG` | `C.UTF-8` | |
+| `allowed_hosts` | host names the service answers to, comma-separated (e.g. `didlint.ownyourdata.eu`) | |
+| `SECRET_KEY_BASE` | random value, e.g. from `openssl rand -hex 64`; never committed | |
+| `SOYA_DID_DRI` | SOyA structure used for validation | pinned in `config/initializers/constants.rb` |
+| `SOYA_REPO` | SOyA repository that serves the structure | https://soya.ownyourdata.eu |
+| `SOYA_WEB_CLI` | SHACL and JSON-LD validation service | https://soya-web-cli.ownyourdata.eu |
+| `OYDID_RESOLVER_URL` | resolver for `did:oyd` | https://resolver.ownyourdata.eu |
+| `UNIRESOLVER_URL` | Universal Resolver for all other methods | https://dev.uniresolver.io |
+| `JSON_SCHEMA_SOURCE` | JSON Schema for `/api/validate_jschema` | `core.schema.json` of the DID Specification Registries |
+
+### Kubernetes
+
+`kubernetes/didlint-deployment.yaml` is the manifest of the public instance (namespace, deployment, service, ingress, certificate). `SECRET_KEY_BASE` comes from the secret `didlint-skb`, which has to exist before the first rollout:
 
 ```bash
-curl http://localhost:3000/api/validate/did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1
-cat did_document.jsonld | curl -H 'Content-Type: application/json' -d @- -X POST http://localhost:3000/api/validate
+kubectl -n soya create secret generic didlint-skb --from-literal=SECRET_KEY_BASE="$(openssl rand -hex 64)"
 ```
 
-#### Deployment in a Production Environment
+## Tests
 
-To deploy `oydeu/didlint` in a production setting use the following environment variables:
+### Unit Tests
 
-*Recommended settings:*  
+The validation pipeline (`app/services/did_lint/`) has unit and request tests that run offline: they replay recorded responses of soya-web-cli, the SOyA repository and the OYDID resolver from `spec/fixtures/`, check every fixture in `pytest/` against its expected output, and check that `swagger/v1/swagger.yaml` documents exactly the routed API.
 
-* `RAILS_ENV`: `production`
-* `RAILS_LOG_TO_STDOUT`: `TRUE`
-* `LANG`: `C.UTF-8`  
+```bash
+bundle exec rspec
+```
 
-*Site-specific Configuration:*  
+Inside the image, which leaves the test gems out:
 
-* `allowed_hosts`: hostname (example: didlint.onwyourdata.eu)
-* `SECRET_KEY_BASE`: randomized hexadecimal number (minimum 32 bytes)
-* `SOYA_DID_DRI`: specify the DID SOyA structure to be used for validation
+```bash
+docker run --rm -e RAILS_ENV=test -e BUNDLE_WITHOUT= oydeu/didlint:<tag> sh -c 'bundle install --quiet && bundle exec rspec'
+```
 
-*External Services:*  
-* `SOYA_REPO`: repository to resolve `SOYA_DID_DRI` (default: https://soya.ownyourdata.eu)
-* `SOYA_WEB_CLI`: validation service for SOyA structures (default: https://soya-web-cli.ownyourdata.eu)
-* `UNIRESOLVER_URL`: Uniresolver instance for resolving DIDs (default: https://dev.uniresolver.io)
-* `OYDID_RESOLVER_URL`: resolver for `did:oyd` (default: https://resolver.ownyourdata.eu); if it cannot be reached, the bundled oydid gem resolves locally. The response header `X-DID-Resolved-Via` (`http` or `gem`) shows which path answered.
+After `SOYA_DID_DRI` changes, record the exchanges again with `bundle exec rails runner script/record_soya_fixtures.rb` and review the diff of `spec/fixtures/`.
 
-#### Testing a Deployment
-
-The Docker image includes a set of test cases to validate a deployed instance. Run the test cases with:  
-
- ```bash
-docker run -it --rm -w /usr/src/app/docker/pytest oydeu/didlint bash -c "export URL=https://your.deployment.com && pytest"
- ```
-
-### Online Service
-
-The DID Lint service is also available publicly here: https://didlint.ownyourdata.eu    
-Use either the web frontend or the provided REST API to resolve DIDs and validate DID Documents.
-
-
-## Regression Checks
+### Regression Checks
 
 `script/check_fixtures.py` (Python 3, standard library only) runs the fixtures in `pytest/` and compares the results with `pytest/expectations.json`:
 
@@ -96,39 +111,27 @@ python3 script/check_fixtures.py --structure
 python3 script/check_fixtures.py --structure <DRI> --encoding list
 ```
 
-`--url` checks a running instance: every response against `pytest/NN_output/`, that `/version` reports the structure pinned in `config/initializers/constants.rb`, and that `did:oyd` resolution returns the requested DID as `id`. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby.
+`--url` checks a running instance: the web frontend, its assets and the API documentation; every response against `pytest/NN_output/`; that `/version` reports the structure pinned in `config/initializers/constants.rb`; and that `did:oyd` resolution returns the requested DID as `id`. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby.
 
 **Before `SOYA_DID_DRI` is switched to a new structure, `--structure <new DRI>` must pass.** Intended changes in the verdicts are recorded in `pytest/expectations.json` and the affected `NN_output/` files in the same commit as the new DRI.
 
 The GitHub workflow `regression` runs the structure check, the unit tests and a container built from the commit on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
 
-### Unit Tests
-
-The validation pipeline (`app/services/did_lint/`) has unit and request tests that run offline: they replay recorded responses of soya-web-cli, the SOyA repository and the OYDID resolver from `spec/fixtures/`, and check every fixture in `pytest/` against its expected output.
-
-```bash
-bundle exec rspec
-```
-
-Inside the image, which leaves the test gems out, run `docker run --rm -e RAILS_ENV=test -e BUNDLE_WITHOUT= oydeu/didlint sh -c 'bundle install --quiet && bundle exec rspec'`. After `SOYA_DID_DRI` changes, record the exchanges again with `bundle exec rails runner script/record_soya_fixtures.rb` and review the diff of `spec/fixtures/`.
-
 ## Improve DID Lint
 
-This service is a Proof-of-Concept to demonstrate the validation overlay capabilities of SOyA, i.e., show-case an easy to understand but still machine-readable format to describe DID Documents and use the built-in mechanisms of SOyA to either validate conformance or list identified violations.
+DID Lint shows how a SOyA structure can describe DID documents in a readable and machine-readable way, and how SOyA's validation reports violations. The structure does not yet cover the DID Core specification completely; please report issues and gaps in the [issue tracker](https://github.com/OwnYourData/didlint/issues).
 
-The current DID Document SOyA structure is most certainly not a complete and correct representation of the DID Core Spec and we would like to encourage everyone to report issues using the [GitHub Issue-Tracker](https://github.com/sem-con/sc-base/issues) .
+To contribute:
 
-If you want to contribute pull requests, please follow these steps:
-
-1. Fork it!
+1. Fork the repository.
 2. Create a feature branch: `git checkout -b my-new-feature`
-3. Commit changes: `git commit -am 'Add some feature'`
-4. Push into branch: `git push origin my-new-feature`
-5. Send a Pull Request
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push the branch: `git push origin my-new-feature`
+5. Open a pull request.
 
-&nbsp;    
+&nbsp;
 
-## About  
+## About
 
 <img align="right" src="https://raw.githubusercontent.com/OwnYourData/dc-intermediary/main/res/logo-ngi-trustchain-positive.png" height="100">This project has received funding from the European Union’s Horizon 2020 research and innovation program through the [NGI ONTOCHAIN program](https://ontochain.ngi.eu/) under cascade funding agreement No 957338 and the [NGI TRUSTCHAIN program](https://trustchain.ngi.eu/) under cascade funding agreement No 101093274.
 

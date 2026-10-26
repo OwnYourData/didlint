@@ -1,8 +1,12 @@
 module ApplicationHelper
-    Hash.include CoreExtensions
+    # DRI of the SOyA structure used for validation
+    def soya_did_dri
+        ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+    end
 
-    def soya_version
-        return "0.16.9"
+    # human-readable source (YAML) of that structure
+    def soya_structure_url
+        (ENV["SOYA_REPO"] || SOYA_REPO) + "/" + soya_did_dri + "/yaml"
     end
 
     # Returns the full title on a per-page basis.
