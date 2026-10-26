@@ -21,5 +21,10 @@ gem "font-awesome-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "rspec-rails"
   gem "rswag-specs"
+end
+
+group :test do
+  gem "webmock"
 end

@@ -1,0 +1,6 @@
+{
+  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\",\"@vocab\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\"},\"@graph\":[{\"id\":\"did:example:123456789abcdefghi\",\"verificationMethod\":[{\"id\":\"did:example:123456789abcdefghi#key-1\",\"type\":\"Ed25519VerificationKey2020\",\"controller\":\"did:example:123456789abcdefghi\",\"publicKeyMultibase\":\"zH3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV\"}],\"authentication\":[\"#key-1\"],\"@type\":\"Did\"}]}",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "response": "{\"isValid\":true,\"results\":[],\"classChecks\":[]}"
+}

@@ -100,7 +100,17 @@ python3 script/check_fixtures.py --structure <DRI> --encoding list
 
 **Before `SOYA_DID_DRI` is switched to a new structure, `--structure <new DRI>` must pass.** Intended changes in the verdicts are recorded in `pytest/expectations.json` and the affected `NN_output/` files in the same commit as the new DRI.
 
-The GitHub workflow `regression` runs the structure check and a container built from the commit on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
+The GitHub workflow `regression` runs the structure check, the unit tests and a container built from the commit on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
+
+### Unit Tests
+
+The validation pipeline (`app/services/did_lint/`) has unit and request tests that run offline: they replay recorded responses of soya-web-cli, the SOyA repository and the OYDID resolver from `spec/fixtures/`, and check every fixture in `pytest/` against its expected output.
+
+```bash
+bundle exec rspec
+```
+
+Inside the image, which leaves the test gems out, run `docker run --rm -e RAILS_ENV=test -e BUNDLE_WITHOUT= oydeu/didlint sh -c 'bundle install --quiet && bundle exec rspec'`. After `SOYA_DID_DRI` changes, record the exchanges again with `bundle exec rails runner script/record_soya_fixtures.rb` and review the diff of `spec/fixtures/`.
 
 ## Improve DID Lint
 

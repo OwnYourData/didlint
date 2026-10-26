@@ -35,13 +35,15 @@ jobs:
         run: python3 script/check_fixtures.py --structure "$DRI" --encoding "$ENCODING"
 
   instance:
-    name: Container built from this commit
+    name: Unit tests and container built from this commit
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - name: Build the image
         run: docker build -f docker/Dockerfile -t didlint:ci .
+      - name: Unit tests
+        run: docker run --rm -e RAILS_ENV=test -e BUNDLE_WITHOUT= didlint:ci sh -c 'bundle install --quiet && bundle exec rspec'
       - name: Start the container
         run: |
           docker run -d --name didlint -p 3000:3000 \

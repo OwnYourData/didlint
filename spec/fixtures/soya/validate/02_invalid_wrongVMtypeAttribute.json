@@ -1,0 +1,6 @@
+{
+  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\",\"@vocab\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\"},\"@graph\":[{\"id\":\"did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1\",\"verificationMethod\":[{\"id\":\"did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1#key-doc\",\"type\":\"JsonWebKey2020\",\"controller\":\"did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1\",\"publicKeyMultibase\":\"z6MuxZoTqKn4fuv3FWPpKzkPGSEoMdR6CfhuujnNaftic26E\"}],\"@type\":\"Did\"}]}",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "response": "{\"isValid\":false,\"results\":[{\"id\":{\"termType\":\"BlankNode\",\"value\":\"df_1365_1\"},\"message\":[{\"value\":\"invalid 'verificationMethod'\",\"datatype\":{\"termType\":\"NamedNode\",\"value\":\"http://www.w3.org/2001/XMLSchema#string\"},\"language\":\"\"}],\"termType\":\"NamedNode\",\"value\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/verificationMethod\",\"severity\":{\"value\":\"http://www.w3.org/ns/shacl#Violation\"}}],\"classChecks\":[]}"
+}

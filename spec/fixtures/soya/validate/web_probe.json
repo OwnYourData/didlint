@@ -1,0 +1,6 @@
+{
+  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\",\"@vocab\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\"},\"@graph\":[{\"id\":\"did:example:123\",\"@type\":\"Did\"}]}",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "response": "{\"isValid\":false,\"results\":[{\"id\":{\"termType\":\"BlankNode\",\"value\":\"df_1374_0\"},\"message\":[],\"severity\":{\"value\":\"http://www.w3.org/ns/shacl#Violation\"}}],\"classChecks\":[]}"
+}
