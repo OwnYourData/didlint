@@ -5,6 +5,7 @@ RSpec.describe DidLint::StructureUpdate do
   let(:update) { described_class.new(out: out) }
   let(:july) { "zEb5A6X4nSxnY2PR81Chmi6BRpr2Z71H4gThVCbdQb6pA" }
   let(:april) { "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE" }
+  let(:october) { "zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC" }
 
   describe "#resolve" do
     it "takes a DRI as it is" do
@@ -45,14 +46,22 @@ RSpec.describe DidLint::StructureUpdate do
       expect(update.run("Did")).to be(false)
       expect(DidLint::Structure.active_dri).to eq(SOYA_DID_DRI)
       expect(out.string).to include("FAIL  02_input/invalid_embedded_vm_keyAgreement.json  expected invalid, got valid")
-      expect(out.string).to include("not switched: 7 fixture(s) differ")
+      expect(out.string).to include("not switched: 18 fixture(s) differ")
     end
 
     it "refuses the April structure, which requires a verification relationship" do
       stub_soya_structure(april)
       expect(update.run(april)).to be(false)
       expect(out.string).to include("FAIL  02_input/valid_only_relative.json  expected valid, got invalid")
-      expect(out.string).to include("not switched: 4 fixture(s) differ")
+      expect(out.string).to include("not switched: 15 fixture(s) differ")
+    end
+
+    it "refuses the structure of October 2026, which lets a controller that is not a DID pass" do
+      stub_soya_structure(october)
+      expect(update.run(october)).to be(false)
+      expect(out.string).to include("FAIL  02_input/invalid_controller_not_did.json  expected invalid, got valid")
+      expect(out.string).to include("FAIL  02_input/valid_service_type_set.json  expected valid, got invalid")
+      expect(out.string).to include("not switched: 11 fixture(s) differ")
     end
 
     it "switches anyway with force" do

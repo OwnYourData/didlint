@@ -41,6 +41,21 @@ RSpec.describe "API", type: :request do
     expect(response.body).to eq(pytest.join("02_output/valid_oyd.json").read.strip)
   end
 
+  it "validates the document's own controller member, which Rails' params would replace" do
+    post "/api/validate", params: pytest.join("02_input/invalid_controller_not_did.json").read,
+                          headers: { "Content-Type" => "application/json" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(pytest.join("02_output/invalid_controller_not_did.json").read.strip)
+  end
+
+  it "answers 422 for a body that is not a JSON object" do
+    ["[]", "\"did:example:123\"", "not json"].each do |body|
+      post "/api/validate", params: body, headers: { "Content-Type" => "application/json" }
+      expect(response).to have_http_status(:unprocessable_content), body
+      expect(JSON.parse(response.body)).to eq("valid" => false, "error" => "can't parse input")
+    end
+  end
+
   it "keeps validating with the local copy when the SOyA repository is down" do
     stub_request(:get, "#{SOYA_REPO}/#{SOYA_DID_DRI}").to_return(status: 503)
     post "/api/validate", params: pytest.join("02_input/valid_oyd.json").read,

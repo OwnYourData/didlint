@@ -1,0 +1,18 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://example.org/unlisted-suite/v1"
+  ],
+  "id": "did:example:123456789abcdefghi",
+  "verificationMethod": [
+    {
+      "id": "did:example:123456789abcdefghi#key-1",
+      "type": "UnlistedVerificationKey2026",
+      "controller": "did:example:123456789abcdefghi",
+      "publicKeyMultibase": "z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+    }
+  ],
+  "authentication": [
+    "did:example:123456789abcdefghi#key-1"
+  ]
+}

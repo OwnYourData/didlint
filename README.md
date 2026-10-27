@@ -4,7 +4,7 @@ DID Linter validates DID documents against the W3C [Decentralized Identifiers (D
 
 [Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform with built-in validation and transformation. It builds on the W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and describes data structures in YAML as bases with optional overlays.
 
-The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC](https://soya.ownyourdata.eu/zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.3. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
+The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU](https://soya.ownyourdata.eu/zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.3. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
 
 ## Online Service
 
@@ -34,7 +34,7 @@ The validation can be reproduced with [soya-cli](https://github.com/OwnYourData/
 
 ```bash
 npm install -g soya-cli@latest
-cat did_document.json | script/prep.sh | soya validate zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC
+cat did_document.json | script/prep.sh | soya validate zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU
 cat did_document.json | script/verify_context.rb
 ```
 
@@ -160,6 +160,13 @@ The GitHub workflow `regression` runs the structure check, the unit tests, a con
 ## Improve DID Linter
 
 DID Linter shows how a SOyA structure can describe DID documents in a readable and machine-readable way, and how SOyA's validation reports violations. The structure does not yet cover the DID Core specification completely; please report issues and gaps in the [issue tracker](https://github.com/OwnYourData/didlint/issues).
+
+Known gaps:
+
+- Two services with the same `id` are not detected; SOyA cannot express uniqueness yet.
+- String references in verification relationships and string values of `serviceEndpoint` are not checked as DID URLs or URIs.
+- A verification method type the structure does not list is tolerated: the document is not rejected because of its verification methods, and a note names the context that is not listed. Findings about all other members are reported as usual.
+- The JSON-LD expansion check (`/api/validate_jsonld`) is not part of the verdict.
 
 To contribute:
 

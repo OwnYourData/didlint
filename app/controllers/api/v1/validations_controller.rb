@@ -108,17 +108,10 @@ module Api
             end
 
             def document
-                begin
-                    if params.include?("_json")
-                        input = JSON.parse(params.to_json)["_json"]
-                        other = JSON.parse(params.to_json).except("_json", "validation", "format", "controller", "action", "application")
-                        if other != {}
-                            input += [other]
-                        end
-                    else
-                        input = JSON.parse(params.to_json).except("validation", "format", "controller", "action", "application")
-                    end
-                rescue => ex
+                # the request body as sent: Rails' params would replace members
+                # named like routing parameters, e.g. the DID document's "controller"
+                input = JSON.parse(request.raw_post) rescue nil
+                unless input.is_a?(Hash)
                     render json: {"valid": false, "error": "can't parse input"},
                            status: 422
                     return

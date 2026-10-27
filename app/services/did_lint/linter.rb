@@ -4,6 +4,9 @@ module DidLint
     # context against the verification method types listed in the SOyA
     # structure. The result is the v1 response of /api/validate.
     class Linter
+        # members whose findings an unlisted verification method type can cause
+        VERIFICATION_MEMBERS = %w[verificationMethod authentication assertionMethod keyAgreement capabilityInvocation capabilityDelegation].freeze
+
         # dri: the SOyA structure to validate against; default is the one in
         # use (DidLint::Structure.active_dri), fixed for the lifetime of the
         # instance so that one validation never mixes two structures
@@ -52,12 +55,17 @@ module DidLint
                             el = {"message": "'" + item.to_s + "' is not yet listed as Verification Method Type in the " + DID_REGISTRY_LINK}
                             retVal["infos"] << el
                         end
-                        # if there are non-standard verification methods, ignore "invalid '" error messages
+                        # A verification method type the structure does not list
+                        # makes SHACL reject the verification method. Only these
+                        # findings are dropped; findings about any other member
+                        # (controller, alsoKnownAs, service, ...) are kept.
                         if !retVal["errors"].nil? && retVal["errors"].count > 0
                             error_list = retVal["errors"].dup
                             retVal["errors"] = []
                             error_list.each do |e|
-                                if !e.transform_keys(&:to_s)["error"].to_s.start_with?("invalid '")
+                                e_s = e.transform_keys(&:to_s)
+                                member = e_s["value"].to_s.split("/").last
+                                unless e_s["error"].to_s.start_with?("invalid '") && VERIFICATION_MEMBERS.include?(member)
                                     retVal["errors"] << e
                                 end
                             end
