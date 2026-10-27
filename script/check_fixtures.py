@@ -189,20 +189,15 @@ def check_instance(base, allow_any_dri, offline=False):
 
 
 def check_web(base, rep):
-    # the web frontend and its precompiled assets, and the API documentation
+    # the web frontend, the files it loads from this host, and the API documentation
     status, _, body = http("GET", base + "/")
     if status != 200:
         rep.fail("web /", "HTTP %s" % status)
         return
     rep.ok("web /")
-    assets = []
-    for tag in re.findall(r"<link\b[^>]*>", body):
-        href = re.search(r'href="([^"]+)"', tag)
-        if 'rel="stylesheet"' in tag and href and href.group(1).startswith("/"):
-            assets.append(href.group(1))
-    assets += [src for src in re.findall(r'<script\b[^>]*src="([^"]+)"', body) if src.startswith("/")]
+    assets = sorted(set(re.findall(r'<(?:link|script|img)\b[^>]*(?:href|src)="(/[^"/][^"]*)"', body)))
     if not assets:
-        rep.fail("web assets", "the start page references no local stylesheet or script")
+        rep.fail("web assets", "the start page loads nothing from this host, not even the logo")
     for asset in assets:
         status, _, _ = http("GET", base + asset)
         if status == 200:

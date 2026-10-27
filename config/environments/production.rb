@@ -6,9 +6,8 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
-  # assets are precompiled into the image (see docker/Dockerfile)
+  # public/ (logo) is served by Puma unless a web server in front does it
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
-  config.assets.compile = false
 
   config.log_level = :info
   config.log_tags = [ :request_id ]

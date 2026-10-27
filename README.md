@@ -151,7 +151,7 @@ python3 script/check_fixtures.py --structure
 python3 script/check_fixtures.py --structure <DRI> --encoding list
 ```
 
-`--url` checks a running instance: the web frontend, its assets and the API documentation; every response against `pytest/NN_output/`; that `/version` reports the structure pinned in `config/initializers/constants.rb`; and that `did:oyd` resolution returns the requested DID as `id`. With `--offline` it expects the instance in offline mode and every request that resolves a DID to be rejected. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby, and checks that the local copy in `soya/` equals the published structure.
+`--url` checks a running instance: the web frontend, the files it loads (logo) and the API documentation; every response against `pytest/NN_output/`; that `/version` reports the structure pinned in `config/initializers/constants.rb`; and that `did:oyd` resolution returns the requested DID as `id`. With `--offline` it expects the instance in offline mode and every request that resolves a DID to be rejected. `--structure` validates the fixtures directly through soya-web-cli against a SOyA structure, without the context checks done in Ruby, and checks that the local copy in `soya/` equals the published structure.
 
 **Before `SOYA_DID_DRI` is switched to a new structure, `--structure <new DRI>` must pass.** Intended changes in the verdicts are recorded in `pytest/expectations.json` and the affected `NN_output/` files in the same commit as the new DRI.
 

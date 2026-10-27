@@ -1,63 +1,136 @@
-<% provide(:title, 'DID Lint') %>
+<% provide(:title, "DID Lint") %>
+<% example_did = "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1" %>
 
-<div class="container" style="margin-top: 20px; margin-bottom: 20px;">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-info" role="alert">
-                This page checks the syntax and structure of a DID document to ensure that it conforms to the W3C Decentralized Identifiers Core Specification.
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <%= form_with url: resolve_path, class: "text-nowrap" do |form| %>
-                <div style="display: flex;">
-                    <div class="input-group" style="width: 100%;">
-                        <%= form.text_field :did, class: "form-control", value: @did.to_s, placeholder: "DID" %>
-                        <span class="input-group-btn">
-                            <%= form.button "Resolve", class: "btn btn-default" %>
-                        </span>
-                    </div>
-                    <a style="margin: 7px 2px 2px 7px; border: 0; color: darkgray; outline: none; cursor: pointer;" tabindex="0" data-toggle="popover" data-trigger="focus" data-placement="bottom" title="DID Resolution" data-content="<span class='text-nowrap'>This website uses <a href='https://uniresolver.io' target='_blank'>uniresolver.io</a></span> to resolve DID Documents. <a href='/?did=did%3Aoyd%3AzQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh'>Click here</a> to try an example."><i class="fa fa-question-circle" style="font-size: 1.3em;" aria-hidden="true"></i></a>
-                </div>
-            <% end %>
-        </div>
-    </div>   
+<section class="hero">
+  <h1>DID documents, checked against the W3C specification</h1>
+  <p class="lead">
+    DID Lint resolves a decentralized identifier, or takes the DID document you paste, and checks it
+    against <a href="https://www.w3.org/TR/did-core/">Decentralized Identifiers (DIDs) v1.0</a>.
+    The rules are written as a <a href="https://ownyourdata.github.io/soya/">SOyA</a> structure, so
+    they can be read, reused and validated anywhere.
+  </p>
+</section>
 
-    <div class="row" style="margin-top: 10px;">
-        <%= form_with url: validate_path do |form| %>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <%= form.hidden_field :did, value: @did.to_s %>
-                    <%= form.label :did_document, "DID Document" %>
-                    <%= form.text_area :did_document, class: "form-control rounded-0", id: "did_document", rows: 10, 
-                            value: @did_document.to_s,
-                            style: "font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;" %>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <%= form.submit "Validate", class: "btn btn-success" %>
-                <%= form.submit "Reset", class: "btn btn-default" %>
-            </div>
-        <% end %>
-    </div>
-
-    <% if @result %>
-        <div class="row" style="margin-top: 10px;">
-            <div class="col-md-12">
-                <h3>Result</h3>
-                <% flash.each do |message_type, message| %>
-                    <div class="alert alert-<%= message_type %>"><%= message %></div>
-                <% end %>
-            </div>
-        </div>
+<div class="stack">
+  <section class="card">
+<% if DidLint.offline? -%>
+    <h3>Check a DID</h3>
+    <p>This instance runs in offline mode and makes no outgoing connections, so it cannot resolve DIDs.
+      Paste the DID document below instead.</p>
+<% else -%>
+    <%= form_with url: validate_path, method: :get, class: "check", local: true do |form| %>
+      <%= form.label :did, "Check a DID" %>
+      <div class="row">
+        <%= form.text_field :did, value: @did.to_s, placeholder: "did:method:identifier", spellcheck: false, autocomplete: "off" %>
+        <button class="btn primary" type="submit">Check</button>
+        <button class="btn secondary" type="submit" formaction="<%= root_path %>">Show document</button>
+      </div>
+      <p class="hint">
+        <code>did:oyd</code> is resolved through the <a href="https://resolver.ownyourdata.eu">OYDID resolver</a>,
+        all other methods through the <a href="https://dev.uniresolver.io">Universal Resolver</a>.
+        Example: <a href="<%= validate_path(did: example_did) %>"><code><%= example_did %></code></a>
+      </p>
     <% end %>
+<% end -%>
+  </section>
+
+  <section class="card">
+    <%= form_with url: validate_path, class: "check", local: true do |form| %>
+      <%= form.hidden_field :did, value: @did.to_s %>
+      <%= form.label :did_document, "Check a DID document" %>
+      <%= form.text_area :did_document, id: "did_document", value: @did_document.to_s, spellcheck: false,
+            placeholder: "{\n  \"@context\": \"https://www.w3.org/ns/did/v1\",\n  \"id\": \"did:example:123\",\n  …\n}" %>
+      <div class="row">
+        <button class="btn primary" type="submit" name="commit" value="Validate">Check document</button>
+        <button class="btn secondary" type="submit" name="commit" value="Reset">Clear</button>
+      </div>
+    <% end %>
+<% if @result -%>
+    <div aria-live="polite">
+<% flash.each do |message_type, message| -%>
+      <div class="result <%= message_type %>"><%= message %></div>
+<% end -%>
+    </div>
+<% end -%>
+  </section>
 </div>
 
-<%= render 'info' %>
+<h2>How DID Lint checks</h2>
+<div class="panel">
+  <ol class="steps">
+    <li><strong>Structure.</strong> The document is validated with SHACL against the SOyA structure
+      <a href="<%= soya_structure_url %>"><code><%= soya_did_dri %></code></a>: required members, identifier
+      syntax, verification methods and their key material, verification relationships and services.</li>
+    <li><strong>Context.</strong> For a JSON-LD document, the <code>@context</code> is checked against the
+      verification method types the structure lists, with the contexts the
+      <a href="https://www.w3.org/TR/did-spec-registries/#verification-method-types">DID Specification Registries</a> name for them.</li>
+    <li><strong>Result.</strong> Violations are listed per member, notes that do not affect the verdict separately.</li>
+  </ol>
+  <p class="note">Results come from automated checks only. They are not a certification, and the structure does
+    not yet cover every requirement of DID Core.
+<% if DidLint.offline? -%>
+    This instance runs offline and validates against its local copy of the structure.
+<% end -%>
+  </p>
+</div>
 
-<script type="text/javascript">
-$(function () {
-  $('[data-toggle="popover"]').popover({html:true})
-})
-</script> 
+<h2>Use it elsewhere</h2>
+<div class="grid">
+  <article class="card">
+    <h3>REST API</h3>
+    <p>Validate a DID or a posted DID document; every path is described in Swagger.</p>
+    <pre><code>curl https://didlint.ownyourdata.eu/api/validate/<%= example_did %></code></pre>
+    <div class="links"><a href="/api-docs/index.html">API documentation</a></div>
+  </article>
+  <article class="card">
+    <h3>Command line</h3>
+    <p>The same checks with <a href="https://github.com/OwnYourData/soya">soya-cli</a> and two scripts from the repository.</p>
+    <pre><code>cat did.json | script/prep.sh | soya validate <%= soya_did_dri %>
+cat did.json | script/verify_context.rb</code></pre>
+    <div class="links">
+      <a href="https://github.com/OwnYourData/didlint/blob/main/script/prep.sh">prep.sh</a>
+      <a href="https://github.com/OwnYourData/didlint/blob/main/script/verify_context.rb">verify_context.rb</a>
+    </div>
+  </article>
+  <article class="card">
+    <h3>Your own instance</h3>
+    <p>Run the Docker image yourself, online or fully offline with a local copy of the structure.</p>
+    <div class="links">
+      <a href="https://hub.docker.com/r/oydeu/didlint">oydeu/didlint</a>
+      <a href="https://github.com/OwnYourData/didlint#offline-mode">Offline mode</a>
+    </div>
+  </article>
+</div>
+
+<h2>Building blocks</h2>
+<div class="grid">
+  <article class="card">
+    <h3>SOyA</h3>
+    <p>Semantic Overlay Architecture: data models in YAML with overlays for validation and
+      transformation. The rules of DID Lint are a SOyA structure, published from
+      <a href="https://github.com/OwnYourData/didlint/blob/main/soya/Did.yml"><code>soya/Did.yml</code></a>.</p>
+    <div class="links">
+      <a href="https://soya.ownyourdata.eu">soya.ownyourdata.eu</a>
+      <a href="https://ownyourdata.github.io/soya/">Documentation</a>
+    </div>
+  </article>
+  <article class="card">
+    <h3>OYDID</h3>
+    <p>The <code>did:oyd</code> method of OwnYourData: identifiers derived from the hash of the DID
+      document, with a hash-linked log of all changes.</p>
+    <div class="links">
+      <a href="https://oydid.ownyourdata.eu">oydid.ownyourdata.eu</a>
+      <a href="<%= validate_path(did: example_did) %>">Check an example</a>
+    </div>
+  </article>
+</div>
+
+<h2>Source code and feedback</h2>
+<div class="panel">
+  <ul class="repos">
+    <li><a href="https://github.com/OwnYourData/didlint">didlint</a><span class="what">This service – Rails, runs stand-alone or offline</span></li>
+    <li><a href="https://github.com/OwnYourData/soya">soya</a><span class="what">SOyA – structures, validation and transformation</span></li>
+    <li><a href="https://github.com/OwnYourData/oydid">oydid</a><span class="what">OYDID – the did:oyd method</span></li>
+    <li><a href="https://github.com/OwnYourData/didlint/issues">Issues</a><span class="what">Report a wrong verdict or a missing rule</span></li>
+  </ul>
+</div>

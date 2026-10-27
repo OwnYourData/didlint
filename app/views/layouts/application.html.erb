@@ -1,17 +1,153 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= full_title(yield(:title)) %></title>
-    <%= csrf_meta_tags %>
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= favicon_link_tag 'favicon.ico' %>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  </head>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/oyd-mark.svg" type="image/svg+xml">
+<title><%= full_title(yield(:title)) %></title>
+<meta name="description" content="DID Lint checks DID documents against the W3C Decentralized Identifiers (DIDs) v1.0 specification, with rules described as a SOyA structure. Operated by OwnYourData.">
+<%= csrf_meta_tags %>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --text: #1d2327;
+    --muted: #5b6770;
+    --line: #e2e5e8;
+    --accent: #0b6e4f;
+    --accent-soft: #e3f2ec;
+    --wip: #8a5a00;
+    --wip-soft: #fbf0d9;
+    --bad: #b42318;
+    --bad-soft: #fdecea;
+    --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121517;
+      --surface: #1b1f22;
+      --text: #e8ebed;
+      --muted: #9aa5ad;
+      --line: #2c3236;
+      --accent: #4cc293;
+      --accent-soft: #173229;
+      --wip: #e6b85c;
+      --wip-soft: #33291a;
+      --bad: #f28b82;
+      --bad-soft: #3a1f1d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 20px 0; border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; letter-spacing: .01em; white-space: nowrap; color: inherit; text-decoration: none; }
+  .brand .mark { width: 15px; height: auto; display: block; }
+  .brand span { color: var(--muted); font-weight: 400; margin-left: -5px; }
+  .brand .badge { margin-left: 2px; }
+  header nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: 15px; }
+  header nav a:hover { color: var(--text); }
+  .hero { padding: 56px 0 28px; }
+  h1 { font-size: clamp(28px, 4.2vw, 40px); line-height: 1.15; margin: 0 0 14px; letter-spacing: -.01em; }
+  .lead { font-size: 18px; color: var(--muted); max-width: 700px; margin: 0; }
+  h2 { font-size: 20px; margin: 44px 0 16px; }
+  .stack { display: grid; gap: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+  .card, .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px;
+  }
+  .card { display: flex; flex-direction: column; gap: 10px; }
+  .card h3 { margin: 0; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; flex: 1; }
+  .card .links { font-size: 15px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .panel p { margin: 0 0 8px; color: var(--muted); }
+  .panel p:last-child { margin-bottom: 0; }
+  .badge {
+    align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: .03em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+  }
+  .badge.live { color: var(--accent); background: var(--accent-soft); }
+  .badge.wip { color: var(--wip); background: var(--wip-soft); }
+  .btn {
+    display: inline-block; padding: 10px 18px; border-radius: 8px; text-decoration: none; cursor: pointer;
+    font: inherit; font-weight: 600; font-size: 15px; border: 1px solid var(--accent);
+  }
+  .btn.primary { background: var(--accent); color: var(--surface); }
+  .btn.secondary { color: var(--accent); background: transparent; }
+  .check { display: flex; flex-direction: column; gap: 12px; }
+  .check label { font-weight: 600; font-size: 15px; }
+  .check .hint { color: var(--muted); font-size: 14px; margin: 0; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row input { flex: 1 1 320px; }
+  input[type=text], textarea {
+    width: 100%; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+  }
+  textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; min-height: 280px; resize: vertical; }
+  input[type=text]:focus, textarea:focus, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .result { border-radius: var(--radius); padding: 14px 18px; margin: 16px 0 0; border: 1px solid var(--line); border-left-width: 4px; background: var(--surface); }
+  .result.success { border-left-color: var(--accent); background: var(--accent-soft); }
+  .result.danger { border-left-color: var(--bad); background: var(--bad-soft); }
+  .result.warning { border-left-color: var(--wip); background: var(--wip-soft); }
+  .result.info { border-left-color: var(--muted); }
+  .result ul { margin: 6px 0 0; padding-left: 20px; }
+  .result.success { color: var(--accent); font-weight: 600; }
+  ol.steps { margin: 0; padding-left: 22px; }
+  ol.steps li { margin: 0 0 10px; color: var(--muted); }
+  ol.steps li:last-child { margin-bottom: 0; }
+  ol.steps strong { color: var(--text); }
+  ul.repos { list-style: none; margin: 0; padding: 0; }
+  ul.repos li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  ul.repos li:last-child { border-bottom: 0; }
+  ul.repos .what { color: var(--muted); font-size: 15px; }
+  pre { margin: 8px 0 0; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; overflow-wrap: anywhere; }
+  .note { color: var(--muted); font-size: 13px; margin: 12px 2px 0; max-width: 760px; }
+  footer { margin-top: 56px; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+  footer .legal a { margin-right: 16px; }
+  footer .funding, footer .build { flex-basis: 100%; font-size: 13px; }
+  @media (max-width: 560px) {
+    header nav a { margin: 0 14px 0 0; }
+    .hero { padding-top: 36px; }
+  }
+</style>
+</head>
+<body>
 
-  <body>
-    <%= render 'layouts/header' %>
-    <%= yield %>
-    <%= render 'layouts/footer' %>
-  </body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><img class="mark" src="/oyd-mark.svg" alt="" width="15" height="28">DID Lint <span>· OwnYourData</span><span class="badge wip">Beta</span></a>
+    <nav>
+      <a href="/api-docs/index.html">API</a>
+      <a href="https://github.com/OwnYourData/didlint">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<%= yield %>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Operated by <a href="https://www.ownyourdata.eu/en/">OwnYourData</a></div>
+    <div class="legal">
+      <a href="https://www.ownyourdata.eu/en/imprint/">Imprint</a>
+      <a href="https://www.ownyourdata.eu/en/privacy-policy/">Privacy</a>
+    </div>
+    <div class="build">DID Lint <%= ::VERSION %> · SOyA structure <a href="<%= soya_structure_url %>"><code><%= soya_did_dri %></code></a> · <a href="/version">/version</a></div>
+    <div class="funding">This project has received funding from the European Union’s Horizon 2020 research and innovation program through the <a href="https://ontochain.ngi.eu/">NGI ONTOCHAIN</a> program under cascade funding agreement No 957338 and the <a href="https://trustchain.ngi.eu/">NGI TRUSTCHAIN</a> program under cascade funding agreement No 101093274.</div>
+  </div>
+</footer>
+
+</body>
 </html>

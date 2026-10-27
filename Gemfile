@@ -12,13 +12,6 @@ gem "rswag-api"
 gem "rswag-ui"
 gem "json-schema"
 
-# UI
-gem "sprockets-rails"
-gem "sassc-rails"
-gem "jquery-rails"
-gem "bootstrap-sass", ">= 3.4.1"
-gem "font-awesome-rails"
-
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "rspec-rails"

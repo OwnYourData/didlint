@@ -18,7 +18,6 @@ COPY --from=soya /lib2 /opt/soya-js
 ENV SOYA_JS=/opt/soya-js
 
 COPY . .
-RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bundle exec rails assets:precompile
 
 CMD ["./docker/init.sh"]
 
