@@ -1,0 +1,70 @@
+name: image
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag: YYMMDD, optionally followed by a letter (e.g. 261027b); must be the tag in kubernetes/didlint-deployment.yaml"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: image
+  cancel-in-progress: false
+
+jobs:
+  image:
+    name: Build, test and push oydeu/didlint
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check the tag
+        run: |
+          echo "$TAG" | grep -Eq '^[0-9]{6}[a-z]?$' || { echo "::error::the tag must look like 261027 or 261027b"; exit 1; }
+          grep -Eq "image: oydeu/didlint:${TAG}[[:space:]]*\$" kubernetes/didlint-deployment.yaml || { echo "::error::kubernetes/didlint-deployment.yaml does not use oydeu/didlint:${TAG}"; exit 1; }
+          if docker manifest inspect "oydeu/didlint:${TAG}" > /dev/null 2>&1; then echo "::error::oydeu/didlint:${TAG} already exists on Docker Hub"; exit 1; fi
+      - name: Build the image for linux/amd64
+        run: docker build --platform linux/amd64 -f docker/Dockerfile -t "oydeu/didlint:${TAG}" .
+      - name: Unit tests
+        run: docker run --rm -e RAILS_ENV=test -e BUNDLE_WITHOUT= "oydeu/didlint:${TAG}" sh -c 'bundle install --quiet && bundle exec rspec'
+      - name: Run the fixtures against the image
+        run: |
+          docker run -d --name didlint -p 3000:3000 \
+            -e RAILS_ENV=production -e RAILS_LOG_TO_STDOUT=TRUE -e RAILS_SERVE_STATIC_FILES=TRUE \
+            -e LANG=C.UTF-8 -e allowed_hosts=localhost -e SECRET_KEY_BASE="$(openssl rand -hex 64)" \
+            "oydeu/didlint:${TAG}"
+          for i in $(seq 1 60); do
+            curl -sf -o /dev/null http://localhost:3000/version && break
+            sleep 2
+          done
+          python3 script/check_fixtures.py --url http://localhost:3000
+      - name: Run the fixtures against the image in offline mode, in a network without internet access
+        run: |
+          docker network create --internal offline
+          docker run -d --name didlint-offline --network offline \
+            -e RAILS_ENV=production -e RAILS_LOG_TO_STDOUT=TRUE -e RAILS_SERVE_STATIC_FILES=TRUE \
+            -e LANG=C.UTF-8 -e allowed_hosts=didlint-offline -e DIDLINT_OFFLINE=true \
+            -e SECRET_KEY_BASE="$(openssl rand -hex 64)" \
+            "oydeu/didlint:${TAG}"
+          docker run --rm --network offline -v "$PWD:/src:ro" -w /src \
+            python:3.13-alpine@sha256:83057c121ebd0ccd12511f81aeb7e3b36a36f81b9d0687f7b8fcc93935497768 \
+            sh -c 'for i in $(seq 1 60); do wget -q -O /dev/null http://didlint-offline:3000/version && break; sleep 2; done; python3 script/check_fixtures.py --url http://didlint-offline:3000 --offline'
+      - name: Container log
+        if: failure()
+        run: |
+          docker logs didlint || true
+          docker logs didlint-offline || true
+      - name: Push to Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker push "oydeu/didlint:${TAG}"
+          docker buildx imagetools inspect "oydeu/didlint:${TAG}" | grep -m1 Digest
+          docker logout

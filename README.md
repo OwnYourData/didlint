@@ -56,7 +56,9 @@ docker run -d --name didlint -p 3000:3000 \
 curl http://localhost:3000/version
 ```
 
-To build the image yourself: `docker build -f docker/Dockerfile -t didlint .`
+To build the image yourself: `docker build --platform linux/amd64 -f docker/Dockerfile -t didlint .` (soya-js is copied from the soya-web-cli image, which is only published for linux/amd64).
+
+Release images are built on GitHub rather than on a workstation: the workflow `image` (Actions tab, "Run workflow" with the tag from `kubernetes/didlint-deployment.yaml`) builds the image for linux/amd64, runs the unit tests and the regression checks online and offline against it, and only then pushes it to Docker Hub. It refuses a tag that already exists and needs the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a Docker Hub access token with write access to `oydeu/didlint`).
 
 ### Configuration
 
