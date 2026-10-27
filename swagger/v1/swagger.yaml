@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: DID Lint API
+  title: DID Linter API
   description: >-
-    DID Lint validates DID documents against the W3C DID Core specification.
+    DID Linter validates DID documents against the W3C DID Core specification.
     The structure of a document is checked with SHACL against a SOyA structure,
     the JSON-LD context in a separate step. `GET /version` reports the
     structure (`did-dri`) an instance uses.
@@ -22,7 +22,7 @@ info:
     resolved through a Universal Resolver.
 
 
-    Further information: [DID Lint website](https://didlint.ownyourdata.eu/),
+    Further information: [DID Linter website](https://didlint.ownyourdata.eu/),
     [source code](https://github.com/OwnYourData/didlint),
     [other OwnYourData APIs](https://api-docs.ownyourdata.eu)
   contact:

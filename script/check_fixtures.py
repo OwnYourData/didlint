@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Regression checks for DID Lint.
+"""Regression checks for DID Linter.
 
 Two independent checks, both driven by the fixtures in pytest/ and the
 expectations in pytest/expectations.json:
 
-  --url URL          Runs the fixtures against a DID Lint instance and
+  --url URL          Runs the fixtures against a DID Linter instance and
                      compares every response with NN_output/. Also checks
                      that /version reports the structure pinned in
                      config/initializers/constants.rb and that did:oyd
@@ -315,7 +315,7 @@ def main():
     if hasattr(signal, "SIGPIPE"):
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--url", help="base URL of a DID Lint instance")
+    parser.add_argument("--url", help="base URL of a DID Linter instance")
     parser.add_argument("--allow-any-dri", action="store_true",
                         help="do not require the instance to run the pinned structure")
     parser.add_argument("--offline", action="store_true",

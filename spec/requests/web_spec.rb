@@ -9,8 +9,20 @@ RSpec.describe "Web frontend", type: :request do
   it "renders the start page without third-party tracking" do
     get "/"
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("DID Lint")
+    expect(response.body).to include("DID Linter")
     expect(response.body).not_to include("googletagmanager")
+  end
+
+  it "has no Beta label and offers a light/dark switch" do
+    get "/"
+    expect(response.body).not_to match(/>\s*Beta\s*</i)
+    expect(response.body).to include('id="theme-toggle"')
+  end
+
+  it "links the version from the footer instead of showing build details" do
+    get "/"
+    expect(response.body).to include('<a href="/version">Version</a>')
+    expect(response.body).not_to include("DID Linter #{VERSION}")
   end
 
   it "loads no stylesheet, script or image from another host" do
@@ -28,12 +40,24 @@ RSpec.describe "Web frontend", type: :request do
     expect(response.body).to include(DID_REGISTRY_LINK)
   end
 
-  it "resolves and validates a DID" do
+  it "resolves and validates a DID and shows the result right below the DID form" do
     did = "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1"
     stub_oydid_resolver(did)
     get "/validate", params: { did: did }
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Conforms to W3C DID Spec v1.0")
+    body = response.body
+    expect(body).to include("Conforms to W3C DID Spec v1.0")
+    expect(body.index('id="did-result"')).to be < body.index('id="document"')
+    expect(body.index("Conforms to W3C DID Spec v1.0")).to be < body.index('id="document"')
+  end
+
+  it "shows the result of a document check below the document form and jumps to it" do
+    document = { "@context" => ["https://www.w3.org/ns/did/v1", "<b>probe</b>"], "id" => "did:example:123" }
+    post "/validate", params: { did_document: document.to_json, commit: "Validate" }
+    body = response.body
+    expect(body).to include('action="/validate#result"')
+    expect(body).not_to include('id="did-result"')
+    expect(body.index('id="result"')).to be > body.index('id="document"')
   end
 
   it "tells the user when the SOyA structure is not available" do

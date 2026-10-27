@@ -1,6 +1,6 @@
-# DID Lint
+# DID Linter
 
-DID Lint validates DID documents against the W3C [Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core/) specification. The rules are described in a [SOyA](https://ownyourdata.github.io/soya/) structure: SHACL checks the structure of a document, and a separate step checks its JSON-LD `@context`. DID Lint resolves DIDs itself, or validates a DID document you provide.
+DID Linter validates DID documents against the W3C [Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core/) specification. The rules are described in a [SOyA](https://ownyourdata.github.io/soya/) structure: SHACL checks the structure of a document, and a separate step checks its JSON-LD `@context`. DID Linter resolves DIDs itself, or validates a DID document you provide.
 
 [Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform with built-in validation and transformation. It builds on the W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and describes data structures in YAML as bases with optional overlays.
 
@@ -8,7 +8,7 @@ The structure used for validation is pinned by its DRI in `config/initializers/c
 
 ## Online Service
 
-DID Lint is available at https://didlint.ownyourdata.eu, with a web frontend and a REST API.
+DID Linter is available at https://didlint.ownyourdata.eu, with a web frontend and a REST API.
 
 ```bash
 curl https://didlint.ownyourdata.eu/api/validate/did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1
@@ -157,9 +157,9 @@ python3 script/check_fixtures.py --structure <DRI> --encoding list
 
 The GitHub workflow `regression` runs the structure check, the unit tests, a container built from the commit and the same container in offline mode inside a Docker network without internet access on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
 
-## Improve DID Lint
+## Improve DID Linter
 
-DID Lint shows how a SOyA structure can describe DID documents in a readable and machine-readable way, and how SOyA's validation reports violations. The structure does not yet cover the DID Core specification completely; please report issues and gaps in the [issue tracker](https://github.com/OwnYourData/didlint/issues).
+DID Linter shows how a SOyA structure can describe DID documents in a readable and machine-readable way, and how SOyA's validation reports violations. The structure does not yet cover the DID Core specification completely; please report issues and gaps in the [issue tracker](https://github.com/OwnYourData/didlint/issues).
 
 To contribute:
 

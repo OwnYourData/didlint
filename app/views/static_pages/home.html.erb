@@ -1,18 +1,16 @@
-<% provide(:title, "DID Lint") %>
+<% provide(:title, "DID Linter") %>
 <% example_did = "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1" %>
 
-<section class="hero">
-  <h1>DID documents, checked against the W3C specification</h1>
+<section class="intro">
+  <h1 class="visually-hidden">DID Linter</h1>
   <p class="lead">
-    DID Lint resolves a decentralized identifier, or takes the DID document you paste, and checks it
-    against <a href="https://www.w3.org/TR/did-core/">Decentralized Identifiers (DIDs) v1.0</a>.
-    The rules are written as a <a href="https://ownyourdata.github.io/soya/">SOyA</a> structure, so
-    they can be read, reused and validated anywhere.
+    DID Linter resolves a decentralized identifier, or takes a DID document, and checks it against
+    <a href="https://www.w3.org/TR/did-core/">Decentralized Identifiers (DIDs) v1.0</a>.
   </p>
 </section>
 
 <div class="stack">
-  <section class="card">
+  <section class="card" id="did">
 <% if DidLint.offline? -%>
     <h3>Check a DID</h3>
     <p>This instance runs in offline mode and makes no outgoing connections, so it cannot resolve DIDs.
@@ -23,7 +21,7 @@
       <div class="row">
         <%= form.text_field :did, value: @did.to_s, placeholder: "did:method:identifier", spellcheck: false, autocomplete: "off" %>
         <button class="btn primary" type="submit">Check</button>
-        <button class="btn secondary" type="submit" formaction="<%= root_path %>">Show document</button>
+        <button class="btn secondary" type="submit" formaction="<%= root_path(anchor: "document") %>">Show document</button>
       </div>
       <p class="hint">
         <code>did:oyd</code> is resolved through the <a href="https://resolver.ownyourdata.eu">OYDID resolver</a>,
@@ -32,10 +30,13 @@
       </p>
     <% end %>
 <% end -%>
+<% if @result && @source == :did -%>
+    <%= render "results", anchor: "did-result" %>
+<% end -%>
   </section>
 
-  <section class="card">
-    <%= form_with url: validate_path, class: "check", local: true do |form| %>
+  <section class="card" id="document">
+    <%= form_with url: validate_path(anchor: "result"), class: "check", local: true do |form| %>
       <%= form.hidden_field :did, value: @did.to_s %>
       <%= form.label :did_document, "Check a DID document" %>
       <%= form.text_area :did_document, id: "did_document", value: @did_document.to_s, spellcheck: false,
@@ -45,26 +46,24 @@
         <button class="btn secondary" type="submit" name="commit" value="Reset">Clear</button>
       </div>
     <% end %>
-<% if @result -%>
-    <div aria-live="polite">
-<% flash.each do |message_type, message| -%>
-      <div class="result <%= message_type %>"><%= message %></div>
-<% end -%>
-    </div>
+<% if @result && @source == :document -%>
+    <%= render "results", anchor: "result" %>
 <% end -%>
   </section>
 </div>
 
-<h2>How DID Lint checks</h2>
+<h2>How DID Linter checks</h2>
 <div class="panel">
   <ol class="steps">
-    <li><strong>Structure.</strong> The document is validated with SHACL against the SOyA structure
-      <a href="<%= soya_structure_url %>"><code><%= soya_did_dri %></code></a>: required members, identifier
+    <li><strong>Structure.</strong> The document is validated with SHACL against the
+      <a href="<%= soya_structure_url %>">SOyA structure</a> for DID documents: required members, identifier
       syntax, verification methods and their key material, verification relationships and services.</li>
     <li><strong>Context.</strong> For a JSON-LD document, the <code>@context</code> is checked against the
       verification method types the structure lists, with the contexts the
       <a href="https://www.w3.org/TR/did-spec-registries/#verification-method-types">DID Specification Registries</a> name for them.</li>
-    <li><strong>Result.</strong> Violations are listed per member, notes that do not affect the verdict separately.</li>
+    <li><strong>Result.</strong> Each problem is listed with the member of the document it concerns, for example
+      <code>verificationMethod</code>. Notes that do not change the result, such as a suggestion to add a
+      JSON-LD context, are shown separately.</li>
   </ol>
   <p class="note">Results come from automated checks only. They are not a certification, and the structure does
     not yet cover every requirement of DID Core.
@@ -107,7 +106,7 @@ cat did.json | script/verify_context.rb</code></pre>
   <article class="card">
     <h3>SOyA</h3>
     <p>Semantic Overlay Architecture: data models in YAML with overlays for validation and
-      transformation. The rules of DID Lint are a SOyA structure, published from
+      transformation. The rules of DID Linter are a SOyA structure, published from
       <a href="https://github.com/OwnYourData/didlint/blob/main/soya/Did.yml"><code>soya/Did.yml</code></a>.</p>
     <div class="links">
       <a href="https://soya.ownyourdata.eu">soya.ownyourdata.eu</a>

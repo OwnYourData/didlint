@@ -20,7 +20,7 @@ module DidLint
         @cache = {}
         @mutex = Mutex.new
 
-        # the copy shipped with DID Lint
+        # the copy shipped with DID Linter
         def self.repo_dir
             Rails.root.join("soya")
         end

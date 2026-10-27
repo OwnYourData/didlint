@@ -1,8 +1,12 @@
 require "cgi"
 
 class StaticPagesController < ApplicationController
+    # @source tells the view where to show the result: right below the DID
+    # form (:did) or below the document form (:document)
+
     rescue_from DidLint::StructureUnavailable do
         @result = true
+        @source = action_name == "validate" ? :document : :did
         flash.now[:warning] = "The SOyA structure used for validation is not available, please try again later"
         @did_document = JSON.pretty_generate(@did_document) if @did_document.is_a?(Hash) || @did_document.is_a?(Array)
         render "home"
@@ -10,6 +14,7 @@ class StaticPagesController < ApplicationController
 
     def home
         @result = false
+        @source = :did
         @did_document = ""
         @did = params[:did].to_s
         if @did != ""
@@ -35,6 +40,7 @@ class StaticPagesController < ApplicationController
             return
         end
 
+        @source = :document
         @did_document = JSON.parse(params[:did_document].to_s) rescue nil
         if @did_document.nil?
             @did = params[:did].to_s
@@ -55,6 +61,7 @@ class StaticPagesController < ApplicationController
     end
 
     def resolve_and_validate
+        @source = :did
         @did = params[:did].to_s
         if @did != ""
             retVal = resolve_did(@did)
@@ -67,6 +74,7 @@ class StaticPagesController < ApplicationController
                 @did_document = retVal.first
             end
         else
+            @result = true
             flash.now[:warning] = "Missing DID"
             render "home"
             return

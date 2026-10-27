@@ -1,7 +1,7 @@
 module DidLint
     OFFLINE_MESSAGE = "not available in offline mode"
 
-    # DIDLINT_OFFLINE=true runs DID Lint without any outgoing connection: the
+    # DIDLINT_OFFLINE=true runs DID Linter without any outgoing connection: the
     # SOyA structure comes from the local copy in soya/ and SHACL runs locally
     # through soya-js. Resolving DIDs is not available offline.
     def self.offline?

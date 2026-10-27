@@ -1,5 +1,5 @@
 #!/bin/bash
-# Prepares a DID document (stdin) for "soya validate", like the DID Lint service
+# Prepares a DID document (stdin) for "soya validate", like the DID Linter service
 # does (soya_prep in app/services/did_lint/linter.rb): the structure becomes
 # @vocab, and if the structure validates sets as lists, the set attributes of
 # Did are encoded as lists.

@@ -1,0 +1,5 @@
+<div class="results" id="<%= anchor %>" aria-live="polite">
+<% flash.each do |message_type, message| -%>
+  <div class="result <%= message_type %>"><%= message %></div>
+<% end -%>
+</div>

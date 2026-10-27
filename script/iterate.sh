@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Validates a list of DIDs (one per line on stdin) with the public DID Lint
+# Validates a list of DIDs (one per line on stdin) with the public DID Linter
 # service and prints one summary line per DID. Example with the test
 # identifiers of the Universal Resolver (needs yq and jq):
 # curl -s https://raw.githubusercontent.com/decentralized-identity/universal-resolver/main/uni-resolver-web/src/main/resources/application.yml | yq -o json .uniresolver.drivers | jq -r '.[].testIdentifiers | .[]' | script/iterate.sh

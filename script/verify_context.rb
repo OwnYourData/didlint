@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # Checks the @context of a DID document (stdin) against the context constraints
-# of the SOyA structure, like the DID Lint service does (validate_DID_context in
+# of the SOyA structure, like the DID Linter service does (validate_DID_context in
 # app/services/did_lint/linter.rb).
 # usage: cat did_document.json | script/verify_context.rb [DRI]
 # Without DRI the structure pinned in config/initializers/constants.rb is used.
