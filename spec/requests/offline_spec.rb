@@ -11,7 +11,7 @@ RSpec.describe "Offline mode", type: :request do
   it "reports the mode and the pinned structure" do
     get "/version"
     body = JSON.parse(response.body)
-    expect(body).to include("mode" => "offline", "did-dri" => SOYA_DID_DRI)
+    expect(body).to include("mode" => "offline", "did-dri" => SOYA_DID_DRI, "did-dri-source" => "pinned")
     expect(body).not_to have_key("soya-cli_version")
   end
 

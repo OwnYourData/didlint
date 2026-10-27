@@ -17,6 +17,11 @@ RSpec.describe DidLint::LocalValidator do
     end
   end
 
+  it "stops soya-js after the timeout" do
+    stub_const("DidLint::LocalValidator::TIMEOUT", 0.01)
+    expect { described_class.new.validate({}, {}) }.to raise_error(described_class::Failed, /did not answer/)
+  end
+
   it "reports a failing validation" do
     expect { described_class.new.validate({ "@graph" => "no structure" }, {}) }
       .to raise_error(described_class::Failed)

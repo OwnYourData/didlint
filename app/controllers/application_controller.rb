@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
 	include ApplicationHelper
 
     def version
-        soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        soya_did_dri = DidLint::Structure.active_dri
         soya_web_cli = ENV["SOYA_WEB_CLI"] || SOYA_WEB_CLI
         
         retVal = {}
@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
             end
         end
         retVal["did-dri"] = soya_did_dri
+        retVal["did-dri-source"] = soya_did_dri == DidLint::Structure.pinned_dri ? "pinned" : "fetched"
         retVal["oydid-gem"] = Gem.loaded_specs["oydid"]&.version.to_s
         retVal["oydid-resolver"] = ENV["OYDID_RESOLVER_URL"] || OYDID_RESOLVER_URL
         render json: retVal.to_json,

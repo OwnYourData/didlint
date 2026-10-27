@@ -1,7 +1,7 @@
 module ApplicationHelper
     # DRI of the SOyA structure used for validation
     def soya_did_dri
-        ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+        DidLint::Structure.active_dri
     end
 
     # human-readable source (YAML) of that structure

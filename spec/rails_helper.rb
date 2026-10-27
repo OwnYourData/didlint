@@ -13,4 +13,13 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
   config.before { DidLint::Structure.clear }
+  # fetched structures go to a fresh directory in every example
+  config.around do |example|
+    Dir.mktmpdir do |dir|
+      ENV["SOYA_STRUCTURE_DIR"] = dir
+      example.run
+    ensure
+      ENV.delete("SOYA_STRUCTURE_DIR")
+    end
+  end
 end

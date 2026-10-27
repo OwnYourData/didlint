@@ -52,4 +52,33 @@ RSpec.describe DidLint::Structure do
     expect(copy["@graph"].map { |node| node["@type"] }).to include("OverlayValidation", "OverlayDidContextValidation")
     expect(JSON.parse(Rails.root.join("soya/soya-context.json").read)).to have_key("@context")
   end
+
+  describe "structure in use" do
+    let(:fetched) { "zEb5A6X4nSxnY2PR81Chmi6BRpr2Z71H4gThVCbdQb6pA" }
+    let(:structure_json) { Rails.root.join("spec/fixtures/soya/structure_#{fetched}.json").read }
+    let(:context_json) { Rails.root.join("soya/soya-context.json").read }
+
+    it "is the pinned one by default" do
+      expect(described_class.active_dri).to eq(SOYA_DID_DRI)
+    end
+
+    it "is a fetched one after activation, from its runtime copy" do
+      described_class.activate(fetched, structure_json, context_json)
+      expect(described_class.active_dri).to eq(fetched)
+      with_offline_mode do
+        expect(described_class.document(fetched)).to eq(JSON.parse(structure_json))
+      end
+    end
+
+    it "is the pinned one again after reset" do
+      described_class.activate(fetched, structure_json, context_json)
+      described_class.reset
+      expect(described_class.active_dri).to eq(SOYA_DID_DRI)
+    end
+
+    it "ignores an activation whose copy is missing" do
+      described_class.runtime_dir.join("active").write(fetched)
+      expect(described_class.active_dri).to eq(SOYA_DID_DRI)
+    end
+  end
 end

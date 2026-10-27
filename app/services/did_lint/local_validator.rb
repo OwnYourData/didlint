@@ -23,14 +23,26 @@ module DidLint
             Open3.popen3({ "SOYA_JS" => self.class.soya_js }, "node", SCRIPT) do |stdin, stdout, stderr, wait|
                 out = Thread.new { stdout.read }
                 err = Thread.new { stderr.read }
-                stdin.write(input)
-                stdin.close
-                unless wait.join(TIMEOUT)
-                    Process.kill("KILL", wait.pid) rescue nil
-                    raise Failed, "soya-js did not answer within #{TIMEOUT}s"
+                begin
+                    stdin.write(input)
+                rescue Errno::EPIPE
+                    nil
                 end
-                raise Failed, err.value.to_s.strip.presence || "soya-js failed" unless wait.value.success?
-                JSON.parse(out.value)
+                stdin.close
+                finished = wait.join(TIMEOUT)
+                unless finished
+                    begin
+                        Process.kill("KILL", wait.pid)
+                    rescue Errno::ESRCH
+                        nil
+                    end
+                end
+                # always drain both pipes before the block closes them
+                output = out.value
+                errors = err.value
+                raise Failed, "soya-js did not answer within #{TIMEOUT}s" unless finished
+                raise Failed, errors.to_s.strip.presence || "soya-js failed" unless wait.value.success?
+                JSON.parse(output)
             end
         rescue Errno::ENOENT
             raise Failed, "node is not installed"

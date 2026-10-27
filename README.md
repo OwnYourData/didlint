@@ -75,14 +75,14 @@ To build the image yourself: `docker build -f docker/Dockerfile -t didlint .`
 | `UNIRESOLVER_URL` | Universal Resolver for all other methods | https://dev.uniresolver.io |
 | `JSON_SCHEMA_SOURCE` | JSON Schema for `/api/validate_jschema` | `core.schema.json` of the DID Specification Registries |
 | `DIDLINT_OFFLINE` | `true` for the [offline mode](#offline-mode) | |
-| `SOYA_STRUCTURE_DIR` | directory with the local copy of the SOyA structure | `soya/` |
+| `SOYA_STRUCTURE_DIR` | directory for structures fetched at runtime with `soya:fetch` | `storage/soya` |
 | `SOYA_JS` | soya-js package for SHACL validation in offline mode | `/opt/soya-js` in the image |
 
 ### Offline Mode
 
 With `DIDLINT_OFFLINE=true` an instance makes no outgoing connections at all:
 
-- The SOyA structure comes from the local copy in `soya/` (`<DRI>.json` as published, plus `soya-context.json`, which the structure imports).
+- The SOyA structure comes from a local copy: a structure fetched at runtime (see below), otherwise the copy shipped in `soya/` (`<DRI>.json` as published, plus `soya-context.json`, which the structure imports).
 - SHACL runs locally through soya-js, the same library soya-web-cli uses; the image contains it under `/opt/soya-js`. The unit tests check that it decides every recorded fixture exactly like soya-web-cli.
 - `POST /api/validate` and the form for DID documents work as online. Everything that has to resolve a DID answers with HTTP 503 and `resolving DIDs is not available in offline mode`.
 - `GET /version` reports `"mode": "offline"`.
@@ -95,6 +95,23 @@ docker run -d --name didlint --network none \
 ```
 
 `--network none` leaves the container without any network, so this example can only be checked from inside, e.g. with `docker exec didlint curl -s http://localhost:3000/version`. Online, the local copy is the fallback when the SOyA repository cannot be reached.
+
+### Updating the SOyA Structure at Runtime
+
+A running instance, online or offline, can switch to a newer structure without a new image, provided it can reach the SOyA repository for the moment:
+
+```bash
+bin/rails 'soya:fetch[Did]'
+bin/rails soya:status
+bin/rails soya:reset
+```
+
+- `soya:fetch` takes the version of `Did` tagged `current` (also `Did:<tag>` or a DRI), validates every fixture in `pytest/` against it locally and switches only if the verdicts match `pytest/expectations.json`; fixtures listed under `planned_changes` may change. Otherwise it stops and keeps the structure in use; `FORCE=1` switches anyway.
+- The fetched structure is stored in `SOYA_STRUCTURE_DIR` and used from the next request on; `GET /version` then reports its DRI with `"did-dri-source": "fetched"`.
+- `soya:reset` goes back to the pinned structure. A restart does so as well, unless `SOYA_STRUCTURE_DIR` is a persistent volume.
+- The check uses the current encoding of set values; a structure that needs a different encoding comes with a new release.
+
+In Kubernetes: `kubectl -n soya exec deploy/didlint -- bin/rails 'soya:fetch[Did]'` (with more than one replica, per pod).
 
 ### Kubernetes
 

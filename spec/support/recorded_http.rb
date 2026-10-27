@@ -3,8 +3,9 @@ module RecordedHttp
   FIXTURES = Rails.root.join("spec/fixtures")
 
   def stub_soya_structure(dri = SOYA_DID_DRI)
+    file = [Rails.root.join("soya/#{dri}.json"), FIXTURES.join("soya/structure_#{dri}.json")].find(&:file?)
     stub_request(:get, "#{SOYA_REPO}/#{dri}")
-      .to_return(status: 200, body: Rails.root.join("soya/#{dri}.json").read,
+      .to_return(status: 200, body: file.read,
                  headers: { "Content-Type" => "application/json" })
   end
 
@@ -46,11 +47,22 @@ module RecordedHttp
   def without_any_structure(dri = SOYA_DID_DRI)
     stub_request(:get, "#{SOYA_REPO}/#{dri}").to_return(status: 503)
     Dir.mktmpdir do |empty|
-      ENV["SOYA_STRUCTURE_DIR"] = empty
+      allow(DidLint::Structure).to receive(:repo_dir).and_return(Pathname(empty))
       yield
-    ensure
-      ENV.delete("SOYA_STRUCTURE_DIR")
     end
+  end
+
+  # the SOyA repository as seen by `bin/rails soya:fetch`
+  def stub_soya_tag(name, tag, dri)
+    info = { "name" => name, "history" => [{ "tag" => tag, "dri" => dri }] }
+    stub_request(:get, "#{SOYA_REPO}/#{name}:#{tag}/info")
+      .to_return(status: 200, body: info.to_json, headers: { "Content-Type" => "application/json" })
+  end
+
+  def stub_soya_context
+    stub_request(:get, DidLint::Structure::CONTEXT_URL)
+      .to_return(status: 200, body: Rails.root.join("soya", DidLint::Structure::CONTEXT_FILE).read,
+                 headers: { "Content-Type" => "application/json" })
   end
 
   def with_offline_mode

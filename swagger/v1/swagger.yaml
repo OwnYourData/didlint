@@ -374,6 +374,10 @@ components:
         did-dri:
           type: string
           description: DRI of the SOyA structure used for validation
+        did-dri-source:
+          type: string
+          enum: [pinned, fetched]
+          description: '`fetched` after `bin/rails soya:fetch` replaced the pinned structure at runtime'
         oydid-gem:
           type: string
           description: version of the bundled oydid gem

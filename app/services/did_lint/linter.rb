@@ -4,6 +4,17 @@ module DidLint
     # context against the verification method types listed in the SOyA
     # structure. The result is the v1 response of /api/validate.
     class Linter
+        # dri: the SOyA structure to validate against; default is the one in
+        # use (DidLint::Structure.active_dri), fixed for the lifetime of the
+        # instance so that one validation never mixes two structures
+        def initialize(dri: nil)
+            @dri = dri
+        end
+
+        def dri
+            @dri ||= DidLint::Structure.active_dri
+        end
+
         def validate(input)
             # pre-process DID Document
             ddo = soya_prep(input.dup)
@@ -29,7 +40,7 @@ module DidLint
                     # https://www.w3.org/TR/did-core/#json-ld
 
                     # check if context is in the registered verification methods
-                    soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+                    soya_did_dri = dri
                     vmts = DidLint::Structure.context_constraints(soya_did_dri).map{|i| i["context"]}
                     not_standard_vmts = input["@context"] - vmts rescue []
                     not_standard_vmts.delete_if { |el| el.is_a?(Hash) && (el["@base"] || el[:"@base"]) }
@@ -96,7 +107,7 @@ module DidLint
 
         def soya_prep(document)
             retVal = {}
-            soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+            soya_did_dri = dri
             soya_repo = ENV["SOYA_REPO"] || SOYA_REPO
             retVal["@context"] = {"@version": 1.1, "did": soya_repo + "/" + soya_did_dri + "/", "@vocab": soya_repo + "/" + soya_did_dri + "/"}
             document["@type"] = "Did"
@@ -106,7 +117,7 @@ module DidLint
         end
 
         def soya_validate(json_input, orig_ddo)
-            soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+            soya_did_dri = dri
             soya_web_cli = ENV["SOYA_WEB_CLI"] || SOYA_WEB_CLI
             soya_validation_url = soya_web_cli + "/api/v1/validate/" + soya_did_dri.to_s
             jsonld_validation_url = soya_web_cli + "/api/v1/validate/jsonld"
@@ -234,7 +245,7 @@ module DidLint
         end
 
         def validate_DID_context(did_document)
-            soya_did_dri = ENV["SOYA_DID_DRI"] || SOYA_DID_DRI
+            soya_did_dri = dri
             violations=[]
             jld_context = did_document["@context"]
             if jld_context.is_a?(String)
