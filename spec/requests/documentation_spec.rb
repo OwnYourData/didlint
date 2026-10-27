@@ -59,6 +59,13 @@ RSpec.describe "Documentation", type: :request do
     expect(readme.scan(/(?<![\w:])z[1-9A-HJ-NP-Za-km-z]{44}(?!\w)/).uniq).to eq([SOYA_DID_DRI])
   end
 
+  it "names the Apache License 2.0 in LICENSE, NOTICE, README and Swagger" do
+    expect(Rails.root.join("LICENSE").read).to start_with("\n                                 Apache License\n                           Version 2.0, January 2004")
+    expect(Rails.root.join("NOTICE").read).to include("licensed under the Apache License, Version 2.0")
+    expect(File.read(Rails.root.join("README.md"), encoding: "UTF-8")).to include("[Apache License 2.0](LICENSE)")
+    expect(doc.dig("info", "license")).to eq("name" => "Apache 2.0", "url" => "https://www.apache.org/licenses/LICENSE-2.0")
+  end
+
   it "links the pinned SOyA structure on the start page" do
     get "/"
     expect(response.body).to include("#{SOYA_REPO}/#{SOYA_DID_DRI}/yaml")

@@ -179,4 +179,6 @@ To contribute:
 
 ## License
 
-[MIT License 2024 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/didlint/main/LICENSE)
+[Apache License 2.0](LICENSE) - OwnYourData.eu
+
+Releases up to and including 0.11.0 were published under the MIT License; [NOTICE](NOTICE) keeps its notice for the code contributed under it.
