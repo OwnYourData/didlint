@@ -4,6 +4,7 @@ RSpec.describe DidLint::StructureUpdate do
   let(:out) { StringIO.new }
   let(:update) { described_class.new(out: out) }
   let(:july) { "zEb5A6X4nSxnY2PR81Chmi6BRpr2Z71H4gThVCbdQb6pA" }
+  let(:april) { "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE" }
 
   describe "#resolve" do
     it "takes a DRI as it is" do
@@ -38,13 +39,20 @@ RSpec.describe DidLint::StructureUpdate do
       expect(out.string).to include("now using #{SOYA_DID_DRI}")
     end
 
-    it "refuses the July structure, which lets invalid documents pass" do
+    it "refuses the July structure, which lets invalid embedded verification methods pass" do
       stub_soya_tag("Did", "current", july)
       stub_soya_structure(july)
       expect(update.run("Did")).to be(false)
       expect(DidLint::Structure.active_dri).to eq(SOYA_DID_DRI)
-      expect(out.string).to include("FAIL  02_input/invalid_wrongVMtype.json  expected invalid, got valid")
-      expect(out.string).to include("not switched")
+      expect(out.string).to include("FAIL  02_input/invalid_embedded_vm_keyAgreement.json  expected invalid, got valid")
+      expect(out.string).to include("not switched: 7 fixture(s) differ")
+    end
+
+    it "refuses the April structure, which requires a verification relationship" do
+      stub_soya_structure(april)
+      expect(update.run(april)).to be(false)
+      expect(out.string).to include("FAIL  02_input/valid_only_relative.json  expected valid, got invalid")
+      expect(out.string).to include("not switched: 4 fixture(s) differ")
     end
 
     it "switches anyway with force" do

@@ -81,4 +81,16 @@ RSpec.describe DidLint::Structure do
       expect(described_class.active_dri).to eq(SOYA_DID_DRI)
     end
   end
+
+  describe ".list_attributes" do
+    it "encodes the set attributes as lists for structures that validate sets as lists" do
+      expect(described_class.list_attributes(JSON.parse(Rails.root.join("soya/#{SOYA_DID_DRI}.json").read)))
+        .to eq(%w[assertionMethod authentication capabilityDelegation capabilityInvocation keyAgreement service verificationMethod])
+    end
+
+    it "keeps plain arrays for the April 2025 structure" do
+      april = JSON.parse(Rails.root.join("soya/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE.json").read)
+      expect(described_class.list_attributes(april)).to eq([])
+    end
+  end
 end

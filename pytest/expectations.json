@@ -6,40 +6,39 @@
     }
   },
   "structure": {
-    "dri": "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE",
-    "encoding": "flat",
+    "dri": "zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC",
+    "encoding": "list",
     "valid": {
-      "02_input/gh_1_invalid.json": false,
+      "02_input/gh_1_invalid.json": true,
       "02_input/gh_1_valid.json": true,
       "02_input/invalid_did-self.json": false,
+      "02_input/invalid_embedded_vm_assertionMethod.json": false,
+      "02_input/invalid_embedded_vm_authentication.json": false,
+      "02_input/invalid_embedded_vm_capabilityDelegation.json": false,
+      "02_input/invalid_embedded_vm_capabilityInvocation.json": false,
+      "02_input/invalid_embedded_vm_keyAgreement.json": false,
       "02_input/invalid_missing_context.json": true,
       "02_input/invalid_missing_id.json": false,
-      "02_input/invalid_missing_verificationMethod.json": false,
-      "02_input/invalid_only_relative.json": false,
+      "02_input/invalid_service_missing_endpoint.json": false,
+      "02_input/invalid_vm_missing_controller.json": false,
       "02_input/invalid_wrongVMtype.json": false,
       "02_input/invalid_wrongVMtypeAttribute.json": false,
       "02_input/valid_did-self.json": true,
       "02_input/valid_example_9.json": true,
+      "02_input/valid_missing_verificationMethod.json": true,
+      "02_input/valid_only_relative.json": true,
       "02_input/valid_oyd.json": true,
       "03_input/01_ldc.json": true,
       "03_input/02_ldc.json": true,
       "03_input/03_ldc.json": true,
       "03_input/04_ldc.json": false,
       "03_input/05_ldc.json": false,
-      "03_input/06_ldc.json": false,
+      "03_input/06_ldc.json": true,
       "03_input/did_polygonid.json": false,
       "03_input/gh_3_invalid.json": true,
       "03_input/gh_3_valid.json": true
     },
-    "planned_changes": {
-      "reason": "DID Core 1.0 does not require a verification method or verification relationship. The next structure relaxes this; these fixtures then become valid and their entries above and in 02_output/ / 03_output/ change in the same commit as SOYA_DID_DRI.",
-      "become_valid": [
-        "02_input/gh_1_invalid.json",
-        "02_input/invalid_missing_verificationMethod.json",
-        "02_input/invalid_only_relative.json",
-        "03_input/06_ldc.json"
-      ]
-    }
+    "note": "DID Core does not require a verification method or verification relationship; since the structure of 2026-10-27 02_input/gh_1_invalid.json and 03_input/06_ldc.json are therefore valid despite their names."
   },
   "resolve": [
     "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1",

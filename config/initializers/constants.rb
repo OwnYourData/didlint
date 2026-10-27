@@ -1,5 +1,5 @@
-VERSION = "0.9.0"
-SOYA_DID_DRI = "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE"
+VERSION = "0.10.0"
+SOYA_DID_DRI = "zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC"
 SOYA_REPO = "https://soya.ownyourdata.eu"
 SOYA_WEB_CLI = "https://soya-web-cli.ownyourdata.eu"
 UNIRESOLVER_URL = "https://dev.uniresolver.io"

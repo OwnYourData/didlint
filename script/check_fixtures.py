@@ -221,12 +221,23 @@ def check_web(base, rep):
         rep.fail("web /api-docs/v1/swagger.yaml", "HTTP %s, or the resolve endpoint is not documented" % status)
 
 
-def set_attributes(repo, dri):
+def load_structure(repo, dri):
     status, _, body = http("GET", repo.rstrip("/") + "/" + dri)
     if status != 200:
         sys.exit("cannot load structure %s from %s (HTTP %s)" % (dri, repo, status))
+    return json.loads(body)
+
+
+def uses_lists(structure):
+    # mirrors Structure.list_attributes in app/services/did_lint/structure.rb:
+    # structures compiled with soya-js 0.8.10 or later validate sets as rdf:List
+    return any(node.get("@type") == "OverlayValidation" and "rdf:rest" in json.dumps(node)
+               for node in structure.get("@graph", []))
+
+
+def set_attributes(structure):
     attrs = []
-    for node in json.loads(body).get("@graph", []):
+    for node in structure.get("@graph", []):
         domain = node.get("domain")
         domains = domain if isinstance(domain, list) else [domain]
         if node.get("soya:containerType") == "set" and "Did" in domains:
@@ -270,11 +281,14 @@ def check_structure(dri, encoding, soya_web_cli, repo):
     exp = load_expectations()["structure"]
     expected = exp["valid"]
     dri = dri or constant("SOYA_DID_DRI")
+    structure = load_structure(repo, dri)
+    if encoding == "auto":
+        encoding = "list" if uses_lists(structure) else "flat"
     rep = Report("structure %s (%s encoding)" % (dri, encoding))
     if dri != exp.get("dri"):
         print("NOTE  expectations were recorded for %s" % exp.get("dri"))
     check_local_copy(rep, repo, dri)
-    list_attrs = set_attributes(repo, dri) if encoding == "list" else []
+    list_attrs = set_attributes(structure) if encoding == "list" else []
 
     on_disk = sorted(fixture_name(p) for g in ("02_input", "03_input")
                      for p in glob.glob(os.path.join(FIXTURES, g, "*.json")))
@@ -313,8 +327,8 @@ def main():
                         help="the instance runs with DIDLINT_OFFLINE=true")
     parser.add_argument("--structure", nargs="?", const="", default=None, metavar="DRI",
                         help="check a SOyA structure; default is the pinned one")
-    parser.add_argument("--encoding", choices=("flat", "list"), default=None,
-                        help="how set values are encoded; default from expectations.json")
+    parser.add_argument("--encoding", choices=("auto", "flat", "list"), default=None,
+                        help="how set values are encoded; auto decides from the structure; default from expectations.json")
     parser.add_argument("--soya-web-cli", default=os.environ.get("SOYA_WEB_CLI") or constant("SOYA_WEB_CLI"))
     parser.add_argument("--soya-repo", default=os.environ.get("SOYA_REPO") or constant("SOYA_REPO"))
     args = parser.parse_args()

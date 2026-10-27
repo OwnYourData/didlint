@@ -13,11 +13,11 @@ on:
         required: false
         default: ""
       encoding:
-        description: "Encoding of set values"
+        description: "Encoding of set values; auto decides from the structure"
         required: false
-        default: "flat"
+        default: "auto"
         type: choice
-        options: [flat, list]
+        options: [auto, flat, list]
 
 permissions:
   contents: read
@@ -31,7 +31,7 @@ jobs:
       - name: Validate the fixtures against the structure
         env:
           DRI: ${{ inputs.dri }}
-          ENCODING: ${{ inputs.encoding || 'flat' }}
+          ENCODING: ${{ inputs.encoding || 'auto' }}
         run: python3 script/check_fixtures.py --structure "$DRI" --encoding "$ENCODING"
 
   instance:

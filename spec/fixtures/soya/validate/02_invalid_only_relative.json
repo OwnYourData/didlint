@@ -1,6 +1,0 @@
-{
-  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\",\"@vocab\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\"},\"@graph\":[{\"id\":\"did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh\",\"authentication\":[\"did:oyd:zQmaBZTghndXTgxNwfbdpVLWdFf6faYE4oeuN2zzXdQt1kh#key-doc\"],\"@type\":\"Did\"}]}",
-  "status": 200,
-  "content_type": "application/json; charset=utf-8",
-  "response": "{\"isValid\":false,\"results\":[{\"id\":{\"termType\":\"BlankNode\",\"value\":\"df_1356_1\"},\"message\":[],\"severity\":{\"value\":\"http://www.w3.org/ns/shacl#Violation\"}}],\"classChecks\":[]}"
-}

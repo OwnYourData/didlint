@@ -24,7 +24,7 @@ module DidLint
             structure = JSON.parse(structure_json)
             check_structure!(dri, structure)
             context_json = get(Structure::CONTEXT_URL)
-            mismatches = check_fixtures(dri, Structure.inline(structure, JSON.parse(context_json)))
+            mismatches = check_fixtures(dri, structure, Structure.inline(structure, JSON.parse(context_json)))
             if mismatches.any? && !force
                 say "not switched: #{mismatches.size} fixture(s) differ from pytest/expectations.json (FORCE=1 switches anyway)"
                 return false
@@ -50,7 +50,7 @@ module DidLint
         end
 
         # [name, expected, got] for every fixture with an unexpected verdict
-        def check_fixtures(dri, self_contained)
+        def check_fixtures(dri, structure, self_contained)
             raise Failed, "node or soya-js (SOYA_JS) not available" unless LocalValidator.available?
             expectations = JSON.parse(Rails.root.join("pytest/expectations.json").read)["structure"]
             planned = expectations.dig("planned_changes", "become_valid").to_a
@@ -59,7 +59,7 @@ module DidLint
             mismatches = []
             expectations["valid"].sort.each do |name, expected|
                 document = JSON.parse(Rails.root.join("pytest", name).read)
-                got = validator.validate(self_contained, linter.soya_prep(document))["isValid"]
+                got = validator.validate(self_contained, linter.soya_prep(document, structure: structure))["isValid"]
                 if got == expected
                     say "PASS  #{name}  #{verdict(got)}"
                 elsif planned.include?(name)

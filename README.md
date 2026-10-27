@@ -4,7 +4,7 @@ DID Lint validates DID documents against the W3C [Decentralized Identifiers (DID
 
 [Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform with built-in validation and transformation. It builds on the W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and describes data structures in YAML as bases with optional overlays.
 
-The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE](https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/yaml). The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
+The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC](https://soya.ownyourdata.eu/zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.3. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
 
 ## Online Service
 
@@ -34,11 +34,11 @@ The validation can be reproduced with [soya-cli](https://github.com/OwnYourData/
 
 ```bash
 npm install -g soya-cli@latest
-cat did_document.json | script/prep.sh | soya validate z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE
+cat did_document.json | script/prep.sh | soya validate zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC
 cat did_document.json | script/verify_context.rb
 ```
 
-- `script/prep.sh [DRI]` wraps the DID document the way the service does before SHACL validation (`@graph` with `@type` `Did`, the structure as `@vocab`).
+- `script/prep.sh [DRI]` wraps the DID document the way the service does before SHACL validation (`@graph` with `@type` `Did`, the structure as `@vocab`, set attributes as lists for structures that validate sets as lists).
 - `soya validate` prints the SHACL report of the structure.
 - `script/verify_context.rb [DRI]` (Ruby, standard library only) checks the `@context` against the context constraints of the structure, which SHACL cannot see.
 

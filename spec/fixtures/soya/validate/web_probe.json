@@ -1,6 +1,6 @@
 {
-  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\",\"@vocab\":\"https://soya.ownyourdata.eu/z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE/\"},\"@graph\":[{\"id\":\"did:example:123\",\"@type\":\"Did\"}]}",
+  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC/\",\"@vocab\":\"https://soya.ownyourdata.eu/zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC/\",\"assertionMethod\":{\"@container\":\"@list\"},\"authentication\":{\"@container\":\"@list\"},\"capabilityDelegation\":{\"@container\":\"@list\"},\"capabilityInvocation\":{\"@container\":\"@list\"},\"keyAgreement\":{\"@container\":\"@list\"},\"service\":{\"@container\":\"@list\"},\"verificationMethod\":{\"@container\":\"@list\"}},\"@graph\":[{\"id\":\"did:example:123\",\"@type\":\"Did\"}]}",
   "status": 200,
   "content_type": "application/json; charset=utf-8",
-  "response": "{\"isValid\":false,\"results\":[{\"id\":{\"termType\":\"BlankNode\",\"value\":\"df_1374_0\"},\"message\":[],\"severity\":{\"value\":\"http://www.w3.org/ns/shacl#Violation\"}}],\"classChecks\":[]}"
+  "response": "{\"isValid\":true,\"results\":[],\"classChecks\":[]}"
 }

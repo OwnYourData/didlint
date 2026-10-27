@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: didlint
-        image: oydeu/didlint:261027
+        image: oydeu/didlint:261027b
         ports:
         - containerPort: 3000
         env:
@@ -34,7 +34,7 @@ spec:
           - name: RAILS_ENV
             value: production
           - name: SOYA_DID_DRI
-            value: z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE
+            value: zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC
           - name: allowed_hosts
             value: "didlint.ownyourdata.eu"
           - name: SECRET_KEY_BASE

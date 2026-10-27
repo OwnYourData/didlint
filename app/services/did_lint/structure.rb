@@ -51,6 +51,19 @@ module DidLint
             value
         end
 
+        # Structures compiled with soya-js 0.8.10 or later validate set values
+        # as rdf:List (path rdf:rest*/rdf:first): data for them has to encode
+        # the set attributes of Did as lists. Older structures, such as the
+        # April 2025 one, expect plain arrays. Returns the attributes to encode
+        # as lists, empty for plain arrays.
+        def self.list_attributes(structure)
+            graph = structure["@graph"].to_a
+            uses_lists = graph.any? { |node| node["@type"] == "OverlayValidation" && node.to_json.include?("rdf:rest") }
+            return [] unless uses_lists
+            graph.select { |node| node["soya:containerType"] == "set" && Array(node["domain"]).include?("Did") }
+                 .map { |node| node["@id"] }.compact.sort
+        end
+
         def self.context_constraints(dri)
             overlay = document(dri)["@graph"].to_a.find { |node| node["@type"] == "OverlayDidContextValidation" }
             raise StructureUnavailable, "SOyA structure #{dri} has no OverlayDidContextValidation" if overlay.nil?

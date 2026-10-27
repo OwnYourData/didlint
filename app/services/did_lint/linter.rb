@@ -105,11 +105,16 @@ module DidLint
             retVal
         end
 
-        def soya_prep(document)
+        # structure: the SOyA structure the document is validated against
+        # (default: the one of dri); it decides whether set values are lists
+        def soya_prep(document, structure: nil)
             retVal = {}
             soya_did_dri = dri
             soya_repo = ENV["SOYA_REPO"] || SOYA_REPO
             retVal["@context"] = {"@version": 1.1, "did": soya_repo + "/" + soya_did_dri + "/", "@vocab": soya_repo + "/" + soya_did_dri + "/"}
+            DidLint::Structure.list_attributes(structure || DidLint::Structure.document(soya_did_dri)).each do |attribute|
+                retVal["@context"][attribute] = {"@container": "@list"}
+            end
             document["@type"] = "Did"
             retVal["@graph"] = [document.except("@context")]
 
