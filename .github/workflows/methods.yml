@@ -1,0 +1,49 @@
+name: methods
+
+# Validates the example DIDs of the DIF-recommended methods and did:oyd
+# (status/methods.json) with didlint.ownyourdata.eu and publishes the result
+# on GitHub Pages as dif-methods.json, which the start page of DID Linter
+# shows. Needs Settings > Pages > Source: GitHub Actions.
+
+on:
+  schedule:
+    - cron: "41 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Example DIDs against didlint.ownyourdata.eu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate the example DIDs
+        run: |
+          mkdir -p _site
+          python3 script/check_methods.py --url https://didlint.ownyourdata.eu \
+            --previous https://ownyourdata.github.io/didlint/dif-methods.json \
+            --output _site/dif-methods.json --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  publish:
+    name: Publish on GitHub Pages
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}dif-methods.json
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

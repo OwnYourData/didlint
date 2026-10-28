@@ -15,6 +15,12 @@ RSpec.describe "Offline mode", type: :request do
     expect(body).not_to have_key("soya-cli_version")
   end
 
+  it "shows no method status and does not ask for it" do
+    get "/"
+    expect(response.body).not_to include('id="methods"')
+    expect(a_request(:get, DidLint::MethodStatus::DEFAULT_URL)).not_to have_been_made
+  end
+
   it "rejects everything that has to resolve a DID" do
     did = "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1"
     %W[/api/validate/#{did} /api/resolve/#{did} /api/validate_jsonld/#{did} /api/validate_jschema/#{did}].each do |path|

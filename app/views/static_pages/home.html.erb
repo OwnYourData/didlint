@@ -73,6 +73,43 @@
   </p>
 </div>
 
+<% if (status = method_status) -%>
+<h2 id="methods">DIF-recommended methods</h2>
+<div class="panel">
+  <p>Every day DID Linter checks example DIDs of the methods that the Decentralized Identity Foundation
+    <a href="https://github.com/decentralized-identity/did-methods/tree/main/dif-recommended">recommends</a>,
+    and of <code>did:oyd</code>.</p>
+  <ul class="methods">
+<% status[:methods].each do |m| -%>
+    <li>
+      <div class="method"><% if m[:link] %><a href="<%= m[:link] %>"><code><%= m[:method] %></code></a><% else %><code><%= m[:method] %></code><% end %></div>
+      <div class="dids">
+<% m[:dids].each do |d| -%>
+<% css, label = method_status_badge(d) -%>
+        <div class="did">
+          <span class="badge <%= css %>"><%= label %></span>
+          <div class="ref">
+            <a href="<%= validate_path(did: d[:did]) %>" title="<%= d[:did] %>"><code><%= d[:did] %></code></a>
+<% if (detail = method_status_detail(d, status[:generated])) -%>
+            <span class="detail"><%= detail %></span>
+<% end -%>
+          </div>
+        </div>
+<% end -%>
+<% if m[:note] || m[:dids].empty? -%>
+        <p class="detail"><%= m[:note] || "No example DID yet." %></p>
+<% end -%>
+      </div>
+    </li>
+<% end -%>
+  </ul>
+  <p class="note">Last checked <%= status[:generated].utc.strftime("%-d %B %Y, %H:%M UTC") %><%= " with DID Linter #{status[:version]}" if status[:version] %>.
+    A result describes the example DIDs listed in
+    <a href="https://github.com/OwnYourData/didlint/blob/main/status/methods.json">status/methods.json</a>,
+    not every DID of a method.</p>
+</div>
+<% end -%>
+
 <h2>Use it elsewhere</h2>
 <div class="grid">
   <article class="card">

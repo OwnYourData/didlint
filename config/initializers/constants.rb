@@ -1,4 +1,4 @@
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 SOYA_DID_DRI = "z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW"
 SOYA_REPO = "https://soya.ownyourdata.eu"
 SOYA_WEB_CLI = "https://soya-web-cli.ownyourdata.eu"

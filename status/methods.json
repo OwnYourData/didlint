@@ -1,0 +1,56 @@
+{
+  "description": "DID methods whose status DID Linter shows on its start page: the DIF-recommended methods (https://github.com/decentralized-identity/did-methods/tree/main/dif-recommended) and did:oyd. The workflow 'methods' validates every example DID daily against https://didlint.ownyourdata.eu and publishes the result as https://ownyourdata.github.io/didlint/dif-methods.json. Example DIDs come from the DIF findings documents, the test identifiers of the Universal Resolver and, for did:webvh, the DIF didwebvh-implementations repository.",
+  "methods": [
+    {
+      "method": "did:cid",
+      "dif_recommended": true,
+      "link": "https://github.com/decentralized-identity/did-methods/blob/main/dif-recommended/findings-did-cid.md",
+      "dids": [
+        "did:cid:bagaaieraxdxq4fm2kjh6yqjxjor3t2idczkmxd4v7in4u353fa6m6sms2pnq",
+        "did:cid:bagaaierajzwcicueqdkbgk75lgekdmvtbo5zv3spq2p4f7d7ow42urlwi32a"
+      ]
+    },
+    {
+      "method": "did:ethr",
+      "dif_recommended": true,
+      "link": "https://github.com/decentralized-identity/did-methods/blob/main/dif-recommended/findings-did-ethr.md",
+      "dids": [
+        "did:ethr:mainnet:0x3b0bc51ab9de1e5b7b6e34e5b960285805c41736",
+        "did:ethr:0x1:0x3b0BC51Ab9De1e5B7B6E34E5b960285805C41736"
+      ]
+    },
+    {
+      "method": "did:hedera",
+      "dif_recommended": true,
+      "link": "https://github.com/decentralized-identity/did-methods/blob/main/dif-recommended/findings-did-hedera.md",
+      "dids": [
+        "did:hedera:testnet:23g2MabDNq3KyB7oeH9yYZsJTRVeQ24DqX8o6scB98e3_0.0.5217215",
+        "did:hedera:testnet:ChQreHtT3MgjuVchee9kimLxsWXxjQRzeTuCjcXvkh7j_0.0.7232365"
+      ]
+    },
+    {
+      "method": "did:webplus",
+      "dif_recommended": true,
+      "link": "https://github.com/decentralized-identity/did-methods/blob/main/dif-recommended/findings-did-webplus.md",
+      "dids": [],
+      "note": "The Universal Resolver has no driver for did:webplus yet (universal-resolver pull request 534)."
+    },
+    {
+      "method": "did:webvh",
+      "dif_recommended": true,
+      "link": "https://github.com/decentralized-identity/did-methods/blob/main/dif-recommended/findings-did-webvh.md",
+      "dids": [
+        "did:webvh:QmcDtBLpouaRKRcRqchY5ndjDZZebBR4kQFqUk4vS33WRJ:identity.foundation:didwebvh-implementations:implementations:didwebvh-py",
+        "did:webvh:Qmd1FCL9Vj2vJ433UDfC9MBstK6W6QWSQvYyeNn8va2fai:identity.foundation:didwebvh-implementations:implementations:affinidi-didwebvh-rs"
+      ]
+    },
+    {
+      "method": "did:oyd",
+      "dif_recommended": false,
+      "link": "https://ownyourdata.github.io/oydid/",
+      "dids": [
+        "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1"
+      ]
+    }
+  ]
+}

@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: didlint
-        image: oydeu/didlint:261028c
+        image: oydeu/didlint:261028d
         ports:
         - containerPort: 3000
         env:

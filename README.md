@@ -79,6 +79,7 @@ Release images are built on GitHub rather than on a workstation: the workflow `i
 | `DIDLINT_OFFLINE` | `true` for the [offline mode](#offline-mode) | |
 | `SOYA_STRUCTURE_DIR` | directory for structures fetched at runtime with `soya:fetch` | `storage/soya` |
 | `SOYA_JS` | soya-js package for SHACL validation in offline mode | `/opt/soya-js` in the image |
+| `DIDLINT_METHOD_STATUS_URL` | [status of the DID methods](#status-of-did-methods) shown on the start page; empty leaves the section out | https://ownyourdata.github.io/didlint/dif-methods.json |
 
 ### Offline Mode
 
@@ -159,6 +160,16 @@ A changed `soya/Did.yml` is published with `cat soya/Did.yml | soya init-push --
 
 The GitHub workflow `regression` runs the structure check, the unit tests, a container built from the commit and the same container in offline mode inside a Docker network without internet access on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
 
+### Status of DID Methods
+
+`status/methods.json` lists the methods that the Decentralized Identity Foundation [recommends](https://github.com/decentralized-identity/did-methods/tree/main/dif-recommended), and `did:oyd`, each with example DIDs. The workflow `methods` validates them daily with `script/check_methods.py` against https://didlint.ownyourdata.eu and publishes the result on GitHub Pages as https://ownyourdata.github.io/didlint/dif-methods.json; the start page shows it, fetched at most once per hour and never in offline mode. The workflow needs GitHub Pages with "Source: GitHub Actions" in the repository settings.
+
+```bash
+python3 script/check_methods.py --url http://localhost:3000 --output dif-methods.json
+```
+
+Every example DID gets one status: `conforms` (with the number of notes), `violations` (with the findings as the API returns them), `not_resolvable` (with the resolver's message) or `error` (no result, e.g. because the request limit of the Universal Resolver was reached); `since` is the time from which it has had this status. A DID without a result keeps its previous one, and `checked` tells when that was obtained. A result describes these DIDs, not every DID of a method. The example DIDs come from the DIF findings documents, the test identifiers of the Universal Resolver and, for `did:webvh`, the DIF repository didwebvh-implementations; `did:webplus` has none yet, because the Universal Resolver has no driver for it. GitHub disables scheduled workflows of a public repository after 60 days without activity; the date on the start page shows when the last check ran.
+
 ## Improve DID Linter
 
 DID Linter shows how a SOyA structure can describe DID documents in a readable and machine-readable way, and how SOyA's validation reports violations. The structure does not yet cover the DID Core specification completely; please report issues and gaps in the [issue tracker](https://github.com/OwnYourData/didlint/issues).
@@ -167,6 +178,9 @@ Known gaps:
 
 - A verification method type the structure does not list is tolerated: the document is not rejected because of its verification methods, and a note names the context that is not listed. Findings about all other members are reported as usual.
 - The JSON-LD expansion check (`/api/validate_jsonld`) is not part of the verdict.
+- DIDs of methods other than `did:oyd` are resolved through the public Universal Resolver at https://dev.uniresolver.io, which limits how many requests a client may send (at the time of writing 10 per 30 minutes; an instance counts as one client for all its users). When the limit is reached, DID Linter answers `Universal Resolver request limit reached, please try again later`; a DID document can still be checked by posting it.
+
+A verification method of a type the structure lists has to carry the key in the representation that the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#verification-method-types) give for that type. `Ed25519VerificationKey2018`, for example, comes with `publicKeyBase58` only, as in its JSON-LD context; for a JWK the type is `JsonWebKey2020`, for a multibase key `Multikey` or `Ed25519VerificationKey2020`.
 
 To contribute:
 

@@ -137,6 +137,22 @@
   pre { margin: 8px 0 0; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
   code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; overflow-wrap: anywhere; }
   .note { color: var(--muted); font-size: 13px; max-width: 760px; }
+  .badge {
+    display: inline-block; min-width: 104px; text-align: center; margin-top: 2px; padding: 3px 8px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; line-height: 1.4; white-space: nowrap;
+  }
+  .badge.ok { color: var(--accent); background: var(--accent-soft); }
+  .badge.bad { color: var(--bad); background: var(--bad-soft); }
+  .badge.wip { color: var(--wip); background: var(--wip-soft); }
+  ul.methods { list-style: none; margin: 14px 0 4px; padding: 0; }
+  ul.methods > li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 6px 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+  ul.methods .method { font-weight: 600; }
+  ul.methods .did { display: flex; align-items: flex-start; gap: 10px; }
+  ul.methods .did + .did, ul.methods .did + p.detail { margin-top: 8px; }
+  ul.methods .ref { flex: 1; min-width: 0; }
+  ul.methods .ref a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  ul.methods .ref code { overflow-wrap: normal; }
+  ul.methods .detail { display: block; color: var(--muted); font-size: 14px; margin: 0; overflow-wrap: anywhere; }
   footer { margin-top: 56px; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   footer a { color: var(--muted); }
@@ -147,6 +163,7 @@
     header nav a { margin: 0 14px 0 0; }
     .theme-toggle { margin-left: 0; }
     .intro { padding-top: 18px; }
+    ul.methods > li { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
 </head>

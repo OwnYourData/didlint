@@ -62,6 +62,18 @@ RSpec.describe DidLint::Resolver do
       expect(resolver.resolve(key)).to eq([{ "id" => key }, "", nil])
     end
 
+    it "says so when the Universal Resolver's request limit is reached" do
+      key = "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"
+      stub_request(:get, "#{UNIRESOLVER_URL}/1.0/identifiers/#{key}").to_return(
+        { status: 403, headers: { "Content-Type" => "application/json" },
+          body: { status: 403, error: "Forbidden", message: "Too many Universal Resolver requests. Only 10 requests are allowed per 1800 seconds." }.to_json },
+        { status: 429, body: "" },
+        { status: 403, headers: { "Content-Type" => "application/json" }, body: { status: 403, error: "Forbidden" }.to_json })
+      expect(resolver.resolve(key)).to eq([nil, "Universal Resolver request limit reached, please try again later", nil])
+      expect(resolver.resolve(key)).to eq([nil, "Universal Resolver request limit reached, please try again later", nil])
+      expect(resolver.resolve(key)).to eq([nil, "Uniresolver cannot resolve #{key}", nil])
+    end
+
     it "reports a method the Universal Resolver does not support" do
       stub_request(:get, "#{UNIRESOLVER_URL}/1.0/identifiers/did:fake:inexistent").to_return(
         status: 501, headers: { "Content-Type" => "application/did-resolution" },

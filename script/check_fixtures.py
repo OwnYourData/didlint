@@ -21,6 +21,9 @@ expectations in pytest/expectations.json:
                      holds a local copy of the structure, it must equal the
                      published one.
 
+A DID fixture that runs into the request limit of the Universal Resolver is
+reported as SKIP, not as a mismatch.
+
 Exit code 0 if everything matches, 1 on any mismatch, 2 on usage errors.
 Only the Python standard library is used.
 """
@@ -40,6 +43,7 @@ FIXTURES = os.path.join(ROOT, "pytest")
 CONSTANTS = os.path.join(ROOT, "config", "initializers", "constants.rb")
 STRUCTURES = os.path.join(ROOT, "soya")
 OFFLINE_ERROR = "resolving DIDs is not available in offline mode"
+LIMIT_ERROR = "Universal Resolver request limit reached, please try again later"
 TIMEOUT = 60
 
 
@@ -84,6 +88,7 @@ class Report:
         self.failed = 0
         self.passed = 0
         self.known = 0
+        self.skipped = 0
 
     def ok(self, name, note=""):
         self.passed += 1
@@ -97,9 +102,22 @@ class Report:
         self.known += 1
         print("XFAIL %s  (%s)" % (name, reason))
 
+    def skip(self, name, reason):
+        self.skipped += 1
+        print("SKIP  %s  (%s)" % (name, reason))
+
     def summary(self):
-        print("%s: %d passed, %d failed, %d known failures" % (self.title, self.passed, self.failed, self.known))
+        skipped = (", %d skipped" % self.skipped) if self.skipped else ""
+        print("%s: %d passed, %d failed, %d known failures%s" % (self.title, self.passed, self.failed, self.known, skipped))
         return self.failed == 0
+
+
+def limit_reached(body):
+    """dev.uniresolver.io limits how many requests a client may send"""
+    try:
+        return json.loads(body).get("error") == LIMIT_ERROR
+    except (ValueError, AttributeError):
+        return False
 
 
 def check_offline_rejection(rep, name, status, body):
@@ -160,7 +178,9 @@ def check_instance(base, allow_any_dri, offline=False):
         expected = read(path.replace("_input" + os.sep, "_output" + os.sep)).strip()
         _, _, body = call()
         matches = body.strip() == expected
-        if name in known:
+        if not matches and limit_reached(body):
+            rep.skip(name, "Universal Resolver request limit reached")
+        elif name in known:
             if matches:
                 rep.fail(name, "listed as known failure but passes; remove it from expectations.json")
             else:

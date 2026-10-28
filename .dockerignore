@@ -19,3 +19,4 @@ did_status_generator
 *_revocation_key.enc
 *_revocation.json
 public/assets
+status

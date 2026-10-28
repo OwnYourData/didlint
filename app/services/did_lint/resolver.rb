@@ -1,5 +1,8 @@
 module DidLint
     class Resolver
+        # dev.uniresolver.io limits how many requests a client may send
+        LIMIT_MESSAGE = "Universal Resolver request limit reached, please try again later"
+
         # did:oyd is resolved through the OYDID resolver over HTTP, so that DID
         # Lint validates exactly what relying parties receive. Only when the
         # resolver cannot give an answer (unreachable, timeout, 5xx, unparsable
@@ -30,6 +33,7 @@ module DidLint
                     return nil, "invalid Uniresolver response"
                 end
                 ddo = JSON.parse(uniresolver_response)["didDocument"] rescue nil
+                return nil, LIMIT_MESSAGE, nil if ddo.nil? && request_limit?(uniresolver_response)
                 if ddo.nil?
                     err = JSON.parse(uniresolver_response)["didResolutionMetadata"]["error"] rescue nil
                     if err.nil?
@@ -43,6 +47,15 @@ module DidLint
                 end
             end
             return ddo, msg, via
+        end
+
+        # HTTP 429, or 403 with a message about the limit instead of a
+        # resolution result
+        def request_limit?(response)
+            return true if response.code == 429
+            return false unless response.code == 403
+            body = JSON.parse(response.body.to_s) rescue nil
+            body.is_a?(Hash) && !body.key?("didResolutionMetadata") && body["message"].to_s.match?(/limit|too many/i)
         end
 
         # Returns [document, message, definite]. definite is true when the OYDID

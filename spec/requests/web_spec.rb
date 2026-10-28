@@ -67,4 +67,41 @@ RSpec.describe "Web frontend", type: :request do
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("The SOyA structure used for validation is not available")
   end
+
+  describe "status of the DIF-recommended methods" do
+    let(:published) { Rails.root.join("spec/fixtures/status/dif-methods.json").read }
+
+    it "lists every method with its example DIDs, linked to a check" do
+      stub_request(:get, DidLint::MethodStatus::DEFAULT_URL).to_return(status: 200, body: published)
+      get "/"
+      body = response.body
+      expect(body).to include('<h2 id="methods">DIF-recommended methods</h2>')
+      %w[did:cid did:ethr did:hedera did:webplus did:webvh did:oyd].each { |m| expect(body).to include("<code>#{m}</code>") }
+      did = "did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1"
+      expect(body).to include(%(href="/validate?did=#{CGI.escape(did)}"))
+      expect(body).to include('<span class="badge bad">violations</span>', '<span class="badge ok">conforms</span>')
+      expect(body).to include("@context: add &#39;https://w3id.org/security/multikey/v1&#39; · result from 28 October 2026")
+      expect(body.scan("result from").size).to eq(1)
+      expect(body).to include("with 1 note", "The Universal Resolver has no driver for did:webplus yet")
+      expect(body).to match(/Last checked \d{1,2} \w+ \d{4}, \d\d:\d\d UTC with DID Linter 1\.1\.0\./)
+      expect(body.index('id="methods"')).to be > body.index("How DID Linter checks")
+    end
+
+    it "escapes what the status file contains" do
+      data = JSON.parse(published)
+      data["methods"][1]["dids"][0]["status"] = "violations"
+      data["methods"][1]["dids"][0]["errors"] = [{ "value" => "id", "error" => "<script>x</script>" }]
+      data["methods"][1]["note"] = "<img src=x>"
+      stub_request(:get, DidLint::MethodStatus::DEFAULT_URL).to_return(status: 200, body: data.to_json)
+      get "/"
+      expect(response.body).to include("id: &lt;script&gt;x&lt;/script&gt;", "&lt;img src=x&gt;")
+      expect(response.body).not_to include("<script>x</script>", "<img src=x>")
+    end
+
+    it "leaves the section out when no status is available" do
+      get "/"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include('id="methods"')
+    end
+  end
 end
