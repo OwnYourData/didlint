@@ -4,7 +4,7 @@ DID Linter validates DID documents against the W3C [Decentralized Identifiers (D
 
 [Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform with built-in validation and transformation. It builds on the W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and describes data structures in YAML as bases with optional overlays.
 
-The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU](https://soya.ownyourdata.eu/zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.3. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
+The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW](https://soya.ownyourdata.eu/z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.4. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
 
 ## Online Service
 
@@ -34,7 +34,7 @@ The validation can be reproduced with [soya-cli](https://github.com/OwnYourData/
 
 ```bash
 npm install -g soya-cli@latest
-cat did_document.json | script/prep.sh | soya validate zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU
+cat did_document.json | script/prep.sh | soya validate z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW
 cat did_document.json | script/verify_context.rb
 ```
 
@@ -56,7 +56,7 @@ docker run -d --name didlint -p 3000:3000 \
 curl http://localhost:3000/version
 ```
 
-To build the image yourself: `docker build --platform linux/amd64 -f docker/Dockerfile -t didlint .` (soya-js is copied from the soya-web-cli image, which is only published for linux/amd64).
+To build the image yourself: `docker build -f docker/Dockerfile -t didlint .` (linux/amd64 and linux/arm64; the public instance runs linux/amd64).
 
 Release images are built on GitHub rather than on a workstation: the workflow `image` (Actions tab, "Run workflow" with the tag from `kubernetes/didlint-deployment.yaml`) builds the image for linux/amd64, runs the unit tests and the regression checks online and offline against it, and only then pushes it to Docker Hub. It refuses a tag that already exists and needs the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a Docker Hub access token with write access to `oydeu/didlint`).
 
@@ -155,6 +155,8 @@ python3 script/check_fixtures.py --structure <DRI> --encoding list
 
 **Before `SOYA_DID_DRI` is switched to a new structure, `--structure <new DRI>` must pass.** Intended changes in the verdicts are recorded in `pytest/expectations.json` and the affected `NN_output/` files in the same commit as the new DRI.
 
+A changed `soya/Did.yml` is published with `cat soya/Did.yml | soya init-push --json` (soya-cli 0.18.5 or later), which prints the DRI the repository assigned; it has to match the version tagged `current` in https://soya.ownyourdata.eu/Did/info. The DRI can be computed before publishing: soya-js 0.10.6 or later calculates it from the output of `soya init` with `structureDri`.
+
 The GitHub workflow `regression` runs the structure check, the unit tests, a container built from the commit and the same container in offline mode inside a Docker network without internet access on every push, and checks https://didlint.ownyourdata.eu daily. A candidate structure can be checked from the Actions tab with "Run workflow" and its DRI.
 
 ## Improve DID Linter
@@ -163,8 +165,6 @@ DID Linter shows how a SOyA structure can describe DID documents in a readable a
 
 Known gaps:
 
-- Two services with the same `id` are not detected; SOyA cannot express uniqueness yet.
-- String references in verification relationships and string values of `serviceEndpoint` are not checked as DID URLs or URIs.
 - A verification method type the structure does not list is tolerated: the document is not rejected because of its verification methods, and a note names the context that is not listed. Findings about all other members are reported as usual.
 - The JSON-LD expansion check (`/api/validate_jsonld`) is not part of the verdict.
 

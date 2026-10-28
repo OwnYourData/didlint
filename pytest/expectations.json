@@ -6,7 +6,7 @@
     }
   },
   "structure": {
-    "dri": "zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU",
+    "dri": "z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW",
     "encoding": "list",
     "valid": {
       "02_input/gh_1_invalid.json": true,
@@ -24,6 +24,9 @@
       "02_input/invalid_id_trailing_colon.json": false,
       "02_input/invalid_missing_context.json": true,
       "02_input/invalid_missing_id.json": false,
+      "02_input/invalid_reference_not_did_url.json": false,
+      "02_input/invalid_service_duplicate_id.json": false,
+      "02_input/invalid_service_endpoint_not_uri.json": false,
       "02_input/invalid_service_id_not_uri.json": false,
       "02_input/invalid_service_missing_endpoint.json": false,
       "02_input/invalid_vm_controller_not_did.json": false,
@@ -40,6 +43,7 @@
       "02_input/valid_missing_verificationMethod.json": true,
       "02_input/valid_only_relative.json": true,
       "02_input/valid_oyd.json": true,
+      "02_input/valid_service_endpoint_map_and_set.json": true,
       "02_input/valid_service_type_set.json": true,
       "02_input/valid_unlisted_vm_type.json": false,
       "02_input/valid_vm_jwk.json": true,

@@ -1,5 +1,5 @@
 {
-  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU/\",\"@vocab\":\"https://soya.ownyourdata.eu/zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU/\",\"assertionMethod\":{\"@container\":\"@list\"},\"authentication\":{\"@container\":\"@list\"},\"capabilityDelegation\":{\"@container\":\"@list\"},\"capabilityInvocation\":{\"@container\":\"@list\"},\"keyAgreement\":{\"@container\":\"@list\"},\"service\":{\"@container\":\"@list\"},\"verificationMethod\":{\"@container\":\"@list\"}},\"@graph\":[{\"id\":\"did:example:123\",\"@type\":\"Did\"}]}",
+  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW/\",\"@vocab\":\"https://soya.ownyourdata.eu/z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW/\",\"assertionMethod\":{\"@container\":\"@list\"},\"authentication\":{\"@container\":\"@list\"},\"capabilityDelegation\":{\"@container\":\"@list\"},\"capabilityInvocation\":{\"@container\":\"@list\"},\"keyAgreement\":{\"@container\":\"@list\"},\"service\":{\"@container\":\"@list\"},\"verificationMethod\":{\"@container\":\"@list\"}},\"@graph\":[{\"id\":\"did:example:123\",\"@type\":\"Did\"}]}",
   "status": 200,
   "content_type": "application/json; charset=utf-8",
   "response": "{\"isValid\":true,\"results\":[],\"classChecks\":[]}"
