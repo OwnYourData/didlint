@@ -33,7 +33,7 @@ The first five are the methods the Decentralized Identity Foundation [recommends
 - [`2-drivers.yaml`](2-drivers.yaml): one deployment and service per driver.
 - Apply both with `kubectl apply -f kubernetes/uniresolver/`.
 - All images are pinned by digest. To update a driver, look up its current version in the [docker-compose.yml](https://github.com/decentralized-identity/universal-resolver/blob/main/docker-compose.yml) of the Universal Resolver, change tag and digest, apply, and resolve the test identifier of the method.
-- The ingress limits requests per client address (`limit-rpm`, `limit-connections`). DID Linter in the same cluster uses the service `uni-resolver-web.uniresolver:8080` directly.
+- The ingress limits requests to 300 per minute (`limit-rpm`, with the default burst of five times that). It does not see client addresses, so the limit applies to all clients together. DID Linter in the same cluster uses the service `uni-resolver-web.uniresolver:8080` directly and is not affected.
 - Resolution results of the drivers are not stored, except by the `did:webplus` driver, which keeps verified DID documents in an SQLite file in an `emptyDir` volume (lost when the pod restarts). uni-resolver-web logs each requested DID and its result.
 
 ## License

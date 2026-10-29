@@ -145,8 +145,9 @@ metadata:
   name: uni-resolver-web
   namespace: uniresolver
   annotations:
-    nginx.ingress.kubernetes.io/limit-rpm: "120"
-    nginx.ingress.kubernetes.io/limit-connections: "20"
+    # the ingress sees the address of the load balancer, not of the client, so
+    # this limit applies to all clients together (DID Linter uses the service)
+    nginx.ingress.kubernetes.io/limit-rpm: "300"
 spec:
   ingressClassName: nginx
   tls:
@@ -157,8 +158,9 @@ spec:
   - host: uniresolver.ownyourdata.eu
     http:
       paths:
+      # ingress-nginx validates Prefix paths strictly and rejects the dot in /1.0
       - path: /1.0
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: uni-resolver-web
