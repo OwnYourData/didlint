@@ -1,0 +1,208 @@
+# Universal Resolver at https://uniresolver.ownyourdata.eu: uni-resolver-web
+# with the drivers in 2-drivers.yaml. It serves only the methods listed in
+# application.yml below; it does not forward other methods elsewhere.
+# See README.md in this directory.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: uniresolver
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uni-resolver-web-config
+  namespace: uniresolver
+data:
+  application.yml: |
+    server:
+      servlet:
+        contextPath: /
+        mappings:
+          properties: "/1.0/properties"
+          resolve: "/1.0/identifiers"
+          methods: "/1.0/methods"
+          testIdentifiers: "/1.0/testIdentifiers"
+          traits: "/1.0/traits"
+      port: "8080"
+
+    spring:
+      profiles:
+        active: default
+
+    uniresolver:
+      drivers:
+        - pattern: "^(did:cid:.+)$"
+          url: http://driver-did-cid:4250/1.0/identifiers/$1
+          testIdentifiers:
+            - did:cid:bagaaierajzwcicueqdkbgk75lgekdmvtbo5zv3spq2p4f7d7ow42urlwi32a
+        - pattern: "^(did:ethr:.+)$"
+          url: http://uni-resolver-driver-did-uport:8081/
+          supportsOptions: true
+          testIdentifiers:
+            - did:ethr:mainnet:0x3b0bc51ab9de1e5b7b6e34e5b960285805c41736
+        - pattern: "^(did:hedera:.+)$"
+          url: http://driver-did-hedera:8080/1.0/identifiers/$1
+          testIdentifiers:
+            - did:hedera:testnet:23g2MabDNq3KyB7oeH9yYZsJTRVeQ24DqX8o6scB98e3_0.0.5217215
+        - pattern: "^(did:webplus:.+)$"
+          url: http://driver-did-webplus:80/1.0/identifiers/$1
+          testIdentifiers:
+            - did:webplus:ledgerdomain.github.io:did-webplus-spec:uFiANVlMledNFUBJNiZPuvfgzxvJlGGDBIpDFpM4DXW6Bow
+        - pattern: "^(did:webvh:.+)$"
+          url: http://driver-did-webvh:8080/
+          testIdentifiers:
+            - did:webvh:QmcDtBLpouaRKRcRqchY5ndjDZZebBR4kQFqUk4vS33WRJ:identity.foundation:didwebvh-implementations:implementations:didwebvh-py
+        - pattern: "^(did:oyd:.+)$"
+          url: https://resolver.ownyourdata.eu/1.0/identifiers/$1
+          testIdentifiers:
+            - did:oyd:zQmZZbVygmbsxWXhP2BH5nW2RMNXSQA3eRqnzfkFXzH3fg1
+        - pattern: "^(did:web:.+)$"
+          url: http://uni-resolver-driver-did-uport:8081/
+          testIdentifiers:
+            - did:web:danubetech.com
+        - pattern: "^did:(?:jwk:|tz:|pkh:|key:(?:z6Mk|z6LS|zQ3s|z.{200,})).+$"
+          url: http://driver-didkit:3000/identifiers/$1
+          testIdentifiers:
+            - did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH
+            - did:pkh:tz:tz2BFTyPeYRzxd5aiBchbXN3WCZhx7BqbMBq
+        - pattern: "^did:(?:key:(?:zDna|z82L|z2J9|z5Tc|z3tE|zUC7|z2dm|zmYg|zhQR)).+$"
+          url: http://driver-did-key:8080/1.0/identifiers/$1
+          testIdentifiers:
+            - did:key:zDnaerDaTF5BXEavCrfRZEk316dpbLsfPDZ3WJ5hRTPFU2169
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uni-resolver-web
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uni-resolver-web
+  template:
+    metadata:
+      labels:
+        app: uni-resolver-web
+    spec:
+      containers:
+      - name: uni-resolver-web
+        image: universalresolver/uni-resolver-web:1.12.0-cbe4bb2@sha256:334275c5ff5117b86c7da685f1f8d25135d0c21e7192d0a68414f438f0043370
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LOGGING_LEVEL_ROOT
+          value: info
+        - name: LOGGING_LEVEL_uniresolver
+          value: info
+        - name: JAVA_TOOL_OPTIONS
+          value: "-XX:MaxRAMPercentage=70"
+        volumeMounts:
+        - name: config
+          mountPath: /opt/universal-resolver/uni-resolver-web/config
+          readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /1.0/methods
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /1.0/methods
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 5
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 768Mi
+      volumes:
+      - name: config
+        configMap:
+          name: uni-resolver-web-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: uni-resolver-web
+  namespace: uniresolver
+spec:
+  selector:
+    app: uni-resolver-web
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uni-resolver-web
+  namespace: uniresolver
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rpm: "120"
+    nginx.ingress.kubernetes.io/limit-connections: "20"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - uniresolver.ownyourdata.eu
+    secretName: uniresolver-tls
+  rules:
+  - host: uniresolver.ownyourdata.eu
+    http:
+      paths:
+      - path: /1.0
+        pathType: Prefix
+        backend:
+          service:
+            name: uni-resolver-web
+            port:
+              number: 8080
+---
+# the start page: uni-resolver-web has no web interface, so / leads to the description
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uni-resolver-start
+  namespace: uniresolver
+  annotations:
+    nginx.ingress.kubernetes.io/permanent-redirect: https://github.com/OwnYourData/didlint/blob/main/kubernetes/uniresolver/README.md
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - uniresolver.ownyourdata.eu
+    secretName: uniresolver-tls
+  rules:
+  - host: uniresolver.ownyourdata.eu
+    http:
+      paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: uni-resolver-web
+            port:
+              number: 8080
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: uniresolver-tls
+  namespace: uniresolver
+spec:
+  secretName: uniresolver-tls
+  issuerRef:
+    group: cert-manager.io
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - 'uniresolver.ownyourdata.eu'
+  privateKey:
+    rotationPolicy: Always

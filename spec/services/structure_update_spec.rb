@@ -7,6 +7,7 @@ RSpec.describe DidLint::StructureUpdate do
   let(:april) { "z3wmSSwhcQN4bgJHtgYqSLmdqRvv8Tnv189krACn1GtJE" }
   let(:october) { "zHdg4kgBh93YY7Yz3uUi2s5JcRKcwSgHmJ5ghcAGd1HQC" }
   let(:release_1_0) { "zGHDEn5jshXVk8haXx4BxQFX6zVyrFMP6WzeAJGVwwZvU" }
+  let(:release_1_1) { "z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW" }
 
   describe "#resolve" do
     it "takes a DRI as it is" do
@@ -47,14 +48,14 @@ RSpec.describe DidLint::StructureUpdate do
       expect(update.run("Did")).to be(false)
       expect(DidLint::Structure.active_dri).to eq(SOYA_DID_DRI)
       expect(out.string).to include("FAIL  02_input/invalid_embedded_vm_keyAgreement.json  expected invalid, got valid")
-      expect(out.string).to include("not switched: 21 fixture(s) differ")
+      expect(out.string).to include("not switched: 23 fixture(s) differ")
     end
 
     it "refuses the April structure, which requires a verification relationship" do
       stub_soya_structure(april)
       expect(update.run(april)).to be(false)
       expect(out.string).to include("FAIL  02_input/valid_only_relative.json  expected valid, got invalid")
-      expect(out.string).to include("not switched: 18 fixture(s) differ")
+      expect(out.string).to include("not switched: 20 fixture(s) differ")
     end
 
     it "refuses the structure of October 2026, which lets a controller that is not a DID pass" do
@@ -62,7 +63,7 @@ RSpec.describe DidLint::StructureUpdate do
       expect(update.run(october)).to be(false)
       expect(out.string).to include("FAIL  02_input/invalid_controller_not_did.json  expected invalid, got valid")
       expect(out.string).to include("FAIL  02_input/valid_service_type_set.json  expected valid, got invalid")
-      expect(out.string).to include("not switched: 14 fixture(s) differ")
+      expect(out.string).to include("not switched: 16 fixture(s) differ")
     end
 
     it "refuses the structure of release 1.0.0, which lets two services with the same id pass" do
@@ -70,7 +71,15 @@ RSpec.describe DidLint::StructureUpdate do
       expect(update.run(release_1_0)).to be(false)
       expect(out.string).to include("FAIL  02_input/invalid_service_duplicate_id.json  expected invalid, got valid")
       expect(out.string).to include("FAIL  02_input/invalid_reference_not_did_url.json  expected invalid, got valid")
-      expect(out.string).to include("not switched: 3 fixture(s) differ")
+      expect(out.string).to include("not switched: 5 fixture(s) differ")
+    end
+
+    it "refuses the structure of releases 1.1 and 1.2, which rejects DID URLs with an ampersand in the query" do
+      stub_soya_structure(release_1_1)
+      expect(update.run(release_1_1)).to be(false)
+      expect(out.string).to include("FAIL  02_input/valid_vm_id_with_query.json  expected valid, got invalid")
+      expect(out.string).to include("FAIL  02_input/invalid_vm_id_two_fragments.json  expected invalid, got valid")
+      expect(out.string).to include("not switched: 2 fixture(s) differ")
     end
 
     it "switches anyway with force" do

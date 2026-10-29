@@ -1,0 +1,6 @@
+{
+  "request": "{\"@context\":{\"@version\":1.1,\"did\":\"https://soya.ownyourdata.eu/zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA/\",\"@vocab\":\"https://soya.ownyourdata.eu/zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA/\",\"assertionMethod\":{\"@container\":\"@list\"},\"authentication\":{\"@container\":\"@list\"},\"capabilityDelegation\":{\"@container\":\"@list\"},\"capabilityInvocation\":{\"@container\":\"@list\"},\"keyAgreement\":{\"@container\":\"@list\"},\"service\":{\"@container\":\"@list\"},\"verificationMethod\":{\"@container\":\"@list\"}},\"@graph\":[{\"id\":\"did:example:123456789abcdefghi\",\"verificationMethod\":[{\"id\":\"did:example:123456789abcdefghi?versionId=2\\u0026selfHash=uFiBjPx5fQEzbfrZUlXA6K2oTS--9Kt1eLeWpwHBRsI521Q#key-1\",\"type\":\"JsonWebKey2020\",\"controller\":\"did:example:123456789abcdefghi\",\"publicKeyJwk\":{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo\"}}],\"authentication\":[\"did:example:123456789abcdefghi?versionId=2\\u0026selfHash=uFiBjPx5fQEzbfrZUlXA6K2oTS--9Kt1eLeWpwHBRsI521Q#key-1\"],\"@type\":\"Did\"}]}",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "response": "{\"isValid\":true,\"results\":[],\"classChecks\":[]}"
+}

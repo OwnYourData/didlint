@@ -1,0 +1,353 @@
+# Drivers of the Universal Resolver in 1-uniresolver.yaml, one deployment and
+# service each; the service names are the host names in application.yml.
+# Images are pinned by digest; most are built for linux/amd64 only.
+---
+# did:ethr, did:web
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uni-resolver-driver-did-uport
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uni-resolver-driver-did-uport
+  template:
+    metadata:
+      labels:
+        app: uni-resolver-driver-did-uport
+    spec:
+      containers:
+      - name: uni-resolver-driver-did-uport
+        image: uport/uni-resolver-driver-did-uport:7.1.1@sha256:23b054d2513e0842b3f63bba1addfc1cb1f8bf3df6c24f229b57a6a18d911565
+        ports:
+        - containerPort: 8081
+        readinessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 96Mi
+          limits:
+            memory: 256Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: uni-resolver-driver-did-uport
+  namespace: uniresolver
+spec:
+  selector:
+    app: uni-resolver-driver-did-uport
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8081
+    targetPort: 8081
+---
+# did:key (Ed25519, X25519, secp256k1), did:jwk, did:pkh, did:tz
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-didkit
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-didkit
+  template:
+    metadata:
+      labels:
+        app: driver-didkit
+    spec:
+      containers:
+      - name: driver-didkit
+        image: ghcr.io/spruceid/didkit-http:202402050910243f0642d@sha256:1ac79449f45c1d725dd8bf7ee64ff6be208f76cdba7b1fcb2deb25a6bb517932
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: HOST
+          value: 0.0.0.0
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 128Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: driver-didkit
+  namespace: uniresolver
+spec:
+  selector:
+    app: driver-didkit
+  ports:
+  - name: http
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+---
+# did:key (P-256, P-384, P-521, BLS12-381, RSA)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-did-key
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-did-key
+  template:
+    metadata:
+      labels:
+        app: driver-did-key
+    spec:
+      containers:
+      - name: driver-did-key
+        image: universalresolver/driver-did-key:latest@sha256:f046dfec52ba6cadbc17fedc48e90c65ff43c81a11fdcbf44bb8484de6fa6698
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 48Mi
+          limits:
+            memory: 192Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: driver-did-key
+  namespace: uniresolver
+spec:
+  selector:
+    app: driver-did-key
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+# did:hedera
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-did-hedera
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-did-hedera
+  template:
+    metadata:
+      labels:
+        app: driver-did-hedera
+    spec:
+      containers:
+      - name: driver-did-hedera
+        image: ghcr.io/hiero-ledger/uni-resolver-driver-did-hedera:v0.1.7-8ae3a53@sha256:c428374b73a0bdffac14bf22294bc8c17b2625e6804f69db7625527d118b95f8
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 128Mi
+          limits:
+            memory: 384Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: driver-did-hedera
+  namespace: uniresolver
+spec:
+  selector:
+    app: driver-did-hedera
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+# did:webvh
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-did-webvh
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-did-webvh
+  template:
+    metadata:
+      labels:
+        app: driver-did-webvh
+    spec:
+      containers:
+      - name: driver-did-webvh
+        image: ghcr.io/decentralized-identity/uni-resolver-driver-did-webvh:v2.8.0-fe75eab@sha256:dd4db01ea85ac8f1750ecabdb8476e391cd7b2d7941e84419b5c3274b7b92e86
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 48Mi
+          limits:
+            memory: 256Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: driver-did-webvh
+  namespace: uniresolver
+spec:
+  selector:
+    app: driver-did-webvh
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+# did:cid, through the Archon gatekeeper
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-did-cid
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-did-cid
+  template:
+    metadata:
+      labels:
+        app: driver-did-cid
+    spec:
+      containers:
+      - name: driver-did-cid
+        image: ghcr.io/archetech/uni-resolver-driver-did-cid:0.2.1@sha256:4131f6fd21fbdf834a0713e88820e2e904465a1e19d141a5f393e27f7f273025
+        ports:
+        - containerPort: 4250
+        env:
+        - name: ARCHON_GATEKEEPER_URL
+          value: https://archon.technology
+        readinessProbe:
+          tcpSocket:
+            port: 4250
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 192Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: driver-did-cid
+  namespace: uniresolver
+spec:
+  selector:
+    app: driver-did-cid
+  ports:
+  - name: http
+    protocol: TCP
+    port: 4250
+    targetPort: 4250
+---
+# did:webplus; its SQLite store of verified DID documents is a cache
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-did-webplus
+  namespace: uniresolver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-did-webplus
+  template:
+    metadata:
+      labels:
+        app: driver-did-webplus
+    spec:
+      containers:
+      - name: driver-did-webplus
+        image: ghcr.io/ledgerdomain/did-webplus-urd:v0.7.0@sha256:f3c60a2a74eb6725df2a73d8ca2c63f261ecc370272fac94e3b10c8e7be9d367
+        ports:
+        - containerPort: 80
+        env:
+        - name: DID_WEBPLUS_URD_DATABASE_URL
+          value: "sqlite:///data/did-webplus.db?mode=rwc"
+        - name: DID_WEBPLUS_URD_LISTEN_PORT
+          value: "80"
+        - name: RUST_LOG
+          value: "did_webplus=info,tower_http::trace=warn,info"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 128Mi
+      volumes:
+      - name: data
+        emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: driver-did-webplus
+  namespace: uniresolver
+spec:
+  selector:
+    app: driver-did-webplus
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80

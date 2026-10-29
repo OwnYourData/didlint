@@ -1,5 +1,5 @@
 {
-  "description": "DID methods whose status DID Linter shows on its start page: the DIF-recommended methods (https://github.com/decentralized-identity/did-methods/tree/main/dif-recommended) and did:oyd. The workflow 'methods' validates every example DID daily against https://didlint.ownyourdata.eu and publishes the result as https://ownyourdata.github.io/didlint/dif-methods.json. Example DIDs come from the DIF findings documents, the test identifiers of the Universal Resolver and, for did:webvh, the DIF didwebvh-implementations repository.",
+  "description": "DID methods whose status DID Linter shows on its start page: the DIF-recommended methods (https://github.com/decentralized-identity/did-methods/tree/main/dif-recommended) and did:oyd. The workflow 'methods' validates every example DID daily against https://didlint.ownyourdata.eu and publishes the result as https://ownyourdata.github.io/didlint/dif-methods.json. Example DIDs come from the DIF findings documents, the test identifiers of the Universal Resolver and, for did:webvh, the DIF didwebvh-implementations repository; the did:webplus DID is the active test identifier of its Universal Resolver driver.",
   "methods": [
     {
       "method": "did:cid",
@@ -32,8 +32,9 @@
       "method": "did:webplus",
       "dif_recommended": true,
       "link": "https://github.com/decentralized-identity/did-methods/blob/main/dif-recommended/findings-did-webplus.md",
-      "dids": [],
-      "note": "The Universal Resolver has no driver for did:webplus yet (universal-resolver pull request 534)."
+      "dids": [
+        "did:webplus:ledgerdomain.github.io:did-webplus-spec:uFiANVlMledNFUBJNiZPuvfgzxvJlGGDBIpDFpM4DXW6Bow"
+      ]
     },
     {
       "method": "did:webvh",

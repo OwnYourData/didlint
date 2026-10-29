@@ -4,7 +4,7 @@ DID Linter validates DID documents against the W3C [Decentralized Identifiers (D
 
 [Semantic Overlay Architecture (SOyA)](https://ownyourdata.github.io/soya/) is a data model authoring and publishing platform with built-in validation and transformation. It builds on the W3C [Resource Description Framework (RDF)](https://en.wikipedia.org/wiki/Resource_Description_Framework) and describes data structures in YAML as bases with optional overlays.
 
-The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW](https://soya.ownyourdata.eu/z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.4. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
+The structure used for validation is pinned by its DRI in `config/initializers/constants.rb` (`SOYA_DID_DRI`) and reported by `GET /version`. The current one: [zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA](https://soya.ownyourdata.eu/zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA/yaml), published from [`soya/Did.yml`](soya/Did.yml) with soya-cli 0.18.4. The name `Did` in the SOyA repository always points to the most recently published version, which is not necessarily the pinned one.
 
 ## Online Service
 
@@ -26,7 +26,7 @@ cat did_document.json | curl -H 'Content-Type: application/json' -d @- -X POST h
 
 All `/api/` paths are also available below `/api/v1/`. The full description is in [Swagger](https://didlint.ownyourdata.eu/api-docs) (source: `swagger/v1/swagger.yaml`).
 
-`did:oyd` is resolved through the [OYDID resolver](https://resolver.ownyourdata.eu); if it cannot be reached, the bundled oydid gem resolves locally. The response header `X-DID-Resolved-Via` (`http` or `gem`) shows which path answered. All other methods are resolved through the [Universal Resolver](https://dev.uniresolver.io).
+`did:oyd` is resolved through the [OYDID resolver](https://resolver.ownyourdata.eu); if it cannot be reached, the bundled oydid gem resolves locally. The response header `X-DID-Resolved-Via` (`http` or `gem`) shows which path answered. All other methods are resolved through the [Universal Resolver of OwnYourData](https://uniresolver.ownyourdata.eu) (see [kubernetes/uniresolver](kubernetes/uniresolver/README.md)); for a method it does not support, when it cannot be reached or when its driver fails, DID Linter asks the public [Universal Resolver](https://dev.uniresolver.io) once more. A definite answer, such as not found, is not asked again.
 
 ## On the Command Line
 
@@ -34,7 +34,7 @@ The validation can be reproduced with [soya-cli](https://github.com/OwnYourData/
 
 ```bash
 npm install -g soya-cli@latest
-cat did_document.json | script/prep.sh | soya validate z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW
+cat did_document.json | script/prep.sh | soya validate zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA
 cat did_document.json | script/verify_context.rb
 ```
 
@@ -74,7 +74,8 @@ Release images are built on GitHub rather than on a workstation: the workflow `i
 | `SOYA_REPO` | SOyA repository that serves the structure | https://soya.ownyourdata.eu |
 | `SOYA_WEB_CLI` | SHACL and JSON-LD validation service | https://soya-web-cli.ownyourdata.eu |
 | `OYDID_RESOLVER_URL` | resolver for `did:oyd` | https://resolver.ownyourdata.eu |
-| `UNIRESOLVER_URL` | Universal Resolver for all other methods | https://dev.uniresolver.io |
+| `UNIRESOLVER_URL` | Universal Resolver for all other methods | https://uniresolver.ownyourdata.eu |
+| `UNIRESOLVER_FALLBACK_URL` | Universal Resolver asked when the first one does not support the method or gives no answer; empty: none | https://dev.uniresolver.io |
 | `JSON_SCHEMA_SOURCE` | JSON Schema for `/api/validate_jschema` | `core.schema.json` of the DID Specification Registries |
 | `DIDLINT_OFFLINE` | `true` for the [offline mode](#offline-mode) | |
 | `SOYA_STRUCTURE_DIR` | directory for structures fetched at runtime with `soya:fetch` | `storage/soya` |
@@ -124,6 +125,8 @@ In Kubernetes: `kubectl -n soya exec deploy/didlint -- bin/rails 'soya:fetch[Did
 kubectl -n soya create secret generic didlint-skb --from-literal=SECRET_KEY_BASE="$(openssl rand -hex 64)"
 ```
 
+The public instance resolves through the Universal Resolver in the same cluster (`UNIRESOLVER_URL` points to its service, not to the ingress, so the request limit of the ingress does not apply). Its manifests are in `kubernetes/uniresolver/` and are applied with `kubectl apply -f kubernetes/uniresolver/`; the [README](kubernetes/uniresolver/README.md) there describes the methods and drivers.
+
 ## Tests
 
 ### Unit Tests
@@ -168,7 +171,7 @@ The GitHub workflow `regression` runs the structure check, the unit tests, a con
 python3 script/check_methods.py --url http://localhost:3000 --output dif-methods.json
 ```
 
-Every example DID gets one status: `conforms` (with the number of notes), `violations` (with the findings as the API returns them), `not_resolvable` (with the resolver's message) or `error` (no result, e.g. because the request limit of the Universal Resolver was reached); `since` is the time from which it has had this status. A DID without a result keeps its previous one, and `checked` tells when that was obtained. A result describes these DIDs, not every DID of a method. The example DIDs come from the DIF findings documents, the test identifiers of the Universal Resolver and, for `did:webvh`, the DIF repository didwebvh-implementations; `did:webplus` has none yet, because the Universal Resolver has no driver for it. GitHub disables scheduled workflows of a public repository after 60 days without activity; the date on the start page shows when the last check ran.
+Every example DID gets one status: `conforms` (with the number of notes), `violations` (with the findings as the API returns them), `not_resolvable` (with the resolver's message) or `error` (no result, e.g. because the request limit of the Universal Resolver was reached); `since` is the time from which it has had this status. A DID without a result keeps its previous one, and `checked` tells when that was obtained. A result describes these DIDs, not every DID of a method. The example DIDs come from the DIF findings documents, the test identifiers of the Universal Resolver and, for `did:webvh`, the DIF repository didwebvh-implementations. GitHub disables scheduled workflows of a public repository after 60 days without activity; the date on the start page shows when the last check ran.
 
 ## Improve DID Linter
 
@@ -178,7 +181,7 @@ Known gaps:
 
 - A verification method type the structure does not list is tolerated: the document is not rejected because of its verification methods, and a note names the context that is not listed. Findings about all other members are reported as usual.
 - The JSON-LD expansion check (`/api/validate_jsonld`) is not part of the verdict.
-- DIDs of methods other than `did:oyd` are resolved through the public Universal Resolver at https://dev.uniresolver.io, which limits how many requests a client may send (at the time of writing 10 per 30 minutes; an instance counts as one client for all its users). When the limit is reached, DID Linter answers `Universal Resolver request limit reached, please try again later`; a DID document can still be checked by posting it.
+- Methods that the [Universal Resolver of OwnYourData](kubernetes/uniresolver/README.md) does not support are resolved through the public Universal Resolver at https://dev.uniresolver.io, which limits how many requests a client may send (at the time of writing 10 per 30 minutes; an instance counts as one client for all its users). When the limit is reached, DID Linter answers `Universal Resolver request limit reached, please try again later`; a DID document can still be checked by posting it.
 
 A verification method of a type the structure lists has to carry the key in the representation that the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#verification-method-types) give for that type. `Ed25519VerificationKey2018`, for example, comes with `publicKeyBase58` only, as in its JSON-LD context; for a JWK the type is `JsonWebKey2020`, for a multibase key `Multikey` or `Ed25519VerificationKey2020`.
 

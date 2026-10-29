@@ -6,7 +6,7 @@
     }
   },
   "structure": {
-    "dri": "z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW",
+    "dri": "zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA",
     "encoding": "list",
     "valid": {
       "02_input/gh_1_invalid.json": true,
@@ -30,6 +30,7 @@
       "02_input/invalid_service_id_not_uri.json": false,
       "02_input/invalid_service_missing_endpoint.json": false,
       "02_input/invalid_vm_controller_not_did.json": false,
+      "02_input/invalid_vm_id_two_fragments.json": false,
       "02_input/invalid_vm_missing_controller.json": false,
       "02_input/invalid_vm_private_jwk.json": false,
       "02_input/invalid_vm_two_key_formats.json": false,
@@ -46,6 +47,7 @@
       "02_input/valid_service_endpoint_map_and_set.json": true,
       "02_input/valid_service_type_set.json": true,
       "02_input/valid_unlisted_vm_type.json": false,
+      "02_input/valid_vm_id_with_query.json": true,
       "02_input/valid_vm_jwk.json": true,
       "02_input/valid_vm_recovery_blockchain_account_id.json": true,
       "03_input/01_ldc.json": true,

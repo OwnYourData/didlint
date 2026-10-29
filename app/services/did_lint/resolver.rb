@@ -25,28 +25,55 @@ module DidLint
                     via = "gem"
                 end
             else
-                begin
-                    uniresolver_response = HTTParty.get(uniresolver_url + "/1.0/identifiers/" + did, timeout: 10)
-                rescue Net::ReadTimeout
-                    return nil, "time out"
-                rescue
-                    return nil, "invalid Uniresolver response"
-                end
-                ddo = JSON.parse(uniresolver_response)["didDocument"] rescue nil
-                return nil, LIMIT_MESSAGE, nil if ddo.nil? && request_limit?(uniresolver_response)
-                if ddo.nil?
-                    err = JSON.parse(uniresolver_response)["didResolutionMetadata"]["error"] rescue nil
-                    if err.nil?
-                        msg = JSON.parse(uniresolver_response)["didResolutionMetadata"]["errorMessage"] rescue nil
-                        if msg.nil?
-                            msg = "Uniresolver cannot resolve " + did
-                        end
-                    else
-                        msg = "Uniresolver cannot resolve " + did
-                    end
+                ddo, msg, elsewhere = uniresolver_resolve(uniresolver_url, did)
+                fallback = uniresolver_fallback_url
+                if elsewhere && !fallback.nil? && fallback != uniresolver_url.chomp("/")
+                    ddo, msg, _ = uniresolver_resolve(fallback, did)
                 end
             end
             return ddo, msg, via
+        end
+
+        # Other methods go to a Universal Resolver (UNIRESOLVER_URL). When it
+        # gives no answer about the DID itself - not reachable, timeout,
+        # unparsable response, request limit, method not supported, a failing
+        # driver (HTTP 5xx) - the DID is
+        # resolved once more through UNIRESOLVER_FALLBACK_URL (empty: no
+        # fallback). A definite answer, such as not found, is never overridden.
+        def uniresolver_fallback_url
+            value = ENV.key?("UNIRESOLVER_FALLBACK_URL") ? ENV["UNIRESOLVER_FALLBACK_URL"] : UNIRESOLVER_FALLBACK_URL
+            value = value.to_s.strip.chomp("/")
+            value.empty? ? nil : value
+        end
+
+        # Returns [document, message, elsewhere]; elsewhere is true when another
+        # Universal Resolver may still answer.
+        def uniresolver_resolve(base, did)
+            begin
+                response = HTTParty.get(base.chomp("/") + "/1.0/identifiers/" + did, timeout: 10)
+            rescue Net::ReadTimeout, Net::OpenTimeout
+                return nil, "time out", true
+            rescue StandardError
+                return nil, "invalid Uniresolver response", true
+            end
+            body = JSON.parse(response.body.to_s) rescue nil
+            ddo = body["didDocument"] if body.is_a?(Hash)
+            return ddo, "", false unless ddo.nil?
+            return nil, LIMIT_MESSAGE, true if request_limit?(response)
+            metadata = body["didResolutionMetadata"] if body.is_a?(Hash)
+            metadata = {} unless metadata.is_a?(Hash)
+            err = metadata["error"]
+            msg = err.nil? ? metadata["errorMessage"] : nil
+            msg = "Uniresolver cannot resolve " + did if msg.nil?
+            elsewhere = method_not_supported?(err) || body.nil? || response.code >= 500
+            return nil, msg.to_s, elsewhere
+        end
+
+        # the error of a resolution result: a string (methodNotSupported), a
+        # URI ending in it, or an object with a type (METHOD_NOT_SUPPORTED)
+        def method_not_supported?(err)
+            type = err.is_a?(Hash) ? err["type"] : err
+            type.to_s.split(/[#\/]/).last.to_s.delete("_").casecmp?("methodnotsupported")
         end
 
         # HTTP 429, or 403 with a message about the limit instead of a

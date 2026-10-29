@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: didlint
-        image: oydeu/didlint:261028d
+        image: oydeu/didlint:261029
         ports:
         - containerPort: 3000
         env:
@@ -34,14 +34,21 @@ spec:
           - name: RAILS_ENV
             value: production
           - name: SOYA_DID_DRI
-            value: z2roahKVXPptAyHneXnyLHFUztYojEK3gLMnj3sTvsZcW
+            value: zAfWiQDsq2uX8e4oC7N39BUqYhGE8ExnbH73E3iuNc7CA
           - name: allowed_hosts
             value: "didlint.ownyourdata.eu"
+          - name: UNIRESOLVER_URL
+            value: http://uni-resolver-web.uniresolver:8080
           - name: SECRET_KEY_BASE
             valueFrom:
               secretKeyRef:
                 name: didlint-skb
                 key: SECRET_KEY_BASE
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
 ---
 kind: Service
 apiVersion: v1

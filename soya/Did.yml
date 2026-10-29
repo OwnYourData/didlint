@@ -64,7 +64,9 @@ content:
               - &id_jwk
                 id: &cardinality1_pattern
                   cardinality: "1..1"
-                  pattern: &did_url "^(did:[a-z0-9]+:[a-zA-Z0-9.:\\-_%?=#]+|#[A-Za-z0-9.:\\-_%?]+)$"
+                  # DID Core 3.2: a DID URL is a DID with optional path, query and
+                  # fragment (RFC 3986 pchar), or a relative reference to a fragment
+                  pattern: &did_url '^(did:[a-z0-9]+:(([A-Za-z0-9._-]|%[0-9A-Fa-f]{2})*:)*([A-Za-z0-9._-]|%[0-9A-Fa-f]{2})+(/([A-Za-z0-9._~!$&''()*+,;=:@-]|%[0-9A-Fa-f]{2})*)*(\?([A-Za-z0-9._~!$&''()*+,;=:@/?-]|%[0-9A-Fa-f]{2})*)?(#([A-Za-z0-9._~!$&''()*+,;=:@/?-]|%[0-9A-Fa-f]{2})*)?|#([A-Za-z0-9._~!$&''()*+,;=:@/?-]|%[0-9A-Fa-f]{2})+)$'
                 type:
                   cardinality: "1..1"
                   valueOption:
