@@ -5,6 +5,7 @@
   "use strict";
 
   var DIF_RECOMMENDED = ["cid", "ethr", "hedera", "webplus", "webvh"];
+  var EXAMPLES = DIF_RECOMMENDED.concat(["oyd"]);
   var DID_LINTER = "https://didlint.ownyourdata.eu/validate?did=";
   var $ = function (id) { return document.getElementById(id); };
   var current = null; // { did, document, result }
@@ -71,7 +72,7 @@
           li.appendChild(name);
           li.appendChild(dids);
           list.appendChild(li);
-          if (DIF_RECOMMENDED.indexOf(method) >= 0 && tests[method] && tests[method][0]) {
+          if (EXAMPLES.indexOf(method) >= 0 && tests[method] && tests[method][0]) {
             examples.appendChild(el("a", "did:" + method, { href: pageLink(tests[method][0]), title: tests[method][0] }));
           }
         });

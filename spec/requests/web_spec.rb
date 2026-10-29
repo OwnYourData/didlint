@@ -19,6 +19,11 @@ RSpec.describe "Web frontend", type: :request do
     expect(response.body).to include('id="theme-toggle"')
   end
 
+  it "links the Universal Resolver of OwnYourData from the header" do
+    get "/"
+    expect(response.body).to match(%r{<nav>.*<a href="https://uniresolver.ownyourdata.eu">Resolver</a>.*</nav>}m)
+  end
+
   it "links the version from the footer instead of showing build details" do
     get "/"
     expect(response.body).to include('<a href="/version">Version</a>')
