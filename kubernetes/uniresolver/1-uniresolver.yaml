@@ -1,7 +1,8 @@
 # Universal Resolver at https://uniresolver.ownyourdata.eu: uni-resolver-web
-# with the drivers in 2-drivers.yaml. It serves only the methods listed in
-# application.yml below; it does not forward other methods elsewhere.
-# See README.md in this directory.
+# with the drivers in 2-drivers.yaml and the start page in 3-frontend.yaml.
+# It serves only the methods listed in application.yml below; it does not
+# forward other methods elsewhere. Apply the directory with kubectl apply -k
+# (kustomization.yaml); see README.md in this directory.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -64,7 +65,9 @@ data:
           url: http://driver-didkit:3000/identifiers/$1
           testIdentifiers:
             - did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH
+            - did:jwk:eyJraWQiOiJ1cm46aWV0ZjpwYXJhbXM6b2F1dGg6andrLXRodW1icHJpbnQ6c2hhLTI1NjpGZk1iek9qTW1RNGVmVDZrdndUSUpqZWxUcWpsMHhqRUlXUTJxb2JzUk1NIiwia3R5IjoiT0tQIiwiY3J2IjoiRWQyNTUxOSIsImFsZyI6IkVkRFNBIiwieCI6IkFOUmpIX3p4Y0tCeHNqUlBVdHpSYnA3RlNWTEtKWFE5QVBYOU1QMWo3azQifQ
             - did:pkh:tz:tz2BFTyPeYRzxd5aiBchbXN3WCZhx7BqbMBq
+            - did:tz:tz1YwA1FwpgLtc1G8DKbbZ6e6PTb1dQMRn5x
         - pattern: "^did:(?:key:(?:zDna|z82L|z2J9|z5Tc|z3tE|zUC7|z2dm|zmYg|zhQR)).+$"
           url: http://driver-did-key:8080/1.0/identifiers/$1
           testIdentifiers:
@@ -167,14 +170,12 @@ spec:
             port:
               number: 8080
 ---
-# the start page: uni-resolver-web has no web interface, so / leads to the description
+# the start page and its files (3-frontend.yaml); /1.0 goes to uni-resolver-web
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: uni-resolver-start
   namespace: uniresolver
-  annotations:
-    nginx.ingress.kubernetes.io/permanent-redirect: https://github.com/OwnYourData/didlint/blob/main/kubernetes/uniresolver/README.md
 spec:
   ingressClassName: nginx
   tls:
@@ -186,10 +187,10 @@ spec:
     http:
       paths:
       - path: /
-        pathType: Exact
+        pathType: Prefix
         backend:
           service:
-            name: uni-resolver-web
+            name: uni-resolver-frontend
             port:
               number: 8080
 ---

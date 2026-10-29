@@ -125,7 +125,7 @@ In Kubernetes: `kubectl -n soya exec deploy/didlint -- bin/rails 'soya:fetch[Did
 kubectl -n soya create secret generic didlint-skb --from-literal=SECRET_KEY_BASE="$(openssl rand -hex 64)"
 ```
 
-The public instance resolves through the Universal Resolver in the same cluster (`UNIRESOLVER_URL` points to its service, not to the ingress, so the request limit of the ingress does not apply). Its manifests are in `kubernetes/uniresolver/` and are applied with `kubectl apply -f kubernetes/uniresolver/`; the [README](kubernetes/uniresolver/README.md) there describes the methods and drivers.
+The public instance resolves through the Universal Resolver in the same cluster (`UNIRESOLVER_URL` points to its service, not to the ingress, so the request limit of the ingress does not apply). Its manifests, including the start page, are in `kubernetes/uniresolver/` and are applied with `kubectl apply -k kubernetes/uniresolver/`; the [README](kubernetes/uniresolver/README.md) there describes the methods and drivers.
 
 ## Tests
 

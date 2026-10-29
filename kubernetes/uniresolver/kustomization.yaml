@@ -1,0 +1,19 @@
+# kubectl apply -k kubernetes/uniresolver/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: uniresolver
+resources:
+- 1-uniresolver.yaml
+- 2-drivers.yaml
+- 3-frontend.yaml
+configMapGenerator:
+- name: uni-resolver-frontend-site
+  files:
+  - frontend/index.html
+  - frontend/app.js
+  - frontend/theme.js
+  - frontend/style.css
+  - frontend/oyd-mark.svg
+- name: uni-resolver-frontend-nginx
+  files:
+  - default.conf=frontend/nginx.conf
